@@ -15,6 +15,7 @@
     "bin/slowfoot"
   ],
   "require": {
+    "php": "^8.2",
     "composer-runtime-api": "^2.2.2",
     "spatie/async": "^1.5",
     "erusev/parsedown": "^1.7",
