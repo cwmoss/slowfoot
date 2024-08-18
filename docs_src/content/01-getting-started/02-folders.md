@@ -36,5 +36,4 @@ Lists all the composer dependencies of your project.
 
 ## config.php
 
-[Configuration file](/04-ref/config) for the project.
-
+[Configuration file](/05-ref/01-config) for the project.

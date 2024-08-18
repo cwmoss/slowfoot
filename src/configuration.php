@@ -59,6 +59,9 @@ class configuration {
     }
 
     public function init() {
+        if (!is_dir($this->base . "/var")) {
+            mkdir($this->base . "/var");
+        }
         foreach ($this->templates as $name => $t) {
             $this->templates[$name] = $this->normalize_template_config($name, $t);
         }
@@ -155,13 +158,13 @@ function make_path_fn($pattern) {
     if (preg_match_all('!:([^/:]+)!', $pattern, $mat, PREG_SET_ORDER)) {
         $replacements = $mat;
     }
-    $replacements = array_map(fn ($r) => [$r[0], explode('.', $r[1])], $replacements);
+    $replacements = array_map(fn($r) => [$r[0], explode('.', $r[1])], $replacements);
     // print_r($replacements);
     // exit;
     return function ($item) use ($pattern, $replacements) {
         $path = $pattern;
         // $item[$r[1]]
-        $replacements = array_map(fn ($r) => [$r[0], url_safe(resolve_dot_value($r[1], $item))], $replacements);
+        $replacements = array_map(fn($r) => [$r[0], url_safe(resolve_dot_value($r[1], $item))], $replacements);
         $path = str_replace(
             array_column($replacements, 0),
             array_column($replacements, 1),

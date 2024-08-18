@@ -12,7 +12,7 @@ class markdown {
 
     public function __construct(
         public string $file,
-
+        public ?string $remove_prefix = null
     ) {
     }
 
@@ -40,6 +40,9 @@ class markdown {
             dbg("++ md file:", $f);
 
             $fname = str_replace($prefix, '', $f);
+            if ($me->remove_prefix) {
+                $fname = preg_replace("~^{$me->remove_prefix}~", "", $fname);
+            }
             $path_parts = pathinfo($fname);
 
             $document = $front->parse(file_get_contents($f), false);

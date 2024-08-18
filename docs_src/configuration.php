@@ -31,7 +31,7 @@ function load_chapter_index(configuration $config, store $db) {
 return new configuration(
     site_name: 'slowfoot Documentation',
     site_description: 'Docs for slowfoot',
-    store: "memory",
+    store: "sqlite",
     sources: [
         "chapter" => markdown::data_loader(...),
         // 'markdown' => [
@@ -41,10 +41,10 @@ return new configuration(
         'chapter_index' => load_chapter_index(...)
     ],
     templates: [
-        'chapter' => '/:_file.name',
+        'chapter' => '/:_id',
     ],
     plugins: [
-        new markdown('content/**/*.md')
+        new markdown('content/**/*.md', remove_prefix: "content/")
     ],
     build: "../docs"
 );
