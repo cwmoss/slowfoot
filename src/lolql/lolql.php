@@ -43,7 +43,7 @@ function parse($string, $params = []) {
     // print_r($parts);
     // print_r(parse_condition($parts[$qk][1][0]));
     // \dbg('first key', $qk, '😂');
-    $q = array_map_recursive(fn ($it) => parse_condition($it), $parts[$qk]);
+    $q = array_map_recursive(fn($it) => parse_condition($it), $parts[$qk]);
     //array_walk_recursive($parts[$qk], function (&$val, $idx) {
     //    $val = parse_condition($val);
     //});
@@ -68,7 +68,7 @@ function parse($string, $params = []) {
         'order' => $order[0],
         'order_raw' => $order[1],
         'limit' => $limit,
-        'limit_raw' => $parts['limit']
+        'limit_raw' => $parts['limit'] ?? null
     ];
 }
 
@@ -208,7 +208,7 @@ function build_order_fun($order) {
             foreach ($os as $order) {
                 //$cmp = 'strnatcasecmp';
                 $cmp = 'collator_compare';
-                $r = $cmp($coll, $a[$order['k']], $b[$order['k']]);
+                $r = $cmp($coll, $a[$order['k']] ?? "", $b[$order['k']] ?? "");
                 if ($r) {
                     return $order['d'] == 'desc' ? (-1 * $r) : $r;
                 }
@@ -312,7 +312,7 @@ function parse_parentheses($string) {
 function normalize($string) {
     return join(' ', array_filter(
         explode("\n", $string),
-        fn ($line) => trim($line)[0] != '#'
+        fn($line) => trim($line)[0] != '#'
     ));
 }
 

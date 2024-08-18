@@ -45,7 +45,7 @@ class store {
     }
 
     public function query_type($type) {
-        return $this->db->query_type($type);
+        return array_values($this->db->query_type($type));
     }
 
     public function data() {

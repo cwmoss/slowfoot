@@ -2,6 +2,7 @@
 
 namespace slowfoot\plugins;
 
+use ParsedownToC;
 /*
 https://github.com/erusev/parsedown/wiki/Tutorial:-Create-Extensions#change-element-markup
 

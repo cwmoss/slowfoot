@@ -23,8 +23,16 @@ if (!defined('SLOWFOOT_BASE')) {
 }
 
 $autoload = $internal ?? SLOWFOOT_BASE;
-#print $internal." --- ".SLOWFOOT_BASE.' --- '.$_SERVER['DOCUMENT_ROOT']; exit;
-require_once $autoload . '/vendor/autoload.php';
+// print $internal." --- ".SLOWFOOT_BASE.' --- '.$_SERVER['DOCUMENT_ROOT']; exit;
+// require_once $autoload . '/vendor/autoload.php';
+
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+} else {
+    require_once __DIR__ . '/../../../autoload.php';
+}
+
+
 
 new slowfoot\error_handler;
 

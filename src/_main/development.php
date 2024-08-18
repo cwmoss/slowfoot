@@ -8,6 +8,7 @@ TODO: vendor-dir vs project-dir
 $project_dir = $_SERVER['DOCUMENT_ROOT'] . '/../';
 define('SLOWFOOT_BASE', $project_dir);
 
+
 //require $project_dir . '/vendor/autoload.php';
 
 require __DIR__ . '/../_boot.php';
@@ -39,7 +40,7 @@ if (PHP_SAPI == 'cli-server') {
 }
 
 $router = new Router();
-
+$router->setBasePath("");
 $hr = false;
 $debug = true;
 
@@ -60,7 +61,13 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src, $template
         dbg("[api] type", $type);
         #print "hallo";
         if ($type == '__paths') {
-            $rows = $ds->db->db->safeQuery('SELECT * FROM paths LIMIT ? OFFSET ?', [20, 0]);
+            if ($ds->db->db)
+                $rows = $ds->db->db->safeQuery('SELECT * FROM paths LIMIT ? OFFSET ?', [20, 0]);
+            else $rows = array_values(array_map(fn($p) => [
+                "id" => $p["_"],
+                "path" => $p["_"],
+                "name" => "_"
+            ], $ds->db->paths));
         } else {
             $rows = $ds->query_type($type);
         }
@@ -115,9 +122,9 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src, $template
 });
 
 $router->mount('/__ui', function () use ($router, $ds) {
-    $router->get('/', function () use ($router, $ds) {
+    $router->get('', function () use ($router, $ds) {
         $uibase = __DIR__ . '/../../ui/build';
-        #dbg("+++ ui index ++++", $uibase);
+        dbg("+++ ui index ++++", $uibase);
         server::send_file($uibase, 'index.html');
         exit;
     });
@@ -128,10 +135,10 @@ $router->mount('/__ui', function () use ($router, $ds) {
         dbg("__ui file00", $file, $uifile);
 
         if (file_exists($uifile)) {
-            send_file($uibase, $file);
+            server::send_file($uibase, $file);
             exit;
         } else {
-            send_file($uibase, 'index.html');
+            server::send_file($uibase, 'index.html');
             exit;
         }
         dbg("__ui file", $file, $uifile);

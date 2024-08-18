@@ -26,7 +26,7 @@ class loader {
 
             shell_info("fetching $name");
 
-            foreach ($fun($this->config) as $row) {
+            foreach ($fun($this->config, $db) as $row) {
                 if (!isset($row['_type']) || !$row['_type']) {
                     #print_r($row);
                     $row['_type'] = $opts['type'];

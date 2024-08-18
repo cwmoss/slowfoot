@@ -31,9 +31,9 @@ class markdown {
     static public function data_loader(configuration $config) {
         $me = $config->get_plugin(self::class);
         $front = new Parser;
-        $filep = $config['base'] . '/' . $me->file;
+        $filep = $config->base . '/' . $me->file;
         dbg("++ md glob:", $filep);
-        $prefix = $config['base'] . '/';
+        $prefix = $config->base . '/';
 
         $files = globstar($filep);
         foreach ($files as $f) {
@@ -71,7 +71,7 @@ class markdown {
         return $parser->text($md);
     }
 
-    public function markdown_toc($content) {
+    static public function markdown_toc($content) {
         $Parsedown = new ParsedownToC();
         $body = $Parsedown->body($content);
         $toc  = $Parsedown->contentsList();
