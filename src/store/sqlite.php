@@ -24,7 +24,7 @@ class sqlite {
     public function __construct($config) {
         $this->config = $config;
         $adapter = explode(':', $config['adapter']);
-        $name = $adapter[1] ?? ($adapter['name']) ?? 'slowfoot.db';
+        $name = $adapter[1] ?? 'slowfoot.db';
         if ($name == 'memory') {
             $name = ':memory:';
         } else {

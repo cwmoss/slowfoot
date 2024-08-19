@@ -7,7 +7,7 @@ TODO: vendor-dir vs project-dir
 */
 $project_dir = $_SERVER['DOCUMENT_ROOT'] . '/../';
 define('SLOWFOOT_BASE', $project_dir);
-
+$PDIR = $project_dir;
 
 //require $project_dir . '/vendor/autoload.php';
 

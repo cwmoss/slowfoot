@@ -6,6 +6,7 @@
 #}
 
 use slowfoot\configuration;
+use Dotenv\Dotenv;
 
 ini_set('display_errors', 0);
 if (!defined('SLOWFOOT_BASE')) {
@@ -50,7 +51,7 @@ if (isset($PDIR) && $PDIR) {
 }
 if (file_exists("$base/.env")) {
     //print "env: $base/.env";
-    Dotenv\Dotenv::createImmutable("$base")->load();
+    Dotenv::createImmutable("$base")->load();
 }
 
 $_ENV = array_merge(getenv(), $_ENV);
@@ -89,7 +90,8 @@ require_once 'template_helper.php';
 
 # TODO: im store inbauen
 if (isset($FETCH) && $FETCH) {
-    $dbfile = SLOWFOOT_BASE . '/var/slowfoot.db';
+    $dbfile = $PDIR . '/var/slowfoot.db';
+    dbg("removing DB file", $dbfile);
     `rm -rf $dbfile`;
 }
 //var_dump($hooks);

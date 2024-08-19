@@ -12,7 +12,7 @@ slowfoot.
 
 Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot build [-d <project directory>]
+  slowfoot build [-f | --fetch <content source>] [-d <project directory>]
   slowfoot setup
   slowfoot (-h | --help)
   slowfoot --version
@@ -93,7 +93,7 @@ if ($args['dev']) {
 if ($args['build']) {
     print $logo . "\n";
 
-    $FETCH = true;
+    $FETCH = $args['-f'];
     $PDIR = $args['-d'];
     if ($PDIR && $PDIR[0] != '/') {
         $PDIR = SLOWFOOT_BASE . '/' . $PDIR;

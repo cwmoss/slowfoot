@@ -50,7 +50,7 @@ class configuration {
     ) {
     }
     static function load($dir): self {
-        $conf = include $dir . '/configuration.php';
+        $conf = include $dir . '/slowfoot-config.php';
         $conf->base = '/' . get_absolute_path($dir);
         $conf->src = $conf->base . '/src';
         $conf->dist = $conf->base . '/dist';
