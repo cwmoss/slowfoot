@@ -2,11 +2,13 @@
 
 use function lolql\query as lquery;
 use slowfoot\hook;
+use slowfoot\configuration;
+use slowfoot\image\processor;
 
 function add_template_helper($name, $fun) {
 }
 
-function load_template_helper($ds, $src, $config) {
+function load_template_helper($ds, $src, configuration $config) {
     if (file_exists($src . '/template_helper.php')) {
         $custom = require_once($src . '/template_helper.php');
     } else {
@@ -35,17 +37,20 @@ function load_template_helper($ds, $src, $config) {
             //lquery($ds->data, $q);
         },
         'image' => function ($asset, $profile) use ($config) {
-            return \slowfoot\image($asset, $profile, $config['assets']);
+            $p = new processor($config->assets);
+            return $p->run($asset, $profile);
         },
         'image_tag' => function ($asset, $profile, $tag = []) use ($config) {
-            return \slowfoot\image_tag($asset, $profile, $tag, $config['assets']);
+            $p = new processor($config->assets);
+            return $p->image_tag($asset, $profile, $tag);
         },
         'image_url' => function ($asset, $profile) use ($config) {
-            return \slowfoot\image_url($asset, $profile, $config['assets']);
+            $p = new processor($config->assets);
+            return \slowfoot\image_url($asset, $profile, $config->assets);
         },
         'asset_from_file' => function ($path) use ($config) {
             //var_dump($config);
-            return \slowfoot\asset_from_file($path, $config['assets']);
+            return \slowfoot\asset_from_file($path, $config->assets);
         },
     ];
     return array_merge($default, $custom);

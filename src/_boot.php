@@ -90,7 +90,7 @@ require_once 'template_helper.php';
 
 # TODO: im store inbauen
 if (isset($FETCH) && $FETCH) {
-    $dbfile = $PDIR . '/var/slowfoot.db';
+    $dbfile = SLF_PROJECT_DIR . '/var/slowfoot.db';
     dbg("removing DB file", $dbfile);
     `rm -rf $dbfile`;
 }

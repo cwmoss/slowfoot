@@ -8,7 +8,7 @@ use slowfoot\store\memory;
 use slowfoot\store\sqlite;
 use slowfoot\loader;
 use slowfoot\template;
-
+use slowfoot\image;
 use function lolql\parse;
 use function lolql\query as lquery;
 
@@ -43,7 +43,7 @@ class configuration {
         public array $templates = [],
         public string|array $store = 'sqlite',
         public array $hooks = [],
-        public array $assets = [],
+        public ?image\configuration $assets = null,
         public array $plugins = [],
         public array $preview = [],
         public string|array $build = ['dist' => 'dist'],
@@ -128,18 +128,13 @@ class configuration {
         return $store;
     }
 
-    function normalize_assets_config(array $assets): array {
-        $default = [
-            'base' => $this->base,
-            'path' => '/images',
-            'src' => '',
-            'dest' => 'var/rendered-images',
-            'profiles' => [],
-            'map' => function ($img) {
+    function normalize_assets_config(image\configuration $assets): image\configuration {
+        $assets->base = $this->base;
+        if (!$assets->map) {
+            $assets->map = function ($img) {
                 return hook::invoke_filter('assets_map', $img);
-            }
-        ];
-        $assets = array_merge($default, $assets);
+            };
+        }
         return $assets;
     }
     function normalize_build_config(string|array $build): array {

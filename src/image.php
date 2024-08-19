@@ -227,11 +227,13 @@ function resize($resizer, $src, $dest, $profile, $base) {
     #dbg('++ resize', $src, $dest, $profile);
     // copy-only
     if (isset($profile['size']) && !$profile['size']) {
+        dbg("[resizer] img copy only");
         `cp $src $dest`;
         return \getimagesize($dest);
     }
 
     if (\file_exists($dest)) {
+        dbg("[resizer] img exists");
         return \getimagesize($dest);
     }
 

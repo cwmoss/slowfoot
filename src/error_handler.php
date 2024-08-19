@@ -74,7 +74,7 @@ class error_handler {
     function exception_handler($e) {
         $trace = self::jTraceEx($e);
         $this->render_exception_page($e, $trace);
-        error_log(date("Y-m-d H:i:s") . " " . $trace . "\n", 3, $this->error_logfile);
+        error_log(date("Y-m-d H:i:s") . " " . $e->getMessage() . "\n" . $trace . "\n", 3, $this->error_logfile);
     }
 
     public function fatal_handler() {
@@ -111,16 +111,20 @@ class error_handler {
      */
     function render_exception_page($e, $trace) {
         $htmlpage = __DIR__ . '/../resources/exception.html';
+        $message = $e->getMessage();
         include_once($htmlpage);
     }
 
     static public function install_boot_exception_handler() {
         $htmlpage = __DIR__ . '/../resources/exception.html';
-        $hdl = fn ($e) => $trace = self::jTraceEx($e) and include_once($htmlpage);
+        $hdl = fn($e) => $message = $e->getMessage() and $trace = self::jTraceEx($e) and include_once($htmlpage);
         \set_exception_handler($hdl);
     }
 
     static public function jTraceEx($e, $seen = null) {
+        $ep = $e->getPrevious();
+        return $e->getTraceAsString();
+
         $starter = $seen ? 'Caused by: ' : '';
         $result = array();
         if (!$seen) $seen = array();

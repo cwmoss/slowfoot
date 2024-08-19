@@ -1,6 +1,7 @@
 <?php
 require $project_dir . '/vendor/autoload.php';
 
+use slowfoot\setup;
 use slowfoot\util\console;
 
 error_reporting(E_ALL);
@@ -13,7 +14,7 @@ slowfoot.
 Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
   slowfoot build [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot setup
+  slowfoot info
   slowfoot (-h | --help)
   slowfoot --version
 
@@ -55,6 +56,7 @@ if ($args['dev']) {
     if ($PDIR && $PDIR[0] != '/') {
         $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
     }
+    define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
     $dev_src = 'src/';
     if ($PDIR) {
         $dev_src = $PDIR . '/src/';
@@ -68,6 +70,8 @@ if ($args['dev']) {
 
     // evtl. fetching data
     require $slft_lib_base . '/_boot.php';
+
+    (new setup(SLF_PROJECT_DIR))->setup();
 
     print console::console_table(['_type' => 'type', 'total' => 'total'], $ds->info());
 
@@ -98,10 +102,12 @@ if ($args['build']) {
     if ($PDIR && $PDIR[0] != '/') {
         $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
     }
+    define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
 
     require $slft_lib_base . '/_boot.php';
+    (new setup(SLF_PROJECT_DIR))->setup();
     require $slft_lib_base . '/cli/build.php';
 }
-if ($args['setup']) {
-    require $slft_lib_base . '/cli/setup.php';
+if ($args['info']) {
+    require $slft_lib_base . '/cli/info.php';
 }
