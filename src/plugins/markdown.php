@@ -68,6 +68,7 @@ class markdown {
     }
 
     public function markdown_sf($md, $config = null, $ds = null) {
+        if (!$md) return "";
         $parser = new markdown_sfp();
         $parser->set_context(['conf' => $config, 'ds' => $ds]);
         //$parser->setUrlsLinked(false);
@@ -92,6 +93,7 @@ class markdown {
         $parser = $this->markdown_parser($config, $ds);
 
         return function ($text, $obj = null) use ($parser) {
+            if (!$text) return "";
             $parser->set_current_obj($obj);
             return $parser->text($text);
         };
