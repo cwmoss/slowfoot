@@ -281,7 +281,8 @@ function dbg($txt, ...$vars) {
     error_log(join(' ', $log));
 }
 
-function markdown($text) {
+function markdown(?string $text) {
+    if (!$text) return "";
     $parser = new Parsedown();
     //$parser->setUrlsLinked(false);
     return $parser->text($text);
