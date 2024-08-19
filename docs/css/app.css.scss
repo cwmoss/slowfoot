@@ -56,6 +56,7 @@ header {
     padding: 2em;
 }
 footer{
+    margin-left: var(--sidebar-width);
     padding: 2em;
 }
 main{
@@ -67,7 +68,7 @@ nav{
     width: var(--sidebar-width);
     flex-direction: column;
     overflow-y: auto;
-    height: 100%;
+    height: 80vh;
     padding: 2em;
 
     summary:hover, details a:hover, details.active summary, details a.active{

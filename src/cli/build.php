@@ -7,6 +7,9 @@ use function slowfoot\template\template;
 use function slowfoot\template\remove_tags;
 use function slowfoot\template\preprocess;
 
+use slowfoot\context;
+use slowfoot\pagebuilder;
+
 $console = console::console();
 
 print memory_get_usage() . " paths ok\n";
@@ -37,14 +40,26 @@ shell_info();
 #array_map('unlink', array_filter((array) globstar("$dist/**/*.*")));
 // exit;
 
+$context = new context(
+    mode: 'build',
+    src: $src,
+    path: "",
+    config: $config
+);
+/*
 $context = [
-    'mode' => 'build', 'src' => $src, 'path' => '',
-    'site_name' => $config['site_name'] ?? '',
-    'site_description' => $config['site_description'] ?? '',
-    'site_url' => $config['site_url'] ?? ''
+    'mode' => 'build',
+    'src' => $src,
+    'path' => '',
+    'site_name' => $config->site_name ?? '',
+    'site_description' => $config->site_description ?? '',
+    'site_url' => $config->site_url ?? ''
 ];
+*/
 
 shell_info("writing templates", true);
+print_r($config);
+$builder = new pagebuilder($config, $ds, $template_helper);
 
 foreach ($templates as $type => $conf) {
     //$count = query('');
@@ -65,7 +80,14 @@ foreach ($templates as $type => $conf) {
                 #var_dump($row);
                 #exit;
             }
-            $context['path'] = $path;
+            $context->path = $path;
+            $content = $builder->make_template(
+                $templateconf['template'],
+                $context,
+                data: $row,
+                template_conf: $templateconf
+            );
+            /*
             $content = template(
                 $templateconf['template'],
                 [
@@ -77,6 +99,7 @@ foreach ($templates as $type => $conf) {
                 $template_helper,
                 template_context('template', $context, $row, $ds, $config)
             );
+            */
             write($content, $path, null, $dist);
         }
     }
@@ -87,6 +110,19 @@ foreach ($templates as $type => $conf) {
 
 shell_info("writing pages", true);
 
+foreach ($pages as $pagename) {
+    shell_info("  => $pagename");
+    $pagepath = $pagename;
+    if ($pagepath == '/index') {
+        $pagepath = '/';
+    }
+    $generator = $builder->make_page_bulk($pagename, $context);
+    foreach ($generator as $result) {
+        write($result["content"], $pagepath, $result["pagenr"], $dist);
+    }
+    shell_info();
+}
+/*
 foreach ($pages as $pagename) {
     shell_info("  => $pagename");
     // $paginate = check_pagination($pagename, $src);
@@ -141,7 +177,7 @@ foreach ($pages as $pagename) {
     shell_info();
 }
 #exit;
-
+*/
 
 
 #print memory_get_usage() . " pages ok\n";
@@ -153,7 +189,7 @@ shell_info("copy assets");
 
 shell_info();
 
-if (isset($config['hooks']['after_build'])) {
-    $config['hooks']['after_build']($config);
+if (isset($config->hooks['after_build'])) {
+    $config->hooks['after_build']($config);
 }
 shell_info("⚡️ done", true);

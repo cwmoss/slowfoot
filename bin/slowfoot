@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!/usr/bin/env php -d short_open_tag=On
 <?php
 define('SLOWFOOT_START', microtime(true));
 $bin_dir = $_composer_bin_dir ?? __DIR__;

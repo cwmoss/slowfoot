@@ -2,6 +2,7 @@
 
 namespace slowfoot;
 
+use Generator;
 use slowfoot\util\html;
 
 class pagebuilder {
@@ -17,22 +18,33 @@ class pagebuilder {
     }
 
     public function make_template(
-        string $obj_id,
-        string $name,
-        context $context
+        string $name, /* eigentlich type */
+        context $context,
+        ?string $obj_id = null,
+        ?array $data = null,
+        ?array $template_conf = null
     ): string {
-        $data = $this->ds->get($obj_id);
+        if (!$data) {
+            $data = $this->ds->get($obj_id);
+        } else {
+            $obj_id = $data["_id"];
+        }
         $obj = document::new($data);
 
+        if (is_null($template_conf)) {
+            $template_conf = $this->config->templates[$obj->_type][$name];
+        }
+
         // $template = $templates[$obj['_type']][$name]['template'];
-        $template = $this->template_name($this->config->templates, $obj->_type, $name);
+        // $template = $this->template_name($this->config->templates, $obj->_type, $name);
+        $template = $template_conf["template"];
         #dbg('template', $template, $obj);
         $content = $this->engine->run(
             $template,
             [
                 'page' => $obj,
                 'path' => $this->ds->get_path($obj_id, $name),
-                'template_config' => $this->config->templates[$obj->_type][$name], //TODO
+                'template_config' => $template_conf, //TODO
                 'path_name' => $name
             ],
             $this->helper,
@@ -43,6 +55,54 @@ class pagebuilder {
         return $content;
     }
 
+    public function make_page_bulk(string $pagename, context $context): Generator {
+        $context = $context->with('template_type', 'page');
+        $pp = $this->engine->preprocess($pagename, $context->src);
+        if ($page_query = ($pp['page-query'] ?? null)) {
+            //var_dump($paginate);
+            dbg('[page] query', $page_query);
+            if ($page_query['paginate']) {
+                [$info, $pagequery] = $this->ds->query_paginated(
+                    $page_query['__content'],
+                    $page_query['paginate'],
+                    []
+                );
+
+                foreach (range(1, $info['totalpages']) as $pagenr) {
+                    $qres = $pagequery($pagenr);
+                    $pagination = self::pagination($info, $pagenr ?: 1);
+                    $content = $this->engine->run_page(
+                        $pagename,
+                        ['page' => $qres, 'pagination' => $pagination],
+                        $this->helper,
+                        $context
+                    );
+                    $content = $this->engine->remove_tags($content, ['page-query']);
+                    yield ["content" => $content, "pagenr" => $pagenr];
+                }
+            } else {
+                $pagination = [];
+                $qres = $this->ds->query($page_query['__content']);
+                // query_page($ds, $pagination_query, $pagenr);
+                $content = $this->engine->run_page(
+                    $pagename,
+                    ['page' => $qres, 'pagination' => $pagination],
+                    $this->helper,
+                    $context
+                );
+                $content = $this->engine->remove_tags($content, ['page-query']);
+                yield ["content" => $content, "pagenr" => null];
+            }
+        } else {
+            $content = $this->engine->run_page(
+                $pagename,
+                [],
+                $this->helper,
+                $context
+            );
+            yield ["content" => $content, "pagenr" => null];
+        }
+    }
     public function make_page(
         string $pagename,
         int $pagenr,

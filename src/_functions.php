@@ -15,13 +15,13 @@ function make_path_fn($pattern) {
     if (preg_match_all('!:([^/:]+)!', $pattern, $mat, PREG_SET_ORDER)) {
         $replacements = $mat;
     }
-    $replacements = array_map(fn ($r) => [$r[0], explode('.', $r[1])], $replacements);
+    $replacements = array_map(fn($r) => [$r[0], explode('.', $r[1])], $replacements);
     // print_r($replacements);
     // exit;
     return function ($item) use ($pattern, $replacements) {
         $path = $pattern;
         // $item[$r[1]]
-        $replacements = array_map(fn ($r) => [$r[0], url_safe(resolve_dot_value($r[1], $item))], $replacements);
+        $replacements = array_map(fn($r) => [$r[0], url_safe(resolve_dot_value($r[1], $item))], $replacements);
         $path = str_replace(
             array_column($replacements, 0),
             array_column($replacements, 1),
@@ -77,8 +77,11 @@ function chunked_paginate($ds, $rule) {
         $offset = ($page - 1) * $limit;
         $res = array_slice($all, $offset, $limit);
         $info = [
-            'total' => $total, 'totalpages' => $totalpages, 'page' => $page,
-            'limit' => $limit, 'real' => count($res),
+            'total' => $total,
+            'totalpages' => $totalpages,
+            'page' => $page,
+            'limit' => $limit,
+            'real' => count($res),
             'prev' => ($page - 1) ?: null,
             'next' => (($page + 1) <= $totalpages) ?: null
         ];
@@ -100,8 +103,11 @@ function query_page($ds, $rule, $page = 1) {
     dbg('paginate', $page, $offset);
     $res = array_slice($all, $offset, $limit);
     $info = [
-        'total' => $total, 'totalpages' => $totalpages, 'page' => $page,
-        'limit' => $limit, 'real' => count($res),
+        'total' => $total,
+        'totalpages' => $totalpages,
+        'page' => $page,
+        'limit' => $limit,
+        'real' => count($res),
         'prev' => ($page - 1) ?: null,
         'next' => (($page + 1) <= $totalpages) ?: null
     ];
@@ -203,6 +209,7 @@ function write($content, $path, $pagenr, $base) {
     if (!is_dir($dir)) {
         mkdir($dir, 0777, true);
     }
+    // dbg("++ write to:", $file);
     file_put_contents($file, $content);
 }
 
@@ -270,7 +277,7 @@ function dbg($txt, ...$vars) {
     } else {
         $log[] = $txt;
     }
-    $log[] = join(' ~ ', array_map(fn ($v) => json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $vars));
+    $log[] = join(' ~ ', array_map(fn($v) => json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $vars));
     error_log(join(' ', $log));
 }
 

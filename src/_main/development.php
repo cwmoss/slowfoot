@@ -195,7 +195,7 @@ $router->get('(.*)?', function ($requestpath) use ($router, $ds, $config, $pages
     );
 
     if ($obj_id) {
-        $content = $builder->make_template($obj_id, $name, $context);
+        $content = $builder->make_template($name, $context, $obj_id);
     } else {
         list($dummy, $pagename, $pagenr) = explode('/', $requestpath) + [2 => 0];
         $pagename = '/' . $pagename;
