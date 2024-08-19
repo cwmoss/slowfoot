@@ -184,7 +184,7 @@ foreach ($pages as $pagename) {
 
 shell_info("copy assets");
 
-`cp -R $src/css $src/js $src/fonts $src/gfx $dist/`;
+`cp -R $src/assets $dist/assets`;
 `cp -R $base/var/rendered-images $dist/images`;
 
 shell_info();
