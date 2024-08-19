@@ -1,5 +1,5 @@
 {
-  "name": "cwmoss/slowfoot-lib",
+  "name": "cwmoss/slowfoot",
   "version": "1.0",
   "autoload": {
     "files": [
