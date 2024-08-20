@@ -15,8 +15,8 @@ Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
   slowfoot build [-f | --fetch <content source>] [-d <project directory>]
   slowfoot init [-d <project directory>]
+  slowfoot test [-d <project directory>]
   slowfoot (-h | --help)
-  slowfoot info
   slowfoot --version
 
 Options:
@@ -109,8 +109,25 @@ if ($args['build']) {
   (new setup(SLF_PROJECT_DIR))->setup();
   require $slft_lib_base . '/cli/build.php';
 }
-if ($args['info']) {
-  require $slft_lib_base . '/cli/info.php';
+//if ($args['info']) {
+//  require $slft_lib_base . '/cli/info.php';
+//}
+if ($args['test']) {
+  $PDIR = $args['-d'];
+  if ($PDIR && $PDIR[0] != '/') {
+    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
+  }
+  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+  shell_info("starting testserver. you can review your build here.", true);
+  $boot_only_config = true;
+  require $slft_lib_base . '/_boot.php';
+  $testserver = "localhost:11999";
+  $command = "php -S {$testserver} -t {$dist}";
+  print "\n";
+  print "   🤟 http://$testserver\n\n";
+  print "<cmd> click\n";
+  print "have fun!\n\n";
+  `$command`;
 }
 if ($args['init']) {
   $PDIR = $args['-d'];
