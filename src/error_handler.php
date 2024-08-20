@@ -110,6 +110,8 @@ class error_handler {
                 ]
      */
     function render_exception_page($e, $message, $trace) {
+        while (ob_get_level()) ob_end_clean();
+
         $htmlpage = __DIR__ . '/../resources/exception.html';
         include_once($htmlpage);
     }
