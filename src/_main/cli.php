@@ -14,8 +14,9 @@ slowfoot.
 Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
   slowfoot build [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot info
+  slowfoot init [-d <project directory>]
   slowfoot (-h | --help)
+  slowfoot info
   slowfoot --version
 
 Options:
@@ -24,7 +25,7 @@ Options:
   -h --help                 Show this screen.
   --version                 Show version.
   -S --server <server:port> Set server and port [default: localhost:1199]
-  -P --port <port>          Set port only 
+  -P --port <port>          Set port only
   -d <project directory>    Set the project base directory
 
 DOC;
@@ -39,75 +40,83 @@ $args = $parsed->args;
 // https://www.kammerl.de/ascii/AsciiSignature.php rounded
 
 $logo = '
-       _                ___                 
-      | |              / __)            _   
-   ___| | ___  _ _ _ _| |__ ___   ___ _| |_ 
+       _                ___
+      | |              / __)            _
+   ___| | ___  _ _ _ _| |__ ___   ___ _| |_
   /___) |/ _ \| | | (_   __) _ \ / _ (_   _)
- |___ | | |_| | | | | | | | |_| | |_| || |_ 
+ |___ | | |_| | | | | | | | |_| | |_| || |_
  (___/ \_)___/ \___/  |_|  \___/ \___/  \__)
-                                            
+
  ';
 
 if ($args['dev']) {
-    print $logo . "\n";
+  print $logo . "\n";
 
-    $FETCH = $args['-f'];
-    $PDIR = $args['-d'];
-    if ($PDIR && $PDIR[0] != '/') {
-        $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-    }
-    define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
-    $dev_src = 'src/';
-    if ($PDIR) {
-        $dev_src = $PDIR . '/src/';
-    }
+  $FETCH = $args['-f'];
+  $PDIR = $args['-d'];
+  if ($PDIR && $PDIR[0] != '/') {
+    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
+  }
+  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+  $dev_src = 'src/';
+  if ($PDIR) {
+    $dev_src = $PDIR . '/src/';
+  }
 
-    $devserver = explode(':', $args['--server'] ?? 'localhost:1199');
-    if ($args['--port']) {
-        $devserver[1] = $args['--port'];
-    }
-    $devserver = join(":", $devserver);
+  $devserver = explode(':', $args['--server'] ?? 'localhost:1199');
+  if ($args['--port']) {
+    $devserver[1] = $args['--port'];
+  }
+  $devserver = join(":", $devserver);
 
-    // evtl. fetching data
-    require $slft_lib_base . '/_boot.php';
+  // evtl. fetching data
+  require $slft_lib_base . '/_boot.php';
 
-    (new setup(SLF_PROJECT_DIR))->setup();
+  (new setup(SLF_PROJECT_DIR))->setup();
 
-    print console::console_table(['_type' => 'type', 'total' => 'total'], $ds->info());
+  print console::console_table(['_type' => 'type', 'total' => 'total'], $ds->info());
 
-    // this wont work :)
-    // `(sleep 1 ; open http://localhost:1199/ )&`;
-    // this works!
-    # automatisches öffnen gefällt mir nicht mehr
-    # shell_exec('(sleep 1 ; open http://localhost:1199/ ) 2>/dev/null >/dev/null &');
-    $command = "XXXPHP_CLI_SERVER_WORKERS=4 php -d short_open_tag=On -S {$devserver} -t {$dev_src} {$slft_lib_base}/_main/development.php";
-    print "\n\n";
+  // this wont work :)
+  // `(sleep 1 ; open http://localhost:1199/ )&`;
+  // this works!
+  # automatisches öffnen gefällt mir nicht mehr
+  # shell_exec('(sleep 1 ; open http://localhost:1199/ ) 2>/dev/null >/dev/null &');
+  $command = "XXXPHP_CLI_SERVER_WORKERS=4 php -d short_open_tag=On -S {$devserver} -t {$dev_src} {$slft_lib_base}/_main/development.php";
+  print "\n\n";
 
-    print "starting development server\n\n";
-    print "   🌈 http://$devserver\n\n";
-    print "<cmd> click\n";
-    print "have fun!\n\n";
-    print $command . "\n";
-    $wss = "php {$slft_lib_base}/wss.php " . SLOWFOOT_BASE;
-    #shell_exec("$wss &");
-    #print "end";
-    `$command`;
-    #`($command &) && ($wss &)`;
+  print "starting development server\n\n";
+  print "   🌈 http://$devserver\n\n";
+  print "<cmd> click\n";
+  print "have fun!\n\n";
+  print $command . "\n";
+  $wss = "php {$slft_lib_base}/wss.php " . SLOWFOOT_BASE;
+  #shell_exec("$wss &");
+  #print "end";
+  `$command`;
+  #`($command &) && ($wss &)`;
 }
 if ($args['build']) {
-    print $logo . "\n";
+  print $logo . "\n";
 
-    $FETCH = $args['-f'];
-    $PDIR = $args['-d'];
-    if ($PDIR && $PDIR[0] != '/') {
-        $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-    }
-    define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+  $FETCH = $args['-f'];
+  $PDIR = $args['-d'];
+  if ($PDIR && $PDIR[0] != '/') {
+    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
+  }
+  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
 
-    require $slft_lib_base . '/_boot.php';
-    (new setup(SLF_PROJECT_DIR))->setup();
-    require $slft_lib_base . '/cli/build.php';
+  require $slft_lib_base . '/_boot.php';
+  (new setup(SLF_PROJECT_DIR))->setup();
+  require $slft_lib_base . '/cli/build.php';
 }
 if ($args['info']) {
-    require $slft_lib_base . '/cli/info.php';
+  require $slft_lib_base . '/cli/info.php';
+}
+if ($args['init']) {
+  $PDIR = $args['-d'];
+  if ($PDIR && $PDIR[0] != '/') {
+    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
+  }
+  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+  require $slft_lib_base . '/cli/init.php';
 }
