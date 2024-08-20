@@ -117,8 +117,18 @@ class error_handler {
 
     static public function install_boot_exception_handler() {
         $htmlpage = __DIR__ . '/../resources/exception.html';
-        $hdl = fn($e) => $message = $e->getMessage() and $trace = self::jTraceEx($e) and include_once($htmlpage);
+        $hdl = fn($e) => [$message, $trace] = self::message_trace($e) and include_once($htmlpage);
         \set_exception_handler($hdl);
+    }
+
+    static public function message_trace(Throwable $e) {
+        $message = sprintf("%s (Code: %s) [%s]\n", $e->getMessage(), self::code($e->getCode()), get_class($e));
+        $trace = "";
+        do {
+            $trace .= sprintf("Line %s in file %s\n", $e->getLine(), $e->getFile());
+            $trace .= $e->getTraceAsString();
+        } while ($e = $e->getPrevious());
+        return [$message, $trace];
     }
 
     static public function jTraceEx($e, $seen = null) {
