@@ -38,7 +38,7 @@ class processor {
     }
   }
 
-  public function run(string|asset $img, profile|string $opts): ?asset {
+  public function run(string|array|asset $img, profile|string $opts): ?asset {
 
     $profile = $this->get_profile($opts);
 
@@ -51,6 +51,9 @@ class processor {
       }
     }
 
+    if (is_array($img)) {
+      $img = (object) $img;
+    }
     if ($img->_type != 'slft.asset') {
       if (!$this->conf->map) {
         return null;
@@ -65,7 +68,7 @@ class processor {
       $img->remote_src = true;
 
       if ($this->conf->download) {
-        $dl_name = $img['_id'];
+        $dl_name = $img->_id;
         $download_file = $this->conf->base . '/var/download/' . $dl_name;
 
         dbg("[image] download to ", $download_file);
@@ -106,7 +109,7 @@ class processor {
   }
 
   // <img> tag
-  function image_tag(string|asset $img, profile|string $opts, array $tagopts = []): string {
+  function image_tag(string|array|asset $img, profile|string $opts, array $tagopts = []): string {
     $resize = $this->run($img, $opts);
     if (!$resize) {
       return "";
@@ -119,7 +122,7 @@ class processor {
     }
   }
 
-  function image_url(string|asset $img, profile|string $opts) {
+  function image_url(string|array|asset $img, profile|string $opts) {
     $resize = $this->run($img, $opts);
     if (!$resize) {
       return "";
