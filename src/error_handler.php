@@ -72,9 +72,9 @@ class error_handler {
     }
 
     function exception_handler($e) {
-        $trace = self::jTraceEx($e);
-        $this->render_exception_page($e, $trace);
-        error_log(date("Y-m-d H:i:s") . " " . $e->getMessage() . "\n" . $trace . "\n", 3, $this->error_logfile);
+        [$message, $trace] = self::message_trace($e);
+        $this->render_exception_page($e, $message, $trace);
+        error_log(date("Y-m-d H:i:s") . " " . $message . "\n" . $trace . "\n", 3, $this->error_logfile);
     }
 
     public function fatal_handler() {
@@ -109,9 +109,8 @@ class error_handler {
                     "view" => "/errors/default.html",
                 ]
      */
-    function render_exception_page($e, $trace) {
+    function render_exception_page($e, $message, $trace) {
         $htmlpage = __DIR__ . '/../resources/exception.html';
-        $message = $e->getMessage();
         include_once($htmlpage);
     }
 
@@ -125,7 +124,7 @@ class error_handler {
         $message = sprintf("%s (Code: %s) [%s]\n", $e->getMessage(), self::code($e->getCode()), get_class($e));
         $trace = "";
         do {
-            $trace .= sprintf("Line %s in file %s\n", $e->getLine(), $e->getFile());
+            $trace .= sprintf("Line %s in file %s\n\n", $e->getLine(), $e->getFile());
             $trace .= $e->getTraceAsString();
         } while ($e = $e->getPrevious());
         return [$message, $trace];

@@ -18,6 +18,7 @@ class template {
     public function run(string $_template, array $data, array $helper, context $__context): string {
         #var_dump($__context);
         $_base = $__context->src;
+        dbg("++ template-data", $data);
         extract($data);
         extract($helper);
 
@@ -47,7 +48,7 @@ class template {
 
     public function run_page(string $_template, array $data, array $helper, context $__context): string {
         $_base = $__context->src;
-
+        dbg("++ template-data", $data);
         extract($data);
         extract($helper);
 

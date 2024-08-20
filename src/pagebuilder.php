@@ -38,7 +38,7 @@ class pagebuilder {
         // $template = $templates[$obj['_type']][$name]['template'];
         // $template = $this->template_name($this->config->templates, $obj->_type, $name);
         $template = $template_conf["template"];
-        #dbg('template', $template, $obj);
+        dbg('template', $template, $obj);
         $content = $this->engine->run(
             $template,
             [

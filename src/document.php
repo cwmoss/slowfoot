@@ -3,8 +3,9 @@
 namespace slowfoot;
 
 use ArrayAccess;
+use JsonSerializable;
 
-class document implements ArrayAccess {
+class document implements ArrayAccess, JsonSerializable {
 
     public function __construct(
         public string $_id,
@@ -14,6 +15,9 @@ class document implements ArrayAccess {
     ) {
     }
 
+    public function jsonSerialize(): mixed {
+        return ["_id" => $this->id, "_type" => $this->_type, ...$this->data];
+    }
     static public function new(array $data): self {
         $id = $data['_id'];
         $type = $data['_type'];

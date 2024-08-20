@@ -225,11 +225,16 @@ class processor {
 
     function html(asset $res, array $tagopts) {
         //print_r($opts);
+        if ($tagopts["noheight"] ?? null) {
+            $height = "";
+        } else {
+            $height = sprintf('height="%s"', $res->resize[1]);
+        }
         return sprintf(
-            '<img src="%s" width="%s" height="%s" alt="%s" loading="lazy" class="%s">',
+            '<img src="%s" width="%s" %s alt="%s" loading="lazy" class="%s">',
             $this->prefixed_url($res->resize_url),
             $res->resize[0],
-            $res->resize[1],
+            $height,
             \htmlspecialchars($tagopts['alt'] ?? ''),
             \htmlspecialchars($tagopts['class'] ?? '')
         );

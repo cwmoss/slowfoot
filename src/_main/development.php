@@ -13,13 +13,9 @@ $PDIR = $project_dir;
 
 require __DIR__ . '/../_boot.php';
 
-use slowfoot\util\console;
 use slowfoot\util\server;
 
-use function slowfoot\template\page;
 use function slowfoot\template\template;
-use function slowfoot\template\remove_tags;
-use function slowfoot\template\preprocess;
 
 use Bramus\Router\Router;
 use slowfoot\context;
@@ -109,7 +105,7 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src, $template
             'site_url' => $config['site_url'] ?? '',
 
         ];
-
+        // TODO: migrate
         $content = template($preview_obj['template'], ['page' => $preview_obj['data']], $template_helper, template_context('template', $context, $preview_obj, $ds, $config));
 
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');

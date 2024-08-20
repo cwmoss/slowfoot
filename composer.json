@@ -4,8 +4,7 @@
   "autoload": {
     "files": [
       "src/_functions.php",
-      "src/lolql/lolql.php",
-      "src/image.php"
+      "src/lolql/lolql.php"
     ],
     "psr-4": {
       "slowfoot\\": "src"
