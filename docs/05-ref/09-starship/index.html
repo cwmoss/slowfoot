@@ -43,28 +43,30 @@
                             <a href="/03-templates/30-404" class="">404 page</a>
                     </details>
     
-        <details open class="active">
+        <details  class="">
             <summary>Image Handling</summary>
-                            <a href="/04-images/01-image-pipe" class="active">Image Pipeline</a>
+                            <a href="/04-images/01-image-pipe" class="">Image Pipeline</a>
                     </details>
     
-        <details  class="">
+        <details open class="active">
             <summary>Reference</summary>
                             <a href="/05-ref/01-config" class="">Configuration Options</a>
-                            <a href="/05-ref/09-starship" class="">Starship Configuration</a>
+                            <a href="/05-ref/09-starship" class="active">Starship Configuration</a>
                     </details>
     
 
 </nav>
         <article>
-    <h1>Image Pipeline</h1>
-    <h2 id="use-cases">Use Cases</h2></article>
+    <h1>Starship Configuration</h1>
+    <p>Add this to your <code>starship.toml</code> to get some nice info prompt about your slowfoot project:</p>
+<pre><code class="language-toml">[custom.slowfoot]
+command = 'vendor/bin/slowfoot starship'
+detect_files = ['slowfoot-config.php']</code></pre>
+<p>More on starship: [<a href="https://starship.rs/guide/">https://starship.rs/guide/</a>]</p></article>
 
 <aside>
     <h4>ON THIS PAGE</h4>
-    <ul>
-<li><a href="#use-cases">Use Cases</a></li>
-</ul></aside>
+    </aside>
     </main>
 
     <footer>
