@@ -16,7 +16,7 @@ Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
   slowfoot build [-f | --fetch <content source>] [-d <project directory>]
   slowfoot init [-d <project directory>]
-  slowfoot test [-d <project directory>]
+  slowfoot preview [-d <project directory>]
   slowfoot (-h | --help)
   slowfoot info [-d <project directory>]
   slowfoot starship [-d <project directory>]
@@ -115,7 +115,7 @@ if ($args['build']) {
 //if ($args['info']) {
 //  require $slft_lib_base . '/cli/info.php';
 //}
-if ($args['test']) {
+if ($args['preview']) {
   $PDIR = $args['-d'];
   if ($PDIR && $PDIR[0] != '/') {
     $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
