@@ -33,7 +33,7 @@ class sqlite {
       }
       $this->was_filled = \file_exists($name);
     }
-    dbg("+++ new sqlite", $name);
+    // dbg("+++ new sqlite", $name);
     $this->db = \ParagonIE\EasyDB\Factory::fromArray([
       "sqlite:$name"
     ]);
@@ -238,5 +238,10 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     $types = $this->db->run('SELECT _type, count(*) AS total FROM docs GROUP BY _type');
     $routes = $this->db->run("SELECT '__paths' as _type, count(*) AS total FROM paths");
     return array_merge($types, $routes);
+  }
+  public function info_line() {
+    $types = $this->db->cell('SELECT count(*) AS total FROM docs');
+    $routes = $this->db->cell("SELECT count(*) AS total FROM paths");
+    return [$types, $routes];
   }
 }

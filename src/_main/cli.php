@@ -3,6 +3,7 @@ require $project_dir . '/vendor/autoload.php';
 
 use slowfoot\setup;
 use slowfoot\util\console;
+use slowfoot\store;
 
 error_reporting(E_ALL);
 ini_set("display_errors", 0);
@@ -17,6 +18,8 @@ Usage:
   slowfoot init [-d <project directory>]
   slowfoot test [-d <project directory>]
   slowfoot (-h | --help)
+  slowfoot info [-d <project directory>]
+  slowfoot starship [-d <project directory>]
   slowfoot --version
 
 Options:
@@ -136,4 +139,37 @@ if ($args['init']) {
   }
   define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
   require $slft_lib_base . '/cli/init.php';
+}
+if ($args['info']) {
+  $PDIR = $args['-d'];
+  if ($PDIR && $PDIR[0] != '/') {
+    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
+  }
+  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+  $boot_only_config = false;
+  $boot_quiet = true;
+  require $slft_lib_base . '/_boot.php';
+  print "🌈 slowfoot\n";
+
+  (new setup(SLF_PROJECT_DIR))->setup();
+  print console::console_table(['_type' => 'type', 'total' => 'total'], $ds->info());
+}
+if ($args['starship']) {
+  $PDIR = $args['-d'];
+  if ($PDIR && $PDIR[0] != '/') {
+    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
+  }
+  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+  $boot_only_config = true;
+  $boot_quiet = true;
+  require $slft_lib_base . '/_boot.php';
+  print "🌈 slft";
+
+  if (file_exists(SLF_PROJECT_DIR . "/var/slowfoot.db")) {
+    $db = new store\sqlite(["adapter" => "sqlite:" . SLF_PROJECT_DIR . "/var/slowfoot.db"]);
+    $info = $db->info_line();
+    printf(" %s docs, %s paths", $info[0], $info[1]);
+  } else {
+    print " no db";
+  }
 }

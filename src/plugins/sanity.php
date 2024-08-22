@@ -17,6 +17,7 @@ use Sanity\Client as SanityClient;
 use slowfoot\configuration;
 use slowfoot\hook;
 use slowfoot\image\asset;
+use slowfoot\store;
 
 use function http_build_query;
 
@@ -61,7 +62,7 @@ class sanity {
     return array_values($res);
   }
 
-  public function load_preview_object($id, $type = null, configuration $config) {
+  public function load_preview_object($id, $type, configuration $config) {
     // print_r($config);
     //print_r(apache_request_headers());
     //print_r($_COOKIE);
@@ -89,7 +90,7 @@ class sanity {
       'token' => $this->token
     ]);
   }
-  static public function sanity_text($block, $opts, $ds, $config, self $plugin) {
+  static public function sanity_text($block, $opts, store $ds, configuration $config, self $plugin) {
     if (!$block) return "";
     #var_dump($conf);
     $serializer = hook::invoke_filter('sanity.block_serializers', [], $opts, $ds, $config);
@@ -143,7 +144,7 @@ $sl could be
 - a sanity#link object
 - a sanity#nav_item
  */
-function xsanity_link($sl, $opts = [], $ds) {
+function xsanity_link($sl, $opts, $ds) {
   $link = $sl['link'];
   if (!$link) {
     $link = $sl;
