@@ -1,5 +1,6 @@
 {
   "name": "cwmoss/slowfoot",
+  "description": "your friendly static site generator",
   "version": "1.0",
   "autoload": {
     "files": [
