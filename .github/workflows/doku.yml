@@ -33,7 +33,6 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
-        
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
@@ -41,4 +40,5 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: build docs
-      run: composer make-docs
+    #  run: composer make-docs
+      run: php -m
