@@ -115,7 +115,13 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     };
     return [$total, $page_query];
   }
-
+  public function query_one($q, $params = []) {
+    $q .= "limit(1)";
+    dbg("++ query1 sqlite", $q);
+    $res = $this->query($q, $params);
+    dbg("++ query1 res", $res);
+    return $res[0] ?? null;
+  }
   public function query($q, $params) {
     $query = \lolql\parse($q, $params);
     $fn = \lolql\eval_cond_as_sql_function($query['q']);
