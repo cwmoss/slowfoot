@@ -13,6 +13,9 @@
   "bin": [
     "bin/slowfoot"
   ],
+  "scripts": {
+    "make-docs": "bin/slowfoot build -c docs_src"
+  },
   "require": {
     "php": "^8.2",
     "composer-runtime-api": "^2.2.2",
