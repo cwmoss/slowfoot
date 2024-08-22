@@ -3,8 +3,7 @@ name: Make Doku
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+
 
 permissions:
   contents: read
@@ -40,5 +39,5 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: build docs
-    #  run: composer make-docs
-      run: php -m
+      run: composer make-docs
+    #  run: php -m
