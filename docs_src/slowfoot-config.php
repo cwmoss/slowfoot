@@ -31,6 +31,7 @@ function load_chapter_index(configuration $config, store $db) {
 return new configuration(
     site_name: 'slowfoot Documentation',
     site_description: 'Docs for slowfoot',
+    path_prefix: "/slowfoot",
     // store: "sqlite",
     sources: [
         "chapter" => markdown::data_loader(...),
