@@ -15,7 +15,7 @@
     "bin/slowfoot"
   ],
   "scripts": {
-    "make-docs": "bin/slowfoot info -d docs_src/"
+    "make-docs": "@php bin/slowfoot info"
   },
   "require": {
     "php": "^8.2",
