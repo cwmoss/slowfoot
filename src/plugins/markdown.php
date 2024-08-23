@@ -6,7 +6,7 @@ use slowfoot\hook;
 use slowfoot\configuration;
 
 use Mni\FrontYAML\Parser;
-use ParsedownToC;
+use ParsedownToc;
 
 class markdown {
 
@@ -76,7 +76,7 @@ class markdown {
     }
 
     static public function markdown_toc($content) {
-        $Parsedown = new ParsedownToC();
+        $Parsedown = new ParsedownToc();
         $body = $Parsedown->body($content);
         $toc  = $Parsedown->contentsList();
         dbg("+++ toc", $toc);

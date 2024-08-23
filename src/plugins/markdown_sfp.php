@@ -2,7 +2,7 @@
 
 namespace slowfoot\plugins;
 
-use ParsedownToC;
+use ParsedownToc;
 /*
 https://github.com/erusev/parsedown/wiki/Tutorial:-Create-Extensions#change-element-markup
 
@@ -10,7 +10,7 @@ https://github.com/Nessworthy/parsedown-extension-manager
 
 */
 
-class markdown_sfp extends ParsedownToC {
+class markdown_sfp extends ParsedownToc {
     public $context;
     public $current_obj;
 

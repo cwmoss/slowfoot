@@ -10,6 +10,9 @@ class store {
   public $paths_rev = [];
 
   public $info = ['loaded' => [], 'rejected' => [], 'conflicts' => 0];
+  /*
+    templates config
+  */
   public $config = [];
   public $conflicts = [];
 
@@ -113,7 +116,7 @@ class store {
   public function add_path($row) {
     //print ' type: ' . $row['_type'];
     // only, if we have a template for the type
-    if (!$this->config[$row['_type']]) {
+    if (!isset($this->config[$row['_type']])) {
       return;
     }
     foreach ($this->config[$row['_type']] as $name => $conf) {
