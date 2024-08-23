@@ -182,7 +182,7 @@ $router->get('(.*)?', function ($requestpath) use ($router, $ds, $config, $pages
     $builder = new pagebuilder($config, $ds, $template_helper);
     #dbg("dev: req", $requestpath);
     [$obj_id, $name] = $ds->get_by_path($requestpath);
-
+    dbg("dev ID - name", $obj_id, $name, $requestpath);
     $context = new context(
         mode: 'dev',
         src: $src,

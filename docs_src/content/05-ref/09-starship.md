@@ -10,4 +10,6 @@ command = 'vendor/bin/slowfoot starship'
 detect_files = ['slowfoot-config.php']
 ```
 
+![prompt with slowfoot info](./starship.jpg)
+
 More on starship: [https://starship.rs/guide/]

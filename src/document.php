@@ -16,7 +16,7 @@ class document implements ArrayAccess, JsonSerializable {
     }
 
     public function jsonSerialize(): mixed {
-        return ["_id" => $this->id, "_type" => $this->_type, ...$this->data];
+        return ["_id" => $this->_id, "_type" => $this->_type, ...$this->data];
     }
     static public function new(array $data): self {
         $id = $data['_id'];

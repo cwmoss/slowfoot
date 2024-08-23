@@ -87,6 +87,10 @@ class configuration {
     return new template($this);
   }
 
+  public function get_image_processor() {
+    $processor = new image\processor($this->assets);
+    return $processor;
+  }
   // TODO:
   //  require in global context?
   //  do wee need a plugin init /w pconf?

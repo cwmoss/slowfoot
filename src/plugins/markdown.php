@@ -18,13 +18,14 @@ class markdown {
 
     public function init() {
 
-        hook::add('bind_template_helper', function ($ds, $src, $config) {
+        hook::add('bind_template_helper', function ($ds, $src, configuration $config) {
             return ['markdown', $this->markdown_helper($config, $ds)];
         });
 
-        hook::add('bind_late_template_helper', function ($helper, $base, $data) {
+        hook::add('bind_late_template_helper', function ($helper, $base, $data, $x = null) {
+            dbg("++ late MD", $helper, $base, $data, $x);
             $md = $helper['markdown'];
-            return ['markdown', $this->markdown_helper_obj($md, $data)];
+            return ['markdown', $this->markdown_helper_with_obj($md, $data)];
         });
     }
 
@@ -49,7 +50,8 @@ class markdown {
             $data = $document->getYAML() ?? [];
             $md = $document->getContent() ?? '';
             #$id = $data['_id']??($data['id']??$fname);
-            $id = $path_parts['dirname'] . '/' . $path_parts['filename'];
+            $id = ltrim($path_parts['dirname'] . '/' . $path_parts['filename'], "/");
+            dbg("+mdloader ID", $id, $path_parts);
             // TODO: anything goes
             // $id = str_replace('/', '-', $id);
             $row = array_merge($data, [
@@ -90,19 +92,22 @@ class markdown {
     }
 
     public function markdown_helper($config = null, $ds = null) {
+        dbg("+++ markdown helper vanilla");
         $parser = $this->markdown_parser($config, $ds);
 
         return function ($text, $obj = null) use ($parser) {
             if (!$text) return "";
+            dbg("vanilla helper", $obj, $parser->current_obj);
             $parser->set_current_obj($obj);
-            return $parser->text($text);
+            return "-h-VAN-" . $parser->text($text);
         };
     }
 
-    public function markdown_helper_obj($parser, $data = null) {
-        #var_dump($data);
+    public function markdown_helper_with_obj($parser, $data = null) {
+        dbg("+++ markdown helper object", $data, func_get_args());
         return function ($text) use ($parser, $data) {
-            return $parser($text, $data);
+            dbg("+++ call MD w object");
+            return "-h-OBJ-" . $parser($text, $data);
         };
     }
 }

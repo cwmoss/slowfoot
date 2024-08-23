@@ -94,8 +94,8 @@ class processor {
     $name = $this->get_name($img->url, $profile);
     $dest = $this->conf->base . '/' . $this->conf->dest . '/' . $name;
 
-    $src = $img->download_file ?: $img->_id;
-
+    // $src = $img->download_file ?: $img->_id;
+    $src = $img->download_file ?: $img->path;
     dbg("[image] resizer", $src, $dest, $profile, is_array($profile));
     $res = self::resize($src, $dest, $profile, $this->conf->base);
     if ($profile->fourc) {

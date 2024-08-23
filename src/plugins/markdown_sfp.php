@@ -3,6 +3,8 @@
 namespace slowfoot\plugins;
 
 use ParsedownToc;
+use slowfoot\image;
+
 /*
 https://github.com/erusev/parsedown/wiki/Tutorial:-Create-Extensions#change-element-markup
 
@@ -66,17 +68,30 @@ class markdown_sfp extends ParsedownToc {
         return '--resolved--' . $this->current_obj['page']['_file']['path'] . $href;
     }
 
+    protected function resolve_image_path($imgpath) {
+
+        $path = get_absolute_path_from_base(
+            $imgpath,
+            dirname($this->current_obj["page"]->_id),
+            $this->context['conf']->base
+        );
+        dbg("image path", $this->context['conf']->base, $imgpath, $this->current_obj["page"]->_id, $path);
+        return $path;
+    }
+
     protected function inlineImage($Excerpt) {
         dbg("+++ img excerpt", $Excerpt);
         $img = parent::inlineImage($Excerpt);
         if (is_array($img)) {
-            dbg("+++ img", $img);
-            $pipe = \slowfoot\image_url(
-                $img['element']['attributes']['src'],
-                ['size' => ""],
-                $this->context['conf']['assets']
+            dbg("+++ markdown img", $img);
+            $path = $this->resolve_image_path($img['element']['attributes']['src']);
+            dbg("+++ markdown img path", $path);
+            $pipe = $this->context['conf']->get_image_processor();
+            $img_url = $pipe->image_url(
+                $path,
+                new image\profile, // empty size == copy only
             );
-            $img['element']['attributes']['src'] = $pipe;
+            $img['element']['attributes']['src'] = $img_url;
             $img['element']['attributes']['data-slft'] = 'ok';
         }
         return $img;

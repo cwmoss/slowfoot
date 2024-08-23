@@ -30,7 +30,7 @@ class pagebuilder {
       $obj_id = $data["_id"];
     }
     $obj = document::new($data);
-
+    dbg("template object data", $data, $obj_id);
     if (is_null($template_conf)) {
       $template_conf = $this->config->templates[$obj->_type][$name];
     }

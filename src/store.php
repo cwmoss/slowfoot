@@ -143,6 +143,7 @@ class store {
   }
 
   public function get_by_path($path) {
+    // $path = trim($path, "/");
     return $this->db->path_get_props($path);
   }
 
