@@ -1,8 +1,12 @@
-# slowfoot
+# W.I.P slowfoot
 
-> = php8.2
+php >= 8.2
 
 ## config
+
+everything will change!
+
+https://cwmoss.github.io/slowfoot/
 
 ### sources
 
