@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     <link rel="SHORTCUT ICON" type="image/png" href="/slowfoot/assets/gfx/favicon-96x96.png">
 
-    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1724432496" type="text/css">
-    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1724432496" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1724591723" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1724591723" type="text/css">
 
     <script src="/slowfoot/assets/js/app.js"></script>
     <title>slowfoot Documentation</title>
@@ -58,28 +58,33 @@
 </nav>
         <article>
     <h1>Configuration Options</h1>
-    <pre><code class="language-php">&lt;?php
-return [
-    'site_name' =&gt; 'slowfoot Documentation',
-    'site_description' =&gt; 'Docs for slowfoot',
-    'site_url' =&gt; '',
-    // prefix path of your destination
-    // ex: https://acme.com/the-new-snake-oil-is-here
-    //   =&gt; path_prefix = '/the-new-snake-oil-is-here
-    'path_prefix' =&gt; '',
-    'title_template' =&gt; '',
-    //'store' =&gt; 'sqlite',
-    'sources' =&gt; [
+    <p><div shortcode="1"><pre class="language-php"><code>&lt;?php
+require_once(&quot;site.php&quot;);
 
-       'markdown' =&gt; [
-            'file' =&gt; 'content/**/*.md',
-            'type' =&gt; 'chapter'
-       ],
+use slowfoot\configuration;
+use slowfoot\loader\dataset;
+use slowfoot\store;
+use slowfoot_plugin\markdown;
+
+return new configuration(
+    site_name: &#039;slowfoot Documentation&#039;,
+    site_description: &#039;Docs for slowfoot&#039;,
+    path_prefix: &quot;/slowfoot&quot;,
+    // store: &quot;sqlite&quot;,
+    sources: [
+        &quot;chapter&quot; =&gt; new markdown\loader(&#039;content/**/*.md&#039;, remove_prefix: &quot;content/&quot;),
+        &#039;chapter_index&#039; =&gt; site::load_chapter_index(...)
     ],
-    'templates' =&gt; [
-        'chapter' =&gt; '/:_file.name',
-    ]
-];</code></pre>
+    templates: [
+        &#039;chapter&#039; =&gt; &#039;/:_id&#039;,
+    ],
+    plugins: [
+        new site(),
+        new markdown\markdown_plugin(),
+    ],
+    build: &quot;../docs&quot;
+);
+</code></pre></div></p>
 <h2 id="site-name">site_name</h2>
 <p>Name</p>
 <h2 id="path-prefix">path_prefix</h2>
