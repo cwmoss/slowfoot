@@ -232,6 +232,9 @@ function layout($name = null) {
 }
 
 function get_absolute_path_from_base($path, $current, $base) {
+    if ($path[0] == "/") {
+        return $base . $path;
+    }
     if (substr($path, 0, 2) == '~/') {
         $path = $base . ltrim($path, '~');
         dbg("+++ path ~ +++", $path);

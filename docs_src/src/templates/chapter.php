@@ -1,6 +1,6 @@
 <?php
 
-use slowfoot\plugins\markdown;
+use slowfoot_plugin\markdown\markdown_plugin;
 
 layout("default");
 ?>
@@ -11,5 +11,5 @@ layout("default");
 
 <aside>
     <h4>ON THIS PAGE</h4>
-    <?= markdown::markdown_toc($page['mdbody']) ?>
+    <?= markdown_plugin::markdown_toc($page['mdbody']) ?>
 </aside>

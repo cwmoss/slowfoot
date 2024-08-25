@@ -10,7 +10,7 @@ composer install sanity/sanity-php
             // 'query' => '*[_type=="custom-type-query"]'
 */
 
-namespace slowfoot\plugins;
+namespace slowfoot_plugin\sanity;
 
 use Sanity\BlockContent;
 use Sanity\Client as SanityClient;

@@ -1,8 +1,9 @@
 <?php
 
-namespace slowfoot\plugins;
+namespace slowfoot_plugin\markdown;
 
 use ParsedownToc;
+use ParsedownExtended;
 use slowfoot\image;
 
 /*
@@ -12,9 +13,11 @@ https://github.com/Nessworthy/parsedown-extension-manager
 
 */
 
-class markdown_sfp extends ParsedownToc {
+class markdown_sfp extends ParsedownExtended {
     public $context;
     public $current_obj;
+
+    protected $shortcodes;
 
     public function set_context($ctx) {
         $this->context = $ctx;
@@ -24,8 +27,10 @@ class markdown_sfp extends ParsedownToc {
         $this->current_obj = $obj;
     }
 
-    public function xxx__construct() {
-        //$this->InlineTypes['['][]= 'Shortcode';
+    public function set_shortcodes(shortcode $shortcodes) {
+        $this->InlineTypes['['][] = 'Shortcode';
+        $this->shortcodes = $shortcodes;
+        //$this->addInlineType('[', "Shortcode");
         // $this->inlineMarkerList .= '^';
     }
 
@@ -72,7 +77,7 @@ class markdown_sfp extends ParsedownToc {
 
         $path = get_absolute_path_from_base(
             $imgpath,
-            dirname($this->current_obj["page"]->_id),
+            dirname($this->current_obj["page"]->_file["full"]),
             $this->context['conf']->base
         );
         dbg("image path", $this->context['conf']->base, $imgpath, $this->current_obj["page"]->_id, $path);
@@ -100,15 +105,20 @@ class markdown_sfp extends ParsedownToc {
     protected function inlineShortcode($Excerpt) {
         dbg("+++ shortcode excerpt", $Excerpt);
 
+        $res = $this->shortcodes->resolve($Excerpt);
+        if (!$res) return;
+
         $el = [
             'extent' => strlen($Excerpt['text']),
             'element' => array(
-                'name' => 'shortcodex',
+                "allowRawHtmlInSafeMode" => true,
+                "rawHtml" => $res,
+                'name' => 'div',
                 // 'text' => $matches[1],
                 'attributes' => array(
-                    'stupid' => 'shit',
+                    'shortcode' => true,
                 ),
-                'handler' => 'shortcode'
+                'handler' => 'hdl_shortcode'
                 /*array(
                     'function' => 'shortcode',
                     'argument' => 'hoho',
@@ -116,11 +126,12 @@ class markdown_sfp extends ParsedownToc {
                 )*/
             )
         ];
+        dbg("++ return element", $el);
         return $el;
     }
 
-    public function shortcode($args = []) {
-        dbg("handle shortcode", $args);
-        return "<shortcodexx>";
+    public function hdl_shortcode($html) {
+        dbg("++++ handle shortcode", $html);
+        return $html;
     }
 }
