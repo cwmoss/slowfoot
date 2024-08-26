@@ -2,10 +2,6 @@
 title: Core Concepts
 ---
 
-# Why
-
-slowfoot is a static site generator. it should be a perfect fit for headless CMSs. It borrows concepts from gridsome, sanity io, eleventy... I just didn't want to die in js/node/npm hell. so php ftw :)
-
 ## Your Content is data
 
 slowfoot sees your content as a dataset of documents. these documents (or records) are loaded via data loaders, transformed and run through templates to produce the html output of your website.
