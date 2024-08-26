@@ -40,7 +40,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
     #   - check images
     protected function inlineLink($Excerpt) {
         $link = parent::inlineLink($Excerpt);
-        return $link;
+        // return $link;
         if (is_array($link)) {
             $href = $link['element']['attributes']['href'];
             $href = $this->resolve_link($href);
@@ -89,9 +89,9 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
     protected function inlineImage($Excerpt) {
         dbg("+++ img excerpt", $Excerpt);
         $img = parent::inlineImage($Excerpt);
-        return $img;
+        // return $img;
         if (is_array($img)) {
-            dbg("+++ markdown img", $img);
+            dbg("+++ §§§§ markdown img", $img);
             $path = $this->resolve_image_path($img['element']['attributes']['src']);
             dbg("+++ markdown img path", $path);
             $pipe = $this->context['conf']->get_image_processor();
