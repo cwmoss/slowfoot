@@ -11,5 +11,5 @@ layout("default");
 
 <aside>
     <h4>ON THIS PAGE</h4>
-    <?= markdown_plugin::markdown_toc($page['mdbody']) ?>
+    <?= $markdown_toc($page['mdbody']) ?>
 </aside>

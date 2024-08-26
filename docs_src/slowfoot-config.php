@@ -10,7 +10,7 @@ return new configuration(
     site_name: 'slowfoot Documentation',
     site_description: 'Docs for slowfoot',
     path_prefix: "/slowfoot",
-    // store: "sqlite",
+    store: "memory",
     sources: [
         "chapter" => new markdown\loader('content/**/*.md', remove_prefix: "content/"),
         'chapter_index' => site::load_chapter_index(...)

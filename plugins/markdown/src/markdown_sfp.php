@@ -2,6 +2,7 @@
 
 namespace slowfoot_plugin\markdown;
 
+use Parsedown;
 use ParsedownToc;
 use ParsedownExtended;
 use slowfoot\image;
@@ -13,7 +14,7 @@ https://github.com/Nessworthy/parsedown-extension-manager
 
 */
 
-class markdown_sfp extends ParsedownExtended {
+class markdown_sfp extends ParsedownExtended { // ParsedownExtended
     public $context;
     public $current_obj;
 
@@ -39,6 +40,7 @@ class markdown_sfp extends ParsedownExtended {
     #   - check images
     protected function inlineLink($Excerpt) {
         $link = parent::inlineLink($Excerpt);
+        return $link;
         if (is_array($link)) {
             $href = $link['element']['attributes']['href'];
             $href = $this->resolve_link($href);
@@ -87,6 +89,7 @@ class markdown_sfp extends ParsedownExtended {
     protected function inlineImage($Excerpt) {
         dbg("+++ img excerpt", $Excerpt);
         $img = parent::inlineImage($Excerpt);
+        return $img;
         if (is_array($img)) {
             dbg("+++ markdown img", $img);
             $path = $this->resolve_image_path($img['element']['attributes']['src']);

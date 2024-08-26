@@ -130,10 +130,15 @@ class template {
 
     $helper = array_merge($helper, $additional_helper_for_partials);
 
+    $late = hook::invoke('bind_late_template_helper', [], $helper, $base, $data);
+    $helper = array_merge($helper, $late);
+
+    /*
     foreach (hook::invoke('bind_late_template_helper', [], $helper, $base, $data) as $hlp) {
       dbg("++ adding late helper", $hlp);
       $helper[$hlp[0]] = $hlp[1];
     }
+*/
 
     return array_merge($helper, [
       'partial' => function ($template, $data = [], $non_existent = "") use ($helper, $base, $context) {

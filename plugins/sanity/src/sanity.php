@@ -35,7 +35,7 @@ class sanity {
   public function init() {
     hook::add('bind_template_helper', function ($ds, $src, $config) {
       dbg("++ bind sanity text helper", $ds);
-      return ['sanity_text', function ($text, $opts = []) use ($ds, $config) {
+      return ['sanity_text' => function ($text, $opts = []) use ($ds, $config) {
         //print_r($sl);
         return self::sanity_text($text, $opts, $ds, $config, $this);
       }];

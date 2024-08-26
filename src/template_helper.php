@@ -16,7 +16,8 @@ function load_template_helper(store $ds, $src, configuration $config) {
     $custom = [];
   }
   foreach (hook::invoke('bind_template_helper', [], $ds, $src, $config) as $hlp) {
-    $custom[$hlp[0]] = $hlp[1];
+    // $custom[$hlp[0]] = $hlp[1];
+    $custom = array_merge($custom, $hlp);
   }
   #var_dump($custom);
   $default = [

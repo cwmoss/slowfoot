@@ -17,13 +17,13 @@ class markdown_plugin {
         dbg("+++ hook shortcodes", hook::invoke_filter("markdown.shortcodes", []));
 
         hook::add('bind_template_helper', function ($ds, $src, configuration $config) {
-            return ['markdown', $this->markdown_helper($config, $ds)];
+            return $this->markdown_helper($config, $ds);
         });
 
         hook::add('bind_late_template_helper', function ($helper, $base, $data) {
             dbg("++ late MD", $helper, $base, $data);
             $md = $helper['markdown'];
-            return ['markdown', $this->markdown_helper_with_obj($md, $data)];
+            return ['markdown' => $this->markdown_helper_with_obj($md, $data)];
         });
 
         $this->shortcode = new shortcode(
@@ -31,28 +31,40 @@ class markdown_plugin {
         );
     }
 
+    /*
+        direkt ausführen
+    */
     public function markdown_sf($md, $config = null, $ds = null) {
         if (!$md) return "";
-        $parser = new markdown_sfp();
-        $parser->setSetting('toc', true);
-        $parser->set_context(['conf' => $config, 'ds' => $ds]);
-        //$parser->setUrlsLinked(false);
+        $parser = $this->markdown_parser($config, $ds);
         return $parser->text($md);
-    }
-
-    // TODO: no double parse
-    static public function markdown_toc($content) {
-        $parser = new ParsedownExtended();
-        $parser->setSetting('toc', true);
-        $body = $parser->body($content);
-        $toc  = $parser->contentsList();
-        dbg("+++ toc", $toc);
-        return $toc;
     }
 
     public function markdown_parser($config, $ds) {
         $parser = new markdown_sfp();
+        # return $parser;
         $parser->setSetting('toc', true);
+        $parser->setSetting('smarty', false);
+        # this extension eats chars
+        $parser->setSetting("typographer", false);
+        $parser->setSetting("abbreviations", true);
+        $parser->setSetting("comments", true);
+
+        /* $Parser->setSetting('smarty', [
+            'substitutions' => [
+                'left-double-quote' => '"', // Double bottom quote
+                'right-double-quote' => '"', // Double top quote
+                "ndash" => '–',
+                "mdash" => '—',
+                "left-single-quote" => "'",
+                "right-single-quote" => "'",
+                "left-angle-quote" => '«',
+                "right-angle-quote" => '»',
+                "ellipses" => "..."
+            ],
+
+            "enabled" => true
+        ]);*/
         $parser->set_context(['conf' => $config, 'ds' => $ds]);
         $parser->set_shortcodes($this->shortcode);
         return $parser;
@@ -62,12 +74,22 @@ class markdown_plugin {
         dbg("+++ markdown helper vanilla");
         $parser = $this->markdown_parser($config, $ds);
 
-        return function ($text, $obj = null) use ($parser) {
-            if (!$text) return "";
-            dbg("vanilla helper", $obj, $parser->current_obj);
-            $parser->set_current_obj($obj);
-            return $parser->text($text);
-        };
+        return [
+            "markdown_parser" => $parser,
+            "markdown" => function ($text, $obj = null) use ($parser) {
+                if (!$text) return "";
+                dbg("vanilla helper", $obj, $parser->current_obj);
+                $parser->set_current_obj($obj);
+                return $parser->text($text);
+            },
+            "markdown_toc" => function ($text, $obj = null) use ($config, $ds) {
+                if (!$text) return "";
+                // we need a new parser
+                $parser = $this->markdown_parser($config, $ds);
+                $parser->body($text);
+                return $parser->contentsList();
+            },
+        ];
     }
 
     public function markdown_helper_with_obj($parser, $data = null) {
