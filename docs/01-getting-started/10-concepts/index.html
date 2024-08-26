@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     <link rel="SHORTCUT ICON" type="image/png" href="/slowfoot/assets/gfx/favicon-96x96.png">
 
-    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1724591723" type="text/css">
-    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1724591723" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1724684700" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1724684700" type="text/css">
 
     <script src="/slowfoot/assets/js/app.js"></script>
     <title>slowfoot Documentation</title>
@@ -17,7 +17,7 @@
 <body>
 
     <header>
-        <div class="logo">slowfoot Docs</div>
+        <div class="logo">slowfoot Docs <a href="https://github.com/cwmoss/slowfoot">github</a></div>
     </header>
 
 
@@ -30,7 +30,8 @@
         <details open class="active">
             <summary>Getting Started</summary>
                             <a href="/slowfoot/01-getting-started/01-getting-started" class="">Getting Started</a>
-                            <a href="/slowfoot/01-getting-started/02-folders" class="active">Directory structure</a>
+                            <a href="/slowfoot/01-getting-started/10-concepts" class="active">Core Concepts</a>
+                            <a href="/slowfoot/01-getting-started/20-folders" class="">Directory structure</a>
                     </details>
     
         <details  class="">
@@ -57,41 +58,17 @@
 
 </nav>
         <article>
-    <h1>Directory structure</h1>
-    <p>A basic project looks like this:</p>
-<pre><code>.
-├── composer.json
-├── config.php
-├── cache/
-├── rendered-images/
-├── static/
-└── src/
-    ├── index.php
-    ├── helper.php
-    ├── css/
-    ├── gfx/
-    ├── js/
-    ├── fonts/
-    ├── layouts/
-    │   └── default.php
-    ├── pages/
-    │   ├── index.php
-    │   └── search.php
-    ├── templates/
-    |    └── post.php
-    └── partials/
-        └── pager.php
-</code></pre>
-<h2 id="composer-json">composer.json</h2>
-<p>Lists all the composer dependencies of your project.</p>
-<h2 id="config-php">config.php</h2>
-<p><a href="/05-ref/01-config">Configuration file</a> for the project.</p></article>
+    <h1>Core Concepts</h1>
+    <h1 id="your-content-is-data">Your Content is data</h1>
+<p>slowfoot sees your content as a dataset of records. these records are loaded via data loaders, transformed and run through templates to produce the html output of your website.</p>
+<p>every records needs at least a global ID <code>_id</code> and a type <code>_type</code>.</p>
+<p>in your templates, you can query your content.</p>
+<p>in your routing roules you can define which templates to use for certain data types (collections) and under which path they will be published. these template get prepopulated with the records.</p></article>
 
 <aside>
     <h4>ON THIS PAGE</h4>
     <ul>
-<li><a href="#composer-json">composer.json</a></li>
-<li><a href="#config-php">config.php</a></li>
+<li><a href="#your-content-is-data">Your Content is data</a></li>
 </ul></aside>
     </main>
 

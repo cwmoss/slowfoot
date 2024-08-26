@@ -21,7 +21,7 @@ $title = $__context->config->site_name;
 <body>
 
     <header>
-        <div class="logo">slowfoot Docs</div>
+        <div class="logo">slowfoot Docs <a href="https://github.com/cwmoss/slowfoot">github</a></div>
     </header>
 
 

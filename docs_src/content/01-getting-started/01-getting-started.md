@@ -6,7 +6,11 @@ title: Getting Started
 ## Install
 
 ```bash
-$ composer install
+$ composer require cwmoss/slowfoot dev-main
+
+# initialize minimal project
+$ vendor/bin/slowfoot init
+
+# start the dev server
+$ vendor/bin/slowfoot dev
 ```
-
-

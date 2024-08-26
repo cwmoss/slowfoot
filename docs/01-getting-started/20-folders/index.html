@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <link rel="SHORTCUT ICON" type="image/png" href="/slowfoot/assets/gfx/favicon-96x96.png">
+
+    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1724684700" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1724684700" type="text/css">
+
+    <script src="/slowfoot/assets/js/app.js"></script>
+    <title>slowfoot Documentation</title>
+
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">slowfoot Docs <a href="https://github.com/cwmoss/slowfoot">github</a></div>
+    </header>
+
+
+
+    <main>
+
+        <nav>
+
+    
+        <details open class="active">
+            <summary>Getting Started</summary>
+                            <a href="/slowfoot/01-getting-started/01-getting-started" class="">Getting Started</a>
+                            <a href="/slowfoot/01-getting-started/10-concepts" class="">Core Concepts</a>
+                            <a href="/slowfoot/01-getting-started/20-folders" class="active">Directory structure</a>
+                    </details>
+    
+        <details  class="">
+            <summary>Data</summary>
+                            <a href="/slowfoot/02-data/01-dataflow" class="">Data Flow</a>
+                    </details>
+    
+        <details  class="">
+            <summary>Templates</summary>
+                            <a href="/slowfoot/03-templates/30-404" class="">404 page</a>
+                    </details>
+    
+        <details  class="">
+            <summary>Image Handling</summary>
+                            <a href="/slowfoot/04-images/01-image-pipe" class="">Image Pipeline</a>
+                    </details>
+    
+        <details  class="">
+            <summary>Reference</summary>
+                            <a href="/slowfoot/05-ref/01-config" class="">Configuration Options</a>
+                            <a href="/slowfoot/05-ref/09-starship" class="">Starship Configuration</a>
+                    </details>
+    
+
+</nav>
+        <article>
+    <h1>Directory structure</h1>
+    <p>A basic project directory looks like this:</p>
+<pre><code>my-website
+├── content
+│  ├── 01-getting-started
+│  │  ├── 01-getting-started.md
+│  │  └── 02-folders.md
+...
+├── composer.json
+├── site.php
+├── slowfoot-config.php
+├── src
+│  ├── assets
+│  │  ├── css
+│  │  │  ├── accordion.scss
+│  │  │  ├── app.css
+│  │  │  ├── app.css.scss
+│  │  │  └── prism.css
+│  │  ├── gfx
+│  │  │  └── favicon-96x96.png
+│  │  └── js
+│  │     ├── app.js
+│  │     └── prism.js
+│  ├── layouts
+│  │  └── default.php
+│  ├── pages
+│  │  └── index.php
+│  ├── partials
+│  │  └── nav.php
+│  └── templates
+│     └── chapter.php
+└── var
+   ├── download
+   ├── rendered-images
+   │  └── starship--9b668a51ad73789cd9f94f1417e9ab4f-ypoc.jpg
+   ├── slowfoot.db
+   └── template
+</code></pre>
+<h2 id="slowfoot-config-php">slowfoot-config.php</h2>
+<p><a href="/05-ref/01-config">Configuration file</a> for the project.</p>
+<h2 id="composer-json">composer.json</h2>
+<p>Lists all the composer dependencies of your project.</p>
+<h2 id="site-php-optional">site.php (optional)</h2>
+<p>For custom code, like loader functions, template helpers etc. this is just a recommodation. use what ever naming/loading mechanism that needs to be.</p>
+<h2 id="獲振">src/</h2>
+<p>This is where your site sources live. Templates, Layouts, Stylesheets, Javascripts, Graphics.</p>
+<h2 id="var">var/</h2>
+<p>This directory is managed by slowfoot. Here lives the Database, downloaded and processed images.</p></article>
+
+<aside>
+    <h4>ON THIS PAGE</h4>
+    <ul>
+<li><a href="#slowfoot-config-php">slowfoot-config.php</a></li>
+<li><a href="#composer-json">composer.json</a></li>
+<li><a href="#site-php-optional">site.php (optional)</a></li>
+<li><a href="#獲振">src/</a></li>
+<li><a href="#var">var/</a></li>
+</ul></aside>
+    </main>
+
+    <footer>
+        <div class="content">
+            &copy; 2024
+        </div>
+    </footer>
+    <script src="/slowfoot/assets/js/prism.js"></script>
+</body>
+
+</html>
