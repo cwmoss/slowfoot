@@ -2,7 +2,7 @@
 title: Starship Configuration
 ---
 
-Add this section in your `starship.toml` to get some nice info prompt about your slowfoot project.
+Add this section to your `starship.toml` and get a nice info prompt about your slowfoot project.
 
 ```toml
 [custom.slowfoot]
