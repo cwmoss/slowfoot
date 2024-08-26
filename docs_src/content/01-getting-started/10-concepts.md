@@ -14,7 +14,7 @@ every document needs at least a global ID `_id` and a type `_type` property. oth
 
 in your templates, you can query your content.
 
-in your routing roules you can define which templates to use for certain data types (collections) and under which path they will be published. these template get prepopulated with the records.
+in your routing rules you can define which templates to use for certain data types (collections) and under which path they will be published. these per-type templates get prepopulated with the related document data.
 
 ## Content Sources
 
