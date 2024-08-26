@@ -51,7 +51,7 @@ class markdown_sfp extends ParsedownExtended {
     // wird auch für !image tags aufgerufen
     protected function resolve_link($href) {
         if ($href[0] == '/') {
-            return $href;
+            return PATH_PREFIX . $href;
         }
         #TODO: parse_url
 
@@ -66,7 +66,7 @@ class markdown_sfp extends ParsedownExtended {
             return $id;
         }
         $src_conf = $this->context['conf'];
-        dbg("+++ id-> link", $href, $id);
+        dbg("+++ id -> link", $href, $id);
         return $this->context['ds']->get_path($id);
         dbg("current obj", $this->current_obj);
         #return '--resolvedd--'.$this->current_obj['title'].$href;

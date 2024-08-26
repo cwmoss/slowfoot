@@ -59,6 +59,8 @@ $context = [
 
 shell_info("writing templates", true);
 print_r($config);
+dbg("+++ PREFIX", PATH_PREFIX);
+
 $builder = new pagebuilder($config, $ds, $template_helper);
 
 foreach ($templates as $type => $conf) {
