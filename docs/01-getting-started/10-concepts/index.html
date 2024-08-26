@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     <link rel="SHORTCUT ICON" type="image/png" href="/slowfoot/assets/gfx/favicon-96x96.png">
 
-    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1724685474" type="text/css">
-    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1724685474" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1724687349" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1724687349" type="text/css">
 
     <script src="/slowfoot/assets/js/app.js"></script>
     <title>slowfoot Documentation</title>
@@ -59,16 +59,36 @@
 </nav>
         <article>
     <h1>Core Concepts</h1>
-    <h1 id="your-content-is-data">Your Content is data</h1>
-<p>slowfoot sees your content as a dataset of records. these records are loaded via data loaders, transformed and run through templates to produce the html output of your website.</p>
-<p>every records needs at least a global ID <code>_id</code> and a type <code>_type</code>.</p>
+    <h1 id="why">Why</h1>
+<p>slowfoot is a static site generator...t should be a perfect fit for headless CMSs...t borrows concepts from gridsome, sanity io, eleventy... I just didn't want to die in js/node/npm hell. so php ftw :)</p>
+<h2 id="your-content-is-data">Your Content is data</h2>
+<p>slowfoot sees your content as a dataset of documents. these documents (or records) are loaded via data loaders, transformed and run through templates to produce the html output of your website.</p>
+<p>every document needs at least a global ID <code>_id</code> and a type <code>_type</code> property. other than that it makes no assumtions about your content. design the structure of your content as you need it. slowfoot will be a great compagnion to your headless CMS.</p>
 <p>in your templates, you can query your content.</p>
-<p>in your routing roules you can define which templates to use for certain data types (collections) and under which path they will be published. these template get prepopulated with the records.</p></article>
+<p>in your routing roules you can define which templates to use for certain data types (collections) and under which path they will be published. these template get prepopulated with the records.</p>
+<h2 id="content-sources">Content Sources</h2>
+<p>Name, loader function</p>
+<h2 id="content-projection">Content Projection</h2>
+<p>Routing, template rules, page templates</p>
+<h2 id="templates">Templates</h2>
+<p>ATM simple php template engine. Produces HTML out of your content.</p>
+<h2 id="assets">Assets</h2>
+<p>I'm making a distinctions between assets and images for now. Assets is everything static, like css, javascript, graphics for your website. ATM there is no special build pipeline. Everything gets copied over to the build directory.</p>
+<h2 id="images">Images</h2>
+<p>Images are assets, that are part of your contents. They will go through the image processing pipeline.</p></article>
 
 <aside>
     <h4>ON THIS PAGE</h4>
     <ul>
+<li><a href="#why">Why</a>
+<ul>
 <li><a href="#your-content-is-data">Your Content is data</a></li>
+<li><a href="#content-sources">Content Sources</a></li>
+<li><a href="#content-projection">Content Projection</a></li>
+<li><a href="#templates">Templates</a></li>
+<li><a href="#assets">Assets</a></li>
+<li><a href="#images">Images</a></li>
+</ul></li>
 </ul></aside>
     </main>
 
