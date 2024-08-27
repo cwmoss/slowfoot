@@ -13,20 +13,21 @@ namespace slowfoot\image;
             */
 
 class asset {
-    public string $_type = "slft.asset";
-    public ?bool $remote_src = false;
-    public ?string $download_file = null;
-    public ?string $resize_url = null;
-    public ?array $resize = null;
+  public string $_type = "slft.asset";
+  public ?bool $remote_src = false;
+  public ?string $download_file = null;
+  public ?string $resize_url = null;
+  public ?array $resize = null;
+  public ?array $fp = null;
 
-    public function __construct(
-        public string $_id,
-        public string $_src,
-        public string $url,
-        public string $path,
-        public string $w,
-        public string $h,
-        public string $mime
-    ) {
-    }
+  public function __construct(
+    public string $_id,
+    public string $_src,
+    public string $url,
+    public string $path,
+    public string $w,
+    public string $h,
+    public string $mime
+  ) {
+  }
 }

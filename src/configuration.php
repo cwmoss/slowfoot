@@ -32,6 +32,7 @@ class configuration {
   public string $base;
   public string $src;
   public string $dist;
+  public store $db;
 
   public function __construct(
     public string $site_name = "",
@@ -66,8 +67,9 @@ class configuration {
       $this->templates[$name] = $this->normalize_template_config($name, $t);
     }
 
-    $this->assets = $this->normalize_assets_config($this->assets);
     $this->store = $this->normalize_store_config();
+    $this->db = $this->get_store();
+    $this->assets = $this->normalize_assets_config($this->assets);
     $this->init_plugins();
     $this->build = $this->normalize_build_config($this->build);
   }
@@ -76,6 +78,7 @@ class configuration {
     return new loader($this);
   }
   public function get_store(): store {
+    if (isset($this->db)) return $this->db;
     if (strpos($this->store['adapter'], 'sqlite') === 0) {
       $db = new sqlite($this->store);
     } else {
@@ -141,7 +144,7 @@ class configuration {
     $assets->base = $this->base;
     if (!$assets->map) {
       $assets->map = function ($img) {
-        return hook::invoke_filter('assets_map', $img);
+        return hook::invoke_filter('assets_map', $img, $this->db);
       };
     }
     return $assets;

@@ -62,7 +62,7 @@ class processor {
       $img = $fn($img);
     }
 
-    dbg("[image] start", $img->url, $profile);
+    dbg("[image] start", $img, $profile);
 
     if (self::is_remote($img->url)) {
       $img->remote_src = true;
@@ -91,13 +91,13 @@ class processor {
       }
     }
 
-    $name = $this->get_name($img->url, $profile);
+    $name = $this->get_name($img, $profile);
     $dest = $this->conf->base . '/' . $this->conf->dest . '/' . $name;
 
     // $src = $img->download_file ?: $img->_id;
     $src = $img->download_file ?: $img->path;
     dbg("[image] resizer", $src, $dest, $profile, is_array($profile));
-    $res = self::resize($src, $dest, $profile, $this->conf->base);
+    $res = self::resize($src, $dest, $img, $profile, $this->conf->base);
     if ($profile->fourc) {
       $this->set_tags($dest, $profile);
     }
@@ -251,7 +251,7 @@ class processor {
       \htmlspecialchars($tagopts['class'] ?? '')
     );
   }
-  static function resize(string $src, string $dest, profile $profile, string $base): array {
+  static function resize(string $src, string $dest, asset $img, profile $profile, string $base): array {
     dbg('+++++ resize', $src, $dest, $profile);
     // copy-only
     if (!$profile->size) {
@@ -272,7 +272,9 @@ class processor {
 
     // TODO: this should not be needed
     $src = \str_replace($base, '', $src);
-
+    $fp = $img->fp;
+    if (!$fp) $fp = $profile->fp;
+    dbg("++ focal point", $fp);
     if (!$profile->w || !$profile->h) {
       $new = self::resize_one_side($src, $dest, $profile->w, $profile->h);
       //var_dump($new);
@@ -281,8 +283,8 @@ class processor {
       if (!$mode) {
         $mode = 'fit';
       }
-      if ($mode == 'fill' && $profile->fp) {
-        $new = self::resize_fp($src, $dest, $profile->w, $profile->h, $profile->fp);
+      if ($mode == 'fill' && $fp) {
+        $new = self::resize_fp($src, $dest, $profile->w, $profile->h, $fp);
       } else {
         $new = self::resize_two_sides($src, $dest, $profile->w, $profile->h, $mode);
       }
@@ -315,10 +317,16 @@ class processor {
     crop with focal point
 */
   static function resize_fp($src, $dest, $w, $h, $fp) {
-    $p = ['w' => $w, 'h' => $h, 'fit' => 'crop-' . round($fp[0] * 100) . '-' . round($fp[1] * 100)];
+
+    $p = [
+      'w' => $w,
+      'h' => $h,
+      'fit' => 'crop-' . round($fp[0] * 100) . '-' . round($fp[1] * 100)
+      //'fit' => 'crop-50-20'
+    ];
     $p['q'] = 72;
     $p['sharp'] = 5;
-    #dbg('+++ server', $src, $p);
+    dbg('+++ server resize_fp', $src, $p);
     return self::$resizer->makeImage($src, $p);
   }
 
@@ -345,9 +353,13 @@ class processor {
     return $opts;
   }
 
-  function get_name($url, $profile) {
+  function get_name(asset $img, profile $resize_profile) {
     $significant = 'size mode fp fourc';
-    $profile = array_intersect_key((array) $profile, array_flip(explode(' ', $significant)));
+    $url = $img->url;
+    $profile = (array) $resize_profile;
+    if ($img->fp) $profile["fp"] = $img->fp;
+
+    $profile = array_intersect_key($profile, array_flip(explode(' ', $significant)));
     ksort($profile);
     $info = \pathinfo($url);
     $hash = \md5($info['filename'] . '?' . http_build_query($profile));

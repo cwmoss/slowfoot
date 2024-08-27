@@ -40,10 +40,11 @@ class sanity {
         return self::sanity_text($text, $opts, $ds, $config, $this);
       }];
     });
-    hook::add_filter('assets_map', function ($img) {
+    hook::add_filter('assets_map', function ($img, store $store) {
       // sanity images
-      if ($img->_type == 'sanity.imageAsset') {
-        return self::sanity_image_to_slft($img);
+      if (isset($img->asset) && $img->asset["_ref"]) {
+        //if ($img->_type == 'sanity.imageAsset') {
+        return self::sanity_imagefield_to_slft($img, $store);
       }
       return $img;
     });
@@ -91,6 +92,7 @@ class sanity {
       'token' => $this->token
     ]);
   }
+
   static public function sanity_text($block, $opts, store $ds, configuration $config, self $plugin) {
     if (!$block) return "";
     #var_dump($conf);
@@ -105,25 +107,32 @@ class sanity {
     return nl2br($html);
   }
 
-  static public function sanity_image_to_slft($img): asset {
+  /*
+    a named image type or direct image type consists of a field named asset,
+      that is a reference to the document._type "sanity.imageAsset"
+  */
+  static public function sanity_imagefield_to_slft(object $img, store $store): asset {
+    dbg("##### sanity imagefield to asset #####", $img);
+    $sanity_asset = (object) $store->ref($img->asset);
+    dbg($sanity_asset);
     $asset = new asset(
-      _id: $img->_id,
-      _src: $img->_src,
-      url: $img->url,
-      path: $img->path,
-      w: $img->metadata['dimensions']['width'],
-      h: $img->metadata['dimensions']['height'],
-      mime: $img->mimeType
+      _id: $sanity_asset->_id,
+      _src: $sanity_asset->_src,
+      url: $sanity_asset->url,
+      path: $sanity_asset->path,
+      w: $sanity_asset->metadata['dimensions']['width'],
+      h: $sanity_asset->metadata['dimensions']['height'],
+      mime: $sanity_asset->mimeType
     );
 
     if (isset($img->hotspot)) {
-      $img->fp = [$img->hotspot['x'], $img->hotspot['y']];
+      $asset->fp = [$img->hotspot['x'], $img->hotspot['y']];
     }
     return $asset;
   }
 
   static public function sanity_resize($img, $opts) {
-    print_r($opts);
+    // print_r($opts);
     $params = ['q' => 90];
     if ($opts['w']) {
       $params['w'] = $opts['w'];
