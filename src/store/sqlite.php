@@ -21,7 +21,7 @@ class sqlite {
   public $was_filled = false;
   public $db;
 
-  public function __construct($config) {
+  public function __construct($config, $fresh_create = false) {
     $this->config = $config;
     $adapter = explode(':', $config['adapter']);
     $name = $adapter[1] ?? 'slowfoot.db';
@@ -30,6 +30,10 @@ class sqlite {
     } else {
       if ($name[0] != '/') {
         $name = $config['base'] . '/' . $name;
+      }
+      if ($fresh_create) {
+        dbg("removing DB file", $name);
+        unlink($name);
       }
       $this->was_filled = \file_exists($name);
     }

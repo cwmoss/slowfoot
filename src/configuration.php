@@ -50,16 +50,16 @@ class configuration {
     public string|array $build = ['dist' => 'dist'],
   ) {
   }
-  static function load($dir): self {
-    $conf = include $dir . '/slowfoot-config.php';
+  static function load(string $dir, bool $fresh_fetch = false): self {
+    $conf = require($dir . '/slowfoot-config.php');
     $conf->base = '/' . get_absolute_path($dir);
     $conf->src = $conf->base . '/src';
     $conf->dist = $conf->base . '/dist';
-    $conf->init();
+    $conf->init($fresh_fetch);
     return $conf;
   }
 
-  public function init() {
+  public function init(bool $fresh_fetch) {
     if (!is_dir($this->base . "/var")) {
       mkdir($this->base . "/var");
     }
@@ -68,7 +68,7 @@ class configuration {
     }
 
     $this->store = $this->normalize_store_config();
-    $this->db = $this->get_store();
+    $this->db = $this->get_store($fresh_fetch);
     $this->assets = $this->normalize_assets_config($this->assets);
     $this->init_plugins();
     $this->build = $this->normalize_build_config($this->build);
@@ -77,10 +77,10 @@ class configuration {
   public function get_loader() {
     return new loader($this);
   }
-  public function get_store(): store {
+  public function get_store(bool $fresh_fetch = false): store {
     if (isset($this->db)) return $this->db;
     if (strpos($this->store['adapter'], 'sqlite') === 0) {
-      $db = new sqlite($this->store);
+      $db = new sqlite($this->store, $fresh_fetch);
     } else {
       $db = new memory();
     }

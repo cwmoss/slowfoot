@@ -142,6 +142,18 @@ class sanity {
     }
     return $img['url'] . '?' . http_build_query($params);
   }
+
+  /*
+    works only with a specific schema:
+      object with fields:
+        - internal (reference)
+        - route (string) destination path
+        - external (string) complete url with host
+  */
+  static public function sanity_link_url($link, $ds) {
+    // var_dump($link);
+    return $link['internal'] ? $ds->get_path($link['internal']['_ref']) : ($link['route'] ? path_page($link['route']) : $link['external']);
+  }
 }
 
 

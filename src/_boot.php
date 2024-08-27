@@ -64,7 +64,7 @@ $src = $base . '/src';
 #require_once 'image.php';
 #require_once 'slft_fun.php';
 
-$config = configuration::load($base);
+$config = configuration::load($base, (isset($FETCH) && $FETCH));
 $dataloader = $config->get_loader();
 
 $dist = $config->build['dist'];
@@ -91,12 +91,7 @@ require_once 'template_helper.php';
 
 //print_r($config);
 
-# TODO: im store inbauen
-if (isset($FETCH) && $FETCH) {
-  $dbfile = SLF_PROJECT_DIR . '/var/slowfoot.db';
-  dbg("removing DB file", $dbfile);
-  `rm -rf $dbfile`;
-}
+
 //var_dump($hooks);
 $ds = $dataloader->load();
 
