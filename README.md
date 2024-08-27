@@ -1,3 +1,5 @@
+[![Make Doku](https://github.com/cwmoss/slowfoot/actions/workflows/doku.yml/badge.svg)](https://github.com/cwmoss/slowfoot/actions/workflows/doku.yml)
+
 # W.I.P slowfoot
 
 php >= 8.2
