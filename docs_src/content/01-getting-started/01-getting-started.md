@@ -1,6 +1,7 @@
 ---
 chapter_title: Getting Started
-title: Getting Started
+title: Slowfoot Install
+slug: index
 ---
 
 ## Why

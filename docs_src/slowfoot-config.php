@@ -16,7 +16,7 @@ return new configuration(
         'chapter_index' => site::load_chapter_index(...)
     ],
     templates: [
-        'chapter' => '/:_id',
+        'chapter' => '/:slug',
     ],
     plugins: [
         new site(),
