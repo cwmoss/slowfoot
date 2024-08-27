@@ -4,7 +4,8 @@ namespace slowfoot_plugin\markdown;
 
 use Parsedown;
 use ParsedownToc;
-use ParsedownExtended;
+// use ParsedownExtended;
+use BenjaminHoegh\ParsedownExtended\ParsedownExtended;
 use slowfoot\image;
 
 /*
