@@ -52,11 +52,11 @@ function load_template_helper(store $ds, $src, configuration $config) {
     },
     'image_url' => function ($asset, $profile) use ($config) {
       $p = new processor($config->assets);
-      return \slowfoot\image_url($asset, $profile, $config->assets);
+      return $p->image_url($asset, $profile);
     },
     'asset_from_file' => function ($path) use ($config) {
-      //var_dump($config);
-      return \slowfoot\asset_from_file($path, $config->assets);
+      $p = new processor($config->assets);
+      return $p->asset_from_file($path);
     },
   ];
   return array_merge($default, $custom);

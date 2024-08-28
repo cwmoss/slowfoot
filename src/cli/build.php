@@ -1,14 +1,16 @@
 <?php
 
 use slowfoot\util\console;
-
-use function slowfoot\template\page;
-use function slowfoot\template\template;
-use function slowfoot\template\remove_tags;
-use function slowfoot\template\preprocess;
-
 use slowfoot\context;
 use slowfoot\pagebuilder;
+
+/** @var configuration $config */
+/** @var store $ds */
+/** @var array $template_helper */
+/** @var string $src */
+/** @var string $dist */
+/** @var array $pages */
+/** @var array $templates */
 
 $console = console::console();
 

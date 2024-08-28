@@ -120,7 +120,7 @@ function get_evaluator($query) {
   };
   return $evaluator;
 }
-
+/*
 function evaluate($cond, $data) {
   foreach ($cond as $k => $v) {
     $ok = evaluate_single($k, $v, $data);
@@ -130,6 +130,7 @@ function evaluate($cond, $data) {
   }
   return true;
 }
+  */
 function evaluate_single($l, $r, $op, $data) {
   if ($l['t'] == 'k') {
     $l['v'] = get_value($l['c'], $data);

@@ -1,4 +1,6 @@
 <?php
+$project_dir ??= "";
+
 require $project_dir . '/vendor/autoload.php';
 
 use slowfoot\setup;
@@ -39,6 +41,8 @@ $parsed = Docopt::handle($doc, array('version' => 'slowfoot 0.1'));
 #var_dump($parsed);
 $args = $parsed->args;
 #var_dump($args);
+
+$ds = $dist = null;
 
 // https://www.kammerl.de/ascii/AsciiSignature.php rounded
 

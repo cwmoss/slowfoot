@@ -10,16 +10,23 @@ define('SLOWFOOT_BASE', $project_dir);
 $PDIR = $project_dir;
 
 //require $project_dir . '/vendor/autoload.php';
-
-require __DIR__ . '/../_boot.php';
-
-use slowfoot\util\server;
-
-use function slowfoot\template\template;
-
 use Bramus\Router\Router;
 use slowfoot\context;
 use slowfoot\pagebuilder;
+use slowfoot\configuration;
+use slowfoot\store;
+use slowfoot\util\server;
+
+require __DIR__ . '/../_boot.php';
+
+/** @var configuration $config */
+/** @var store $ds */
+/** @var array $template_helper */
+/** @var string $src */
+/** @var array $pages */
+
+
+
 
 #dbg("++start");
 #dbg("SERVER", $_SERVER);
@@ -40,10 +47,10 @@ $router->setBasePath("");
 $hr = false;
 $debug = true;
 
-$router->mount('/__api', function () use ($router, $ds, $config, $src, $template_helper) {
+$router->mount('/__api', function () use ($router, $ds, $config, $src) {
     #dbg('server', $_SERVER);
     server::send_cors();
-    $router->get('/index', function () use ($router, $ds) {
+    $router->get('/index', function () use ($ds) {
 
         #print "hallo";
 
@@ -53,7 +60,7 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src, $template
         server::resp($ds->info());
     });
 
-    $router->get('/type/([-\w.]+)(/\d+)?', function ($type, $page = 1) use ($router, $ds) {
+    $router->get('/type/([-\w.]+)(/\d+)?', function ($type, $page = 1) use ($ds) {
         dbg("[api] type", $type);
         #print "hallo";
         if ($type == '__paths') {
@@ -73,25 +80,25 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src, $template
         server::resp(['rows' => $rows]);
     });
 
-    $router->get('/id', function () use ($router, $ds) {
+    $router->get('/id', function () use ($ds) {
         $id = $_GET['id'];
         //$row = $db->row('SELECT _id, _type, body FROM docs WHERE _id = ? ', $id);
         $row = $ds->get($id);
         server::resp($row);
     });
 
-    $router->get('/fts', function () use ($router, $ds) {
+    $router->get('/fts', function () use ($ds) {
         $q = $_GET['q'];
         $rows = $ds->q("SELECT _id, snippet(docs_fts,1, '<b>', '</b>', '[...]', 30) body FROM docs_fts WHERE docs_fts = ? ", $q);
         server::resp($rows);
     });
 
 
-    $router->get('/preview/(.*)', function ($id_type) use ($router, $ds, $config, $src, $template_helper) {
+    $router->get('/preview/(.*)', function ($id_type) use ($config, $src) {
         list($id, $type) = explode('/', $id_type);
         dbg("[api/preview]", $id_type);
 
-        $preview_obj = load_preview_object($id, $type, $config);
+        $preview_obj =  []; // load_preview_object($id, $type, $config);
 
         #$template = $templates[$obj['_type']]['_']['template'];
         #$template = template_name($config['templates'], $obj['_type'], $name);
@@ -106,8 +113,8 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src, $template
 
         ];
         // TODO: migrate
-        $content = template($preview_obj['template'], ['page' => $preview_obj['data']], $template_helper, template_context('template', $context, $preview_obj, $ds, $config));
-
+        // $content = template($preview_obj['template'], ['page' => $preview_obj['data']], $template_helper, template_context('template', $context, $preview_obj, $ds, $config));
+        $content = "";
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Cache-Control: post-check=0, pre-check=0', false);
         header('Pragma: no-cache');
@@ -117,15 +124,15 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src, $template
     });
 });
 
-$router->mount('/__ui', function () use ($router, $ds) {
-    $router->get('', function () use ($router, $ds) {
+$router->mount('/__ui', function () use ($router) {
+    $router->get('', function () {
         $uibase = __DIR__ . '/../../ui/build';
         dbg("+++ ui index ++++", $uibase);
         server::send_file($uibase, 'index.html');
         exit;
     });
 
-    $router->get('(.*)?', function ($file) use ($router, $ds) {
+    $router->get('(.*)?', function ($file) {
         $uibase = __DIR__ . '/../../ui/build';
         $uifile = $uibase . '/' . $file;
         dbg("__ui file00", $file, $uifile);
@@ -142,13 +149,13 @@ $router->mount('/__ui', function () use ($router, $ds) {
     });
 });
 
-$router->get('/__sf/(.*)', function ($requestpath) use ($router, $ds) {
+$router->get('/__sf/(.*)', function ($requestpath) {
     $docbase = __DIR__ . '/../../resources';
     server::send_file($docbase, $requestpath);
     exit;
 });
 
-$router->post('/__fun/(.*)', function ($requestpath) use ($router, $ds) {
+$router->post('/__fun/(.*)', function ($requestpath) {
     $docbase = $_SERVER['DOCUMENT_ROOT'] . '/../endpoints';
     include($docbase . "/" . $requestpath);
     exit;
@@ -156,7 +163,7 @@ $router->post('/__fun/(.*)', function ($requestpath) use ($router, $ds) {
 
 #dbg("++ image path", $config['assets']['path']);
 
-$router->get($config->assets->path . '/' . '(.*\.\w{1,5})', function ($requestpath) use ($router, $ds, $config) {
+$router->get($config->assets->path . '/' . '(.*\.\w{1,5})', function ($requestpath) {
     dbg('[dev] asssets', $requestpath);
     $docbase = $_SERVER['DOCUMENT_ROOT'] . '/../var/rendered-images';
     #dbg("++ image path base", $docbase, $requestpath);
@@ -164,14 +171,14 @@ $router->get($config->assets->path . '/' . '(.*\.\w{1,5})', function ($requestpa
     exit;
 });
 
-$router->get('(.*\.\w{1,5})', function ($requestpath) use ($router, $ds) {
+$router->get('(.*\.\w{1,5})', function ($requestpath) {
     $docbase = $_SERVER['DOCUMENT_ROOT'];
     dbg('[dev] some.doc', $requestpath);
     server::send_file($docbase, $requestpath);
     exit;
 });
 
-$router->get('(.*)?', function ($requestpath) use ($router, $ds, $config, $pages, $src, $template_helper) {
+$router->get('(.*)?', function ($requestpath) use ($ds, $config, $pages, $src, $template_helper) {
     dbg('[dev] page/template', $requestpath);
     server::send_nocache();
     $requestpath = '/' . $requestpath;

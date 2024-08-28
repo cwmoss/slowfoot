@@ -77,7 +77,7 @@ class server {
     http related
      */
     static public function resp($data) {
-        $elapsed = microtime(true) - START_TIME;
+        $elapsed = microtime(true) - SLOWFOOT_START;
         if (!isset($data['res'])) {
             $data = ['res' => $data];
         }

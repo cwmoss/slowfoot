@@ -3,7 +3,7 @@
 namespace slowfoot;
 
 use function lolql\parse;
-use function collect_data;
+
 use function dot_get;
 use slowfoot\configuration;
 use slowfoot\hook;

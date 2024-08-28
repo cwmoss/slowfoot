@@ -98,7 +98,7 @@ class error_handler {
     $message = "FATAL#: " . self::code($error['type']) . ": {$error['message']} in {$error['file']} line {$error['line']} $trace";
     error_log(date("Y-m-d H:i:s") . " " . $message . $trace . "\n", 3, $this->error_logfile);
 
-    print $this->render_exception_page($message, $trace);
+    print $this->render_exception_page(null, $message, $trace);
   }
 
   /**

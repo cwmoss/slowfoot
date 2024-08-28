@@ -90,7 +90,7 @@ function chunked_paginate($ds, $rule) {
 }
 
 
-
+/*
 function query_page($ds, $rule, $page = 1) {
     $limit = $rule['limit'] ?? 20;
     $page = $page ?? 1;
@@ -113,7 +113,9 @@ function query_page($ds, $rule, $page = 1) {
     ];
     return ['items' => $res, 'info' => $info];
 }
+*/
 
+/*
 function evaluate($cond, $data) {
     foreach ($cond as $k => $v) {
         $ok = evaluate_single($k, $v, $data);
@@ -141,7 +143,7 @@ function evaluate_single($key, $value, $data) {
         return $data[$current] == $value;
     }
 }
-
+*/
 function array_find($haystack, $needle, $prop) {
     foreach ($haystack as $val) {
         if ($val[$prop] == $needle) {
@@ -152,7 +154,7 @@ function array_find($haystack, $needle, $prop) {
 }
 
 
-
+/*
 function slow_query($q, $vars = []) {
     $q = str_replace(array_map(function ($k) {
         return '$' . $k;
@@ -168,7 +170,7 @@ function slow_query_cmd($q) {
     $res = `$cmd`;
     return json_decode($res, true);
 }
-
+*/
 
 function path_asset($asset, $cachebust = false) {
     return PATH_PREFIX . "/assets{$asset}" . cachebuster($cachebust);

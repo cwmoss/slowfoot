@@ -48,9 +48,9 @@ class memory {
   }
 
   public function query_type($type) {
-    $filter = ['_type' => $type];
-    $rs = array_filter($this->docs, function ($row) use ($filter) {
-      return evaluate($filter, $row);
+    // $filter = ['_type' => $type];
+    $rs = array_filter($this->docs, function ($row) use ($type) {
+      return $row["_type"] == $type;
     });
     return $rs;
   }
@@ -74,7 +74,7 @@ class memory {
   }
 
   public function add_ref($src_id, $src_prop, $dest) {
-    $this->data[$src_id][$src_prop][] = ['_ref' => $dest];
+    $this->docs[$src_id][$src_prop][] = ['_ref' => $dest];
   }
 
   public function path_exists($path) {

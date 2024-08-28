@@ -1,0 +1,22 @@
+parameters:
+  level: 1
+  bootstrapFiles:
+    - phpstan-constants.php
+  fileExtensions:
+    - php
+    - html
+    - ""
+  paths:
+    - bin/slowfoot
+    - src
+   # - tests
+  excludePaths:
+    - src/_main/preview.php
+    - src/hot-reload/ 
+  scanFiles:
+    - bin/slowfoot
+  #scanDirectories:
+  #  - vendor/cwmoss/xorclib
+  #universalObjectCratesClasses:
+  #  - Xorcstore_AR
+  #  - kunde

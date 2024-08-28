@@ -108,7 +108,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     $q_count = 'SELECT count(*) from docs WHERE ' . $name . '(body)';
     $total = $this->db->cell($q_count);
     $db = $this->db;
-    $page_query = function ($page) use ($db, $q, $total, $limit_per_page) {
+    $page_query = function ($page) use ($q, $limit_per_page) {
       $off = ($page - 1) * $limit_per_page;
       $q .= " LIMIT {$limit_per_page} OFFSET $off";
       $res = $this->db->run($q);

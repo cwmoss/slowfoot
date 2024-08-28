@@ -6,7 +6,7 @@ use Exception;
 use slowfoot\configuration;
 use OviDigital\JsObjectToJson\JsConverter;
 
-class csv extends file {
+class csv {
 
     public function __construct(
         public string $file,
@@ -31,7 +31,7 @@ class csv extends file {
             $data = str_getcsv($row, $this->separator, $this->enclosure);
 
             if ($this->json) {
-                $data = array_map(fn ($val) => json_decode($val, true), $data);
+                $data = array_map(fn($val) => json_decode($val, true), $data);
             }
             if ($this->jsol) {
                 $data = array_map(function ($val) {
