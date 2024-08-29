@@ -50,8 +50,8 @@ class configuration {
     public string|array $build = ['dist' => 'dist'],
   ) {
   }
-  static function load(string $dir, bool $fresh_fetch = false): self {
-    $conf = require($dir . '/slowfoot-config.php');
+  static function load(string $dir, bool $fresh_fetch = false, ?configuration $conf = null): self {
+    if (!$conf) $conf = require($dir . '/slowfoot-config.php');
     $conf->base = '/' . get_absolute_path($dir);
     $conf->src = $conf->base . '/src';
     $conf->dist = $conf->base . '/dist';
