@@ -50,6 +50,14 @@ $debug = true;
 $router->mount('/__api', function () use ($router, $ds, $config, $src) {
     #dbg('server', $_SERVER);
     server::send_cors();
+
+    $router->post("/fetch", function () use ($config) {
+        $config->fresh_store();
+        $dataloader = $config->get_loader();
+        $ds = $dataloader->load();
+        server::resp(["ok" => true]);
+    });
+
     $router->get('/index', function () use ($ds) {
 
         #print "hallo";
@@ -213,8 +221,9 @@ $router->get('(.*)?', function ($requestpath) use ($ds, $config, $pages, $src, $
     $debug = true;
     if ($debug) {
         $inspector = include_to_buffer(__DIR__ . '/../../resources/debug.php');
-        $inspector_css = '<link rel="stylesheet" href="/__sf/inspector-json.css">';
-        $content = str_replace('</head>', $inspector_css . '</head>', $content);
+        $inspector_head = '<script defer src="/__sf/json-viewer.bundle.js"></script>';
+        // $inspector_css = '<link rel="stylesheet" href="/__sf/inspector-json.css">';
+        //$content = str_replace('</head>', $inspector_head . '</head>', $content);
         $content = str_replace('</body>', $inspector . '</body>', $content);
     }
     print $content;

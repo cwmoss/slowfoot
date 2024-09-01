@@ -32,7 +32,7 @@ class configuration {
   public string $base;
   public string $src;
   public string $dist;
-  public store $db;
+  public ?store $db;
 
   public function __construct(
     public string $site_name = "",
@@ -72,6 +72,11 @@ class configuration {
     $this->assets = $this->normalize_assets_config($this->assets);
     $this->init_plugins();
     $this->build = $this->normalize_build_config($this->build);
+  }
+
+  public function fresh_store() {
+    $this->db = null;
+    $this->db = $this->get_store(true);
   }
 
   public function get_loader() {
