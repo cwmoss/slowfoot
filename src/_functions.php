@@ -187,6 +187,9 @@ function cachebuster($cachebust = false) {
 }
 
 function path_page($page) {
+    if ($page == "/index") {
+        $page = "/";
+    }
     return PATH_PREFIX . $page;
 }
 

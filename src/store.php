@@ -139,7 +139,11 @@ class store {
     if (!$name) {
       $name = '_';
     }
-    return $this->db->path_get($id, $name);
+    $path = $this->db->path_get($id, $name);
+    if ($path == "/index") {
+      $path = "/";
+    }
+    return $path;
   }
 
   public function get_by_path($path) {
