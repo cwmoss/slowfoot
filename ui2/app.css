@@ -1,0 +1,71 @@
+:root {
+  --fbrot: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --fmono: "SFMono-Regular", Consolas, Liberation Mono, Menlo, Courier,
+    monospace;
+  --cgelb: rgb(246, 211, 85);
+  --wcontainer: 90rem;
+  --pdcontainer: 6rem;
+}
+body {
+  font-family: var(--fbrot);
+  padding: 0;
+  margin: 0;
+  color: black;
+  background-color: white;
+}
+main,
+nav {
+  padding: 0 var(--pdcontainer);
+  margin: 0 auto;
+  max-width: var(--wcontainer);
+}
+nav {
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+}
+.nav-right {
+  margin-left: auto;
+}
+.nav-stats {
+  display: inline-block;
+}
+nav a {
+  margin-right: 16px;
+}
+a,
+.inspector-json li > a.underline,
+.inspector-json ol > a.underline {
+  color: black;
+  text-decoration: underline;
+  text-decoration-color: var(--cgelb);
+  text-decoration-thickness: 2px;
+}
+a.logo {
+  text-decoration: none;
+}
+.code {
+  font-family: var(--fmono);
+}
+
+.spinner {
+  position: relative;
+}
+.spinner svg {
+  width: 20px;
+  margin-left: 8px;
+  animation: 1s linear 0s infinite normal none running rotate;
+  position: absolute;
+  z-index: 99;
+  top: -16px;
+  left: 4px;
+}
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
