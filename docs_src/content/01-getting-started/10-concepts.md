@@ -14,7 +14,7 @@ in your routing rules you can define which templates to use for certain data typ
 
 ## Content Sources
 
-Name, loader function
+Name, loader functions
 
 ## Content Projection
 
