@@ -2,7 +2,7 @@
 title: Start Page
 ---
 
-The Startpage is ether a page produced via `pages/index.php` or via a collection template, that produces the path `index`.
+The Startpage is either a page produced via `pages/index.php` or via a collection template, that produces the path `index`.
 
 ## Redirect
 
