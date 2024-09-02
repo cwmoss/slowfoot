@@ -4,6 +4,9 @@ class Api {
   async types() {
     return await this.get("index");
   }
+  async type_index(type) {
+    return await this.get("type/" + type);
+  }
 
   get(path) {
     document.dispatchEvent(new CustomEvent("fetch-start"));

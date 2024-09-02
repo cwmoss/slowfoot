@@ -157,6 +157,32 @@ $router->mount('/__ui', function () use ($router) {
     });
 });
 
+
+$router->mount('/__ui2', function () use ($router) {
+    $router->get('', function () {
+        $uibase = __DIR__ . '/../../ui2';
+        dbg("+++ ui index ++++", $uibase);
+        server::send_file($uibase, 'index.html');
+        exit;
+    });
+
+    $router->get('(.*)?', function ($file) {
+        $uibase = __DIR__ . '/../../ui2';
+        $uifile = $uibase . '/' . $file;
+        dbg("__ui file00", $file, $uifile);
+
+        if (file_exists($uifile)) {
+            server::send_file($uibase, $file);
+            exit;
+        } else {
+            server::send_file($uibase, 'index.html');
+            exit;
+        }
+        dbg("__ui file", $file, $uifile);
+        server::resp(['ok' => $file]);
+    });
+});
+
 $router->get('/__sf/(.*)', function ($requestpath) {
     $docbase = __DIR__ . '/../../resources';
     server::send_file($docbase, $requestpath);

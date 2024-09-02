@@ -6,7 +6,7 @@ export default class TypesNav extends LitElement {
   };
 
   path(t) {
-    return t;
+    return `/type/${t}`;
   }
   render() {
     if (!this.types) return "";
