@@ -1,16 +1,18 @@
 import { LitElement, css, html } from "./lit-core.min.js";
 import api from "../api.js";
 
-export default class TypesIndex extends LitElement {
+export default class DocumentView extends LitElement {
   static properties = {
-    type: {},
-    items: { type: Array },
+    docid: {},
+    doc: { type: Object },
   };
 
   async connectedCallback() {
     super.connectedCallback();
-    let res = await api.type_index(this.type);
-    this.items = res?.rows;
+    let res = await api.document(this.docid);
+    console.log("document", res);
+    this.doc = res;
+    //this.render();
   }
 
   path(el) {
@@ -28,21 +30,13 @@ export default class TypesIndex extends LitElement {
 
   render() {
     console.log("render type index????", this.items);
-    if (!this.items) return "";
+    if (!this.doc) return "";
     console.log("render type index", this.items);
     return html`
-      <h1>${this.type == "__paths" ? "paths" : this.type}</h1>
-      <ol>
-        ${this.items.map(
-          (el) => html` <li><a href=${this.path(el)}>${this.title(el)}</a></li>`
-        )}
-      </ol>
+      <h1>${this.doc._id}</h1>
+      <json-explorer .data=${this.doc}></json-explorer>
     `;
-  }
-
-  createRenderRoot() {
-    return this;
   }
 }
 
-customElements.define("types-index", TypesIndex);
+customElements.define("document-view", DocumentView);

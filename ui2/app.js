@@ -1,20 +1,35 @@
-import Api from "./api.js";
-import Navigo from "./components/navigo.js";
+import api from "./api.js";
+import NavigoPlus from "./components/navigo-plus.js";
 let main = document.querySelector("main");
 let spinner = document.getElementById("spinner");
 let time_spent = document.getElementById("time-spent");
-let nav = document.querySelector("types-nav");
+let refetch_btn = document.querySelector("#refetch");
 
-let base = "/__ui2";
-const router = new Navigo();
-router.on(base + "/type/:type", ({ data }) => {
-  console.log("navigated to type", data); // { id: 'xxx', action: 'save' }
-  page_type(data.type);
-});
-router.on(base + "/id/:id", ({ data }) => {
-  console.log("navigated to id", data); // { id: 'xxx', action: 'save' }
-});
+/*
+  routing
+*/
 
+const router = NavigoPlus("/__ui2");
+router
+  .on("/type/:type", ({ data }) => {
+    console.log("navigated to type", data); // { id: 'xxx', action: 'save' }
+    page_type(data.type);
+  })
+  .on("/id/:id", ({ data }) => {
+    console.log("navigated to id", data); // { id: 'xxx', action: 'save' }
+    page_id(data.id);
+  })
+  .on("/about", () => {
+    page_about();
+  })
+  .on("/", () => {
+    page_index();
+  });
+
+// console.log("++ router", router);
+/*
+  global fetch-status
+*/
 document.addEventListener("fetch-start", () =>
   spinner.removeAttribute("hidden")
 );
@@ -23,27 +38,33 @@ document.addEventListener("fetch-end", (e) => {
   time_spent.innerHTML = `<span>${e.detail?.time_print}</span>`;
   // router.updatePageLinks();
 });
-
-document.addEventListener("click", (e) => {
-  let target = e.target.closest("a");
-  if (target) {
-    // if the click was on or within an <a>
-    // then based on some condition...
-    console.log("clicked on", target.getAttribute("href"), target);
-    //if (target.getAttribute("href").startsWith("/foo")) {
-    e.preventDefault(); // tell the browser not to respond to the link click
-    router.navigate(base + target.getAttribute("href"));
-    // then maybe do something else
-    //}
-  }
+refetch_btn.addEventListener("click", () => {
+  refetch_btn.disabled = true;
+  api.refetch().finally(() => (refetch_btn.disabled = false));
 });
-
-let types = await Api.types();
-console.log("types", types);
-nav.types = types;
-
-// setTimeout(() => router.updatePageLinks());
+/*
+render pages
+*/
 
 function page_type(type) {
   main.innerHTML = `<types-index type="${type}"></types-index>`;
 }
+
+function page_id(id) {
+  main.innerHTML = `<document-view docid="${id}"></document-view>`;
+}
+
+function page_about() {
+  main.innerHTML = `<h1>slowfoot navigator</h1>
+    <p>navigate through your data</p>`;
+}
+
+function page_index() {
+  main.innerHTML = ``;
+}
+
+/*
+  initiale action
+*/
+router.start_from_current_url();
+/* -- */

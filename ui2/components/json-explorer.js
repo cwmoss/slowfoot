@@ -21,9 +21,7 @@ tmpl.innerHTML = /* html */ `
     --col-key: rgb( 0, 136, 204 );
     --col-val: rgb( 50, 150, 80 );
 }
-main{
-    padding:2rem;
-}
+
 ul, li{
     list-style-type:none;
     margin:0;
@@ -85,11 +83,7 @@ details strong{
 </main>
 `;
 
-export default class JsonExplore extends HTMLElement {
-  static xxxproperties = {
-    types: { type: Array },
-  };
-
+export default class JsonExplorer extends HTMLElement {
   _data = {};
 
   constructor() {
@@ -134,10 +128,15 @@ export default class JsonExplore extends HTMLElement {
     return t;
   }
 
+  html_encode(input) {
+    const textArea = document.createElement("textarea");
+    textArea.innerText = input;
+    return textArea.innerHTML.split("<br>").join("\n");
+  }
   render_value(node, key, val) {
     node.insertAdjacentHTML(
       "beforeend",
-      `<li><strong class="k">${key}:</strong> ${val}</li>`
+      `<li><strong class="k">${key}:</strong> ${this.html_encode(val)}</li>`
     );
   }
   render_array(node, key, value) {
@@ -205,4 +204,4 @@ export default class JsonExplore extends HTMLElement {
   }
 }
 
-customElements.define("json-explore", JsonExplore);
+customElements.define("json-explorer", JsonExplorer);
