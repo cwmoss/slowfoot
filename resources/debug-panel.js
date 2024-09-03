@@ -6,7 +6,7 @@ tmpl.innerHTML = /* html */ `
 <style>
 :host{
     --col-bg: #2a2f3a;
-    --font-size: 0.6rem;
+    --font-size: 0.8rem;
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 
         Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: var(--font-size);
@@ -29,19 +29,35 @@ nav a{
     font-weight:bold;
     text-decoration:none;
 }
+#close{
+  position:absolute;
+  top:12px;
+  right:0;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
 </style>
 <main>
-    <nav>
-    <a href="/__ui/" target="_sf_navigator">navigator ➚</a>
+<button id="close">❌</button>
+    <nav><a href="/__ui2/" target="_sf_navigator">
+    <svg width="16" height="16" fill="white">
+      <g transform="translate(0 0)">
+        <path
+          d="M9.2,0H5.4c-0.4,0-0.8,0.3-1,0.7l-2,7C2.2,8.4,2.7,9,3.3,9H7l-1.5,7l7.3-9.4C13.3,6,12.8,5,12,5H9l1.1-3.7 C10.3,0.6,9.8,0,9.2,0z"></path>
+      </g>
+    </svg>
+    navigator</a>
     <button id="refetch">re-fetch</button>
-    <button id="close">❌</button>
+    
     </nav>
-
 
     <json-viewer style="--font-size: var(--font-size);"></json-viewer>
 
 </main>
 `;
+
+// pfeil:  ➚
 
 class DebugPanel extends HTMLElement {
   constructor() {
