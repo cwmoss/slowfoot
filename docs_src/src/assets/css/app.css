@@ -85,6 +85,10 @@ body {
 body * {
   box-sizing: border-box; }
 
+h1 {
+  font-size: 36px;
+  margin-top: -8px; }
+
 header {
   position: sticky;
   top: 0;
@@ -106,7 +110,8 @@ nav {
   flex-direction: column;
   overflow-y: auto;
   height: 80vh;
-  padding: 2em; }
+  padding: 2em;
+  padding-top: 0; }
   nav summary:hover,
   nav details a:hover,
   nav details.active summary,
@@ -120,12 +125,15 @@ article {
   flex-grow: 1; }
   article img {
     max-width: 600px; }
+  article p {
+    max-width: 65ch; }
 
 aside {
   width: 220px;
   min-width: 220px;
-  position: sticky;
-  margin-top: 2em; }
+  position: sticky; }
+  aside h4 {
+    margin-top: 0; }
   aside ul {
     list-style-type: none;
     margin: 0;
