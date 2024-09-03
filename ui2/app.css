@@ -31,9 +31,6 @@ nav > * {
 .nav-right {
   margin-left: auto;
 }
-.nav-stats {
-  display: inline-block;
-}
 nav a {
   margin-right: 16px;
 }
@@ -72,24 +69,4 @@ button:hover:not(:disabled) {
 button:disabled {
   color: #999;
   border-color: #999;
-}
-.spinner {
-  position: relative;
-}
-.spinner svg {
-  width: 20px;
-  margin-left: 8px;
-  animation: 1s linear 0s infinite normal none running rotate;
-  position: absolute;
-  z-index: 99;
-  top: -16px;
-  left: 4px;
-}
-@keyframes rotate {
-  0% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
