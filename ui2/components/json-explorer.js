@@ -58,7 +58,7 @@ summary:before {
   border-color: transparent transparent transparent #000;
   position: absolute;
   top: 0.4rem;
-  left: 0;
+  left: -2px;
   transform: rotate(0);
   transform-origin: .2rem 50%;
   transition: .25s transform ease;
