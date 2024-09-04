@@ -6,7 +6,7 @@ let refetch_btn = document.querySelector("#refetch");
 /*
   routing
 */
-const router = NavigoPlus("/__ui2");
+const router = NavigoPlus("/__ui");
 router
   .on("/type/:type", ({ data }) => {
     main.innerHTML = `<types-index type="${data.type}"></types-index>`;

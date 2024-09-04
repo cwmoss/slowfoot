@@ -141,40 +141,14 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src) {
 
 $router->mount('/__ui', function () use ($router) {
     $router->get('', function () {
-        $uibase = __DIR__ . '/../../ui/build';
+        $uibase = __DIR__ . '/../../ui';
         dbg("+++ ui index ++++", $uibase);
         server::send_file($uibase, 'index.html');
         exit;
     });
 
     $router->get('(.*)?', function ($file) {
-        $uibase = __DIR__ . '/../../ui/build';
-        $uifile = $uibase . '/' . $file;
-        dbg("__ui file00", $file, $uifile);
-
-        if (file_exists($uifile)) {
-            server::send_file($uibase, $file);
-            exit;
-        } else {
-            server::send_file($uibase, 'index.html');
-            exit;
-        }
-        dbg("__ui file", $file, $uifile);
-        server::resp(['ok' => $file]);
-    });
-});
-
-
-$router->mount('/__ui2', function () use ($router) {
-    $router->get('', function () {
-        $uibase = __DIR__ . '/../../ui2';
-        dbg("+++ ui index ++++", $uibase);
-        server::send_file($uibase, 'index.html');
-        exit;
-    });
-
-    $router->get('(.*)?', function ($file) {
-        $uibase = __DIR__ . '/../../ui2';
+        $uibase = __DIR__ . '/../../ui';
         $uifile = $uibase . '/' . $file;
         dbg("__ui file00", $file, $uifile);
 
