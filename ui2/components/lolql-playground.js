@@ -25,6 +25,11 @@ section{
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     color:black;
   }
+#editor:empty::before {
+    display: inline-block;
+    content: '*(_type=="...")';
+    color: #999;
+}
 #control{
   position:absolute;
   bottom:0;

@@ -171,7 +171,7 @@ export default class JsonExplorer extends HTMLElement {
     if (open) tag.setAttribute("open", "");
     tag.insertAdjacentHTML(
       "beforeend",
-      `<summary><strong>${key || key === 0 ? key : "root"}:</strong> {${
+      `<summary><strong>${key}:</strong> {${
         Object.keys(o).length
       } keys}</summary>`
     );
@@ -202,7 +202,7 @@ export default class JsonExplorer extends HTMLElement {
   render() {
     console.log("rendering", this._data);
     this.main.innerHTML = "";
-    this.render_object(this.main, "", this._data, true, true);
+    this.render_object(this.main, "root", this._data, true, true);
   }
 }
 
