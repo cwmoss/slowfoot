@@ -14,6 +14,10 @@ router
   .on("/id/:id", ({ data }) => {
     main.innerHTML = `<document-view docid="${data.id}"></document-view>`;
   })
+  .on("/playground", () => {
+    main.innerHTML = `<h1>lolql playground</h1>
+    <lolql-playground></lolql-playground>`;
+  })
   .on("/about", () => {
     main.innerHTML = `<h1>slowfoot navigator</h1>
     <p>navigate through your data</p>`;

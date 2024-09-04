@@ -10,8 +10,10 @@ intercept all links
 */
 function setup_linkhandler(router) {
   document.addEventListener("click", (e) => {
-    let target = e.originalTarget.closest("a");
-    console.log("$$$ click handler: target", target, e);
+    console.log("$$$ click handler: target", e);
+
+    // let target = e.originalTarget.closest("a") ?? null;
+    let target = e.target.closest("a");
     if (target) {
       e.preventDefault(); // tell the browser not to respond to the link click
       router.navigate(target.getAttribute("href"));

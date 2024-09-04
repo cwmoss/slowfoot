@@ -95,6 +95,13 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src) {
         server::resp($row);
     });
 
+    $router->get('/lolql', function () use ($ds) {
+        $query = trim($_GET['query'] ?? "");
+        //$row = $db->row('SELECT _id, _type, body FROM docs WHERE _id = ? ', $id);
+        $rows = $ds->query($query);
+        server::resp($rows);
+    });
+
     $router->get('/fts', function () use ($ds) {
         $q = $_GET['q'];
         $rows = $ds->q("SELECT _id, snippet(docs_fts,1, '<b>', '</b>', '[...]', 30) body FROM docs_fts WHERE docs_fts = ? ", $q);

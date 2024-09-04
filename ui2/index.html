@@ -11,6 +11,8 @@
     window.API_BASE = "http://localhost:1199/__api/"
   </script>
   <script type="module" src="/__ui2/components/fetch-state.js"></script>
+  <script type="module" src="/__ui2/components/lolql-playground.js"></script>
+  <script type="module" src="/__ui2/components/slft-search.js"></script>
   <script type="module" src="/__ui2/components/types-nav.js"></script>
   <script type="module" src="/__ui2/components/types-index.js"></script>
   <script type="module" src="/__ui2/components/document-view.js"></script>
@@ -29,11 +31,12 @@
     <a href="/" class="logo"><strong>slowfoot navigator</strong></a>
 
     <a href="/about">About</a>
+    <a href="/playground">Playground</a>
     <button id="refetch">re-fetch</button>
     <fetch-state></fetch-state>
 
     <div class="nav-right">
-      <Search></Search>
+      <slft-search></slft-search>
     </div>
   </nav>
 

@@ -13,6 +13,9 @@ class Api {
   async refetch() {
     return await this.post("fetch");
   }
+  async lolql(query) {
+    return await this.get("lolql", { query: query });
+  }
 
   get(path, data) {
     document.dispatchEvent(new CustomEvent("fetch-start"));
@@ -38,6 +41,7 @@ class Api {
   }
 
   async post(path, data = {}) {
+    document.dispatchEvent(new CustomEvent("fetch-start"));
     let meta = null;
     let url = `${this.endpoint}${path}`;
 

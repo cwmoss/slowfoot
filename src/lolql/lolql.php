@@ -387,5 +387,5 @@ function compact_tokens($t) {
 function array_map_recursive($fn, $arr) {
   return array_map(function ($item) use ($fn) {
     return is_array($item) ? array_map($fn, $item) : $fn($item);
-  }, $arr);
+  }, (array) $arr);
 }
