@@ -1,5 +1,23 @@
 import api from "./api.js";
 import NavigoPlus from "./components/navigo-plus.js";
+import JsonExplorer from "./components/json-explorer.js";
+import FetchState from "./components/fetch-state.js";
+import SlftSearch from "./components/slft-search.js";
+import TypesNav from "./components/types-nav.js";
+import TypesIndex from "./components/types-index.js";
+import DocumentView from "./components/document-view.js";
+import LolqlPlayground from "./components/lolql-playground.js";
+
+/*
+<script type="module" src="/__ui/components/fetch-state.js"></script>
+<script type="module" src="/__ui/components/lolql-playground.js"></script>
+<script type="module" src="/__ui/components/slft-search.js"></script>
+<script type="module" src="/__ui/components/types-nav.js"></script>
+<script type="module" src="/__ui/components/types-index.js"></script>
+<script type="module" src="/__ui/components/document-view.js"></script>
+<script type="module" src="/__ui/components/json-explorer.js"></script>
+*/
+
 let main = document.querySelector("main");
 let refetch_btn = document.querySelector("#refetch");
 
