@@ -40,7 +40,7 @@ nav a{
 </style>
 <main>
 <button id="close">❌</button>
-    <nav><a href="/__ui2/" target="_sf_navigator">
+    <nav><a href="/__ui/" target="_sf_navigator">
     <svg width="16" height="16" fill="white">
       <g transform="translate(0 0)">
         <path
