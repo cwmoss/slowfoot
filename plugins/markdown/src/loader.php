@@ -36,7 +36,7 @@ class loader {
             $data = $document->getYAML() ?? [];
             $md = $document->getContent() ?? '';
             #$id = $data['_id']??($data['id']??$fname);
-            $id = ltrim($path_parts['dirname'] . '/' . $path_parts['filename'], "/");
+            $id = ltrim($path_parts['dirname'] . '/' . $path_parts['filename'], "/.");
             $data["slug"] ??= $id;
             dbg("+mdloader ID", $id, $path_parts);
             // TODO: anything goes
