@@ -16,6 +16,7 @@ use slowfoot\pagebuilder;
 use slowfoot\configuration;
 use slowfoot\store;
 use slowfoot\util\server;
+use slowfoot\functions\runner;
 
 require __DIR__ . '/../_boot.php';
 
@@ -174,6 +175,12 @@ $router->post('/__fun/(.*)', function ($requestpath) {
     $docbase = $_SERVER['DOCUMENT_ROOT'] . '/../endpoints';
     include($docbase . "/" . $requestpath);
     exit;
+});
+
+$router->all('/__run/(.*)', function ($requestpath) {
+    $funbase = $_SERVER['DOCUMENT_ROOT'] . '/../functions';
+    $runner = new runner($funbase);
+    $runner->run($requestpath);
 });
 
 #dbg("++ image path", $config['assets']['path']);

@@ -91,7 +91,7 @@ class server {
         $data['__meta']['time_print'] = $data['__meta']['time_ms'] ?
             $data['__meta']['time_ms'] . ' ms' : $data['__meta']['time_microsec'] . ' μs';
         header('Content-Type: application/json'); //; charset=utf-8
-        print json_encode($data);
+        print json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         dbg('+++ finished');
     }
