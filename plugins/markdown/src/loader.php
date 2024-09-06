@@ -23,7 +23,7 @@ class loader {
 
         $files = globstar($filep);
         foreach ($files as $f) {
-            dbg("++ md file:", $f);
+            // dbg("++ md file:", $f);
 
             $fullname = str_replace($prefix, '', $f);
             $fname = $fullname;
@@ -38,16 +38,18 @@ class loader {
             #$id = $data['_id']??($data['id']??$fname);
             $id = ltrim($path_parts['dirname'] . '/' . $path_parts['filename'], "/.");
             $data["slug"] ??= $id;
-            dbg("+mdloader ID", $id, $path_parts);
+            // dbg("+mdloader ID", $id, $path_parts);
             // TODO: anything goes
             // $id = str_replace('/', '-', $id);
             $row = array_merge($data, [
                 'mdbody' => $md,
                 '_id' => $id,
+                // '_rfile' => $f,
+                // '_info' => $path_parts,
                 '_file' => [
                     'path' => $fname,
                     'full' => $fullname,
-                    'dir' => $path_parts['dirname'],
+                    'dir' => ltrim($path_parts['dirname'], "./"),
                     'name' => $path_parts['filename'],
                     'ext' => $path_parts['extension']
                 ]
