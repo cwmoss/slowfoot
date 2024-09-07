@@ -90,9 +90,10 @@ class DebugPanel extends HTMLElement {
   async refetch() {
     console.log("refetch", this.fetchbtn);
     this.fetchbtn.disabled = true;
-    await fetch("/__api/fetch", { method: "POST" }).finally(
-      () => (this.fetchbtn.disabled = false)
-    );
+    await fetch("/__api/fetch", { method: "POST" }).finally(() => {
+      this.fetchbtn.disabled = false;
+      window.location.reload();
+    });
   }
 }
 
