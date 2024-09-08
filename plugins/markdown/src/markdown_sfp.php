@@ -61,7 +61,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
         #$id = get_absolute_path(dirname($this->current_obj['page']['_id']).'/'.$href );
         $id = get_absolute_path_from_base(
             $href,
-            dirname($this->current_obj['page']['_id']),
+            dirname($this->current_obj['page']['_id'] ?? ""),
             $this->context['conf']->base
         );
 
@@ -86,19 +86,25 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
         dbg("image path", $this->context['conf']->base, $imgpath, $this->current_obj["page"]->_id, $path);
         return $path;
     }
-
+    /*
+https://github.com/erusev/parsedown/issues/723
+*/
     protected function inlineImage($Excerpt) {
         dbg("+++ img excerpt", $Excerpt);
         $img = parent::inlineImage($Excerpt);
         // return $img;
         if (is_array($img)) {
             dbg("+++ §§§§ markdown img", $img);
-            $path = $this->resolve_image_path($img['element']['attributes']['src']);
-            dbg("+++ markdown img path", $path);
+            $data = $img['element']['attributes']['src'];
+            [$path, $paramsraw] = explode('?', $data, 2) + [1 => ""];
+            $params = [];
+            parse_str($paramsraw, $params);
+            $path = $this->resolve_image_path($path);
+            dbg("+++ markdown img path", $path, $params);
             $pipe = $this->context['conf']->get_image_processor();
             $img_url = $pipe->image_url(
                 $path,
-                new image\profile, // empty size == copy only
+                $params["size"] ?? "", // empty size == copy only
             );
             $img['element']['attributes']['src'] = $img_url;
             $img['element']['attributes']['data-slft'] = 'ok';

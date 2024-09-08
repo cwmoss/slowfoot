@@ -62,7 +62,7 @@ class processor {
       $img = $fn($img);
     }
 
-    dbg("[image] start", $img, $profile);
+    dbg("[image] start", $img, $profile, $opts);
 
     if (self::is_remote($img->url)) {
       $img->remote_src = true;
@@ -331,6 +331,10 @@ class processor {
   }
 
   public function fetch_profile($name) {
+    // copy only
+    if ($name == "") {
+      return new profile;
+    }
     if (!isset($this->conf->profiles[$name])) {
       // ad hoc 600x 600x300 etc
       if (preg_match("/^[x\d]{2,}$/", $name)) {
