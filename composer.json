@@ -39,7 +39,7 @@
     "bloatless/php-websocket": "^3.0",
     "mnapoli/front-yaml": "^2.0",
     "benjaminhoegh/parsedown-extended": "^1.2",
-    "cwmoss/wrun": "^1.0"
+    "cwmoss/wrun": "dev-main"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.12",
