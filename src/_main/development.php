@@ -16,7 +16,7 @@ use slowfoot\pagebuilder;
 use slowfoot\configuration;
 use slowfoot\store;
 use slowfoot\util\server;
-use slowfoot\functions\runner;
+use wrun\runner;
 
 require __DIR__ . '/../_boot.php';
 
@@ -178,7 +178,7 @@ $router->post('/__fun/(.*)', function ($requestpath) {
 });
 
 $router->all('/__run/(.*)', function ($requestpath) {
-    $funbase = $_SERVER['DOCUMENT_ROOT'] . '/../functions';
+    $funbase = $_SERVER['DOCUMENT_ROOT'] . '/../server-functions';
     $runner = new runner($funbase);
     $runner->run($requestpath);
 });
