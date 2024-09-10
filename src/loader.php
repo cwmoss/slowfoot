@@ -34,7 +34,7 @@ class loader {
                 $otype = $row['_type'];
                 $row['_src'] = $name;
                 if ($onload) {
-                    $row = $onload($row, $db);
+                    $row = $onload($row, $db, $this->config);
                 }
                 if (!$row) {
                     $db->rejected($otype);
