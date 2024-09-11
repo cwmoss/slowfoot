@@ -34,7 +34,7 @@ export default class DocumentView extends LitElement {
     console.log("render type index", this.items);
     return html`
       <h1>${this.doc._id}</h1>
-      <json-explorer .data=${this.doc}></json-explorer>
+      <json-explorer .reflinks=${true} .data=${this.doc}></json-explorer>
     `;
   }
 }

@@ -20,6 +20,7 @@ Usage:
   slowfoot init [-d <project directory>]
   slowfoot preview [-d <project directory>]
   slowfoot (-h | --help)
+  slowfoot fetch [-d <project directory>]
   slowfoot info [-d <project directory>]
   slowfoot starship [-d <project directory>]
   slowfoot --version
@@ -136,6 +137,16 @@ if ($args['preview']) {
   print "have fun!\n\n";
   `$command`;
 }
+if ($args['fetch']) {
+  $FETCH = true;
+  $PDIR = $args['-d'];
+  if ($PDIR && $PDIR[0] != '/') {
+    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
+  }
+  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+  require $slft_lib_base . '/_boot.php';
+}
+
 if ($args['init']) {
   $PDIR = $args['-d'];
   if ($PDIR && $PDIR[0] != '/') {

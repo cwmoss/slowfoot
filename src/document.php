@@ -46,6 +46,8 @@ class document implements ArrayAccess, JsonSerializable {
     }
 
     public function offsetGet($offset): mixed {
+        if ($offset == "_id") return $this->_id;
+        if ($offset == "_type") return $this->_type;
         return isset($this->data[$offset]) ? $this->data[$offset] : null;
     }
 }

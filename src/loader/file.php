@@ -9,4 +9,8 @@ class file {
 
     ) {
     }
+
+
+    static public function file_to_document() {
+    }
 }

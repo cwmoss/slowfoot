@@ -85,6 +85,7 @@ details strong{
 
 export default class JsonExplorer extends HTMLElement {
   _data = {};
+  reflinks = false;
 
   constructor() {
     super()
@@ -115,8 +116,9 @@ export default class JsonExplorer extends HTMLElement {
   }
 
   set data(d) {
-    console.log("$$$ set data", d);
+    // this.reflinks = this.getAttribute("reflinks");
     this._data = d;
+    console.log("$$$ set data", this.reflinks, d);
     this.render();
   }
 
@@ -134,9 +136,14 @@ export default class JsonExplorer extends HTMLElement {
     return textArea.innerHTML.split("<br>").join("\n");
   }
   render_value(node, key, val) {
+    if (this.reflinks && key == "_ref") {
+      val = `<a href="/__ui/id/${encodeURIComponent(val)}">${val}</a>`;
+    } else {
+      val = this.html_encode(val);
+    }
     node.insertAdjacentHTML(
       "beforeend",
-      `<li><strong class="k">${key}:</strong> ${this.html_encode(val)}</li>`
+      `<li><strong class="k">${key}:</strong> ${val}</li>`
     );
   }
   render_array(node, key, value) {

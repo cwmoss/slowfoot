@@ -10,6 +10,8 @@ INSERT INTO docs_fts(_id, btext)
 
 namespace slowfoot\store;
 
+use ParagonIE\EasyDB\Factory;
+
 class sqlite {
   public $data = [];
 
@@ -38,7 +40,7 @@ class sqlite {
       $this->was_filled = \file_exists($name);
     }
     // dbg("+++ new sqlite", $name);
-    $this->db = \ParagonIE\EasyDB\Factory::fromArray([
+    $this->db = Factory::fromArray([
       "sqlite:$name"
     ]);
     $this->create_schema();
@@ -89,9 +91,11 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
       return json_decode($r['body'], true);
     }, $res);
     return $res;
+    /*
     return [[], 0];
     $res = lquery($this->docs, $q);
     return [$res, count($res)];
+    */
   }
 
   public function query_paginated($q, $limit_per_page, $params = []) {
@@ -150,9 +154,11 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
       return json_decode($r['body'], true);
     }, $res);
     return $res;
+    /*
     return [[], 0];
     $res = lquery($this->docs, $q);
     return [$res, count($res)];
+    */
   }
 
   public function build_order($o = []) {
@@ -178,13 +184,13 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     $res = array_map(function ($r) {
       return json_decode($r['body'], true);
     }, $res);
-    #var_dump($res);
     return $res;
-    $filter = ['_type' => $type];
+    /*    $filter = ['_type' => $type];
     $rs = array_filter($this->docs, function ($row) use ($filter) {
       return evaluate($filter, $row);
     });
     return $rs;
+*/
   }
 
   public function exists($collection, $id) {

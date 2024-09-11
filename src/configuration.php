@@ -195,7 +195,9 @@ function resolve_dot_value($keys, $data) {
   if ($keys) {
     return resolve_dot_value($keys, $data[$current]);
   }
-
+  if (is_object($data)) {
+    return $data->$current;
+  }
   if (!is_assoc($data)) {
     return array_column($data, $current);
   } else {

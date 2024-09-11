@@ -83,6 +83,7 @@ class store {
     if ($this->db->exists("docs", $id)) {
       return false;
     }
+    dbg("+++ store add ", $id, $row);
     $row['_id'] = $id;
     $this->db->add("docs", $id, $row);
     $this->info['loaded'][$row['_type']] ??= 0;

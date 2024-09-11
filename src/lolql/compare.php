@@ -7,10 +7,14 @@ title == "hello"
 title == subtitle
 authors._ref == "a19"
 */
-
+//  {"t":"k","c":["playground"],"v":["center-flexbox.html","center-grid.html"]} ~ {"t":"k","c":["defined"],"v":null}
+//  {"t":"k","c":["playground"],"v":null} ~ {"t":"k","c":["defined"],"v":null}
 function cmp_eq($l, $r) {
-    // dbg('cmp +++ ', $l, $r);
-
+    dbg('cmp_eq +++ ', $l, $r);
+    if ($l['t'] == 'k' && $r['t'] == 'k' && $r["c"] == ["defined"]) {
+        dbg("++ defined-test");
+        return $l['v'] ? true : false;
+    }
     if ($l['t'] == 'k' && is_array($l['v'])) {
         return array_search($r['v'][0], $l['v']);
     }
