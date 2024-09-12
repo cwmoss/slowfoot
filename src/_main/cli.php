@@ -45,6 +45,7 @@ $args = $parsed->args;
 #var_dump($args);
 
 $ds = $dist = null;
+$IS_PROD = false;
 
 // https://www.kammerl.de/ascii/AsciiSignature.php rounded
 
@@ -57,16 +58,27 @@ $logo = '
  (___/ \_)___/ \___/  |_|  \___/ \___/  \__)
 
  ';
-
-if ($args['dev']) {
-  print $logo . "\n";
-
+$need_fetch = match (true) {
+  $args['preview'], $args['init'], $args['info'], $args['starship'] => false,
+  default => true
+};
+$need_pdir = match (true) {
+  default => true
+};
+if ($need_fetch) {
   $FETCH = $args['-f'];
+}
+if ($need_pdir) {
   $PDIR = $args['-d'];
   if ($PDIR && $PDIR[0] != '/') {
     $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
   }
   define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+}
+
+if ($args['dev']) {
+  print $logo . "\n";
+
   $dev_src = 'src/';
   if ($PDIR) {
     $dev_src = $PDIR . '/src/';
@@ -79,11 +91,11 @@ if ($args['dev']) {
   $devserver = join(":", $devserver);
 
   // evtl. fetching data
-  require $slft_lib_base . '/_boot.php';
+  $project = require $slft_lib_base . '/_boot.php';
 
   (new setup(SLF_PROJECT_DIR))->setup();
 
-  print console::console_table(['_type' => 'type', 'total' => 'total'], $ds->info());
+  print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
 
   // this wont work :)
   // `(sleep 1 ; open http://localhost:1199/ )&`;
@@ -104,34 +116,21 @@ if ($args['dev']) {
   `$command`;
   #`($command &) && ($wss &)`;
 }
+
 if ($args['build']) {
+  $IS_PROD = true;
   print $logo . "\n";
-
-  $FETCH = $args['-f'];
-  $PDIR = $args['-d'];
-  if ($PDIR && $PDIR[0] != '/') {
-    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-  }
-  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
-
-  require $slft_lib_base . '/_boot.php';
+  $project = require $slft_lib_base . '/_boot.php';
   (new setup(SLF_PROJECT_DIR))->setup();
   require $slft_lib_base . '/cli/build.php';
 }
-//if ($args['info']) {
-//  require $slft_lib_base . '/cli/info.php';
-//}
+
 if ($args['preview']) {
-  $PDIR = $args['-d'];
-  if ($PDIR && $PDIR[0] != '/') {
-    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-  }
-  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
   shell_info("starting testserver. you can review your build here.", true);
   $boot_only_config = true;
   require $slft_lib_base . '/_boot.php';
   $testserver = "localhost:11999";
-  $command = "php -S {$testserver} -t {$dist}";
+  $command = "php -S {$testserver} -t {$project->dist()}";
   print "\n";
   print "   🤟 http://$testserver\n\n";
   print "<cmd> click\n";
@@ -140,51 +139,29 @@ if ($args['preview']) {
 }
 if ($args['fetch']) {
   $FETCH = true;
-  $PDIR = $args['-d'];
-  if ($PDIR && $PDIR[0] != '/') {
-    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-  }
-  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
   require $slft_lib_base . '/_boot.php';
 }
 
 if ($args['init']) {
-  $PDIR = $args['-d'];
-  if ($PDIR && $PDIR[0] != '/') {
-    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-  }
-  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
   require $slft_lib_base . '/cli/init.php';
 }
+
 if ($args['info']) {
-
-  $d = new document("eins", "page", ["hu" => "bba"]);
-
-  print_r($d);
-  var_dump($d["_type"] ? true : false);
-  exit;
-  $PDIR = $args['-d'];
-  if ($PDIR && $PDIR[0] != '/') {
-    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-  }
-  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
   $boot_only_config = false;
   $boot_quiet = true;
-  require $slft_lib_base . '/_boot.php';
+  $project = require $slft_lib_base . '/_boot.php';
   print "🌈 slowfoot\n";
 
   (new setup(SLF_PROJECT_DIR))->setup();
-  print console::console_table(['_type' => 'type', 'total' => 'total'], $ds->info());
+
+  print console::console_table(['_type' => 'type', 'total' => 'total'], $project->config->db->info());
 }
+
 if ($args['starship']) {
-  $PDIR = $args['-d'];
-  if ($PDIR && $PDIR[0] != '/') {
-    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-  }
-  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+
   $boot_only_config = true;
   $boot_quiet = true;
-  require $slft_lib_base . '/_boot.php';
+  $project = require $slft_lib_base . '/_boot.php';
   print "🌈 slft";
 
   if (file_exists(SLF_PROJECT_DIR . "/var/slowfoot.db")) {

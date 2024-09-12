@@ -4,68 +4,39 @@ use slowfoot\util\console;
 use slowfoot\context;
 use slowfoot\pagebuilder;
 
-/** @var configuration $config */
-/** @var store $ds */
-/** @var array $template_helper */
-/** @var string $src */
-/** @var string $dist */
-/** @var array $pages */
-/** @var array $templates */
+/** @var project $project */
 
 $console = console::console();
 
-print memory_get_usage() . " paths ok\n";
+print memory_get_usage() . " loaded ok\n";
 
-//$template_helper = load_template_helper($ds, $src);
-
-print memory_get_usage() . " helper ok \n";
-
-//print_r(get($ds, 'p-20604'));
-//exit;
-
-if (!$dist) {
+if (!$project->dist()) {
     die('NO DIST-PATH FOUND');
 }
 
-# print_r($config);
-# print_r($ds->info);
-#print_r($ds->db->paths_rev);
-#exit;
-print console::console_table(['_type' => 'type', 'total' => 'total'], $ds->info());
-
-
+print console::console_table(['_type' => 'type', 'total' => 'total'], $project->info_types());
 
 shell_info("removing old dist/ folder");
 `rm -rf $dist`;
 shell_info();
 
-#array_map('unlink', array_filter((array) globstar("$dist/**/*.*")));
-// exit;
-
 $context = new context(
     mode: 'build',
-    src: $src,
+    src: $project->src,
     path: "",
-    config: $config
+    config: $project->config
 );
-/*
-$context = [
-    'mode' => 'build',
-    'src' => $src,
-    'path' => '',
-    'site_name' => $config->site_name ?? '',
-    'site_description' => $config->site_description ?? '',
-    'site_url' => $config->site_url ?? ''
-];
-*/
 
 shell_info("writing templates", true);
-print_r($config);
+
 dbg("+++ PREFIX", PATH_PREFIX);
+// print_r($project);
 
-$builder = new pagebuilder($config, $ds, $template_helper);
+$builder = $project->builder();
+$dist = $project->dist();
+$ds = $project->ds;
 
-foreach ($templates as $type => $conf) {
+foreach ($project->templates() as $type => $conf) {
     //$count = query('');
     //if($type=='article') continue;
     $bs = 100;
@@ -73,7 +44,8 @@ foreach ($templates as $type => $conf) {
 
     shell_info("  => $type");
 
-    foreach (query_type($ds, $type) as $row) {
+    // TODO
+    foreach (query_type($project->ds, $type) as $row) {
         foreach ($conf as $templateconf) {
             //	process_template_data($row, path($row['_id']));
             $path = $ds->get_fpath($row['_id'], $templateconf['name']);
@@ -91,30 +63,15 @@ foreach ($templates as $type => $conf) {
                 data: $row,
                 template_conf: $templateconf
             );
-            /*
-            $content = template(
-                $templateconf['template'],
-                [
-                    'page' => $row,
-                    'path' => $path,
-                    'template_config' => $templateconf,
-                    'path_name' => $templateconf['name']
-                ],
-                $template_helper,
-                template_context('template', $context, $row, $ds, $config)
-            );
-            */
             write($content, $path, null, $dist);
         }
     }
     shell_info();
 }
 
-#print memory_get_usage() . " templates ok\n";
-
 shell_info("writing pages", true);
 
-foreach ($pages as $pagename) {
+foreach ($project->pages as $pagename) {
     shell_info("  => $pagename");
     $pagepath = $pagename;
     if ($pagepath == '/index') {
@@ -126,74 +83,15 @@ foreach ($pages as $pagename) {
     }
     shell_info();
 }
-/*
-foreach ($pages as $pagename) {
-    shell_info("  => $pagename");
-    // $paginate = check_pagination($pagename, $src);
-    $pp = preprocess($pagename, $src);
-    $page_query = $pp['page-query'] ?? null;
-    $pagepath = $pagename;
-    if ($pagepath == '/index') {
-        $pagepath = '/';
-    }
-    if ($paginate) {
-        $pagenr = 1;
-        $path = $pagepath;
-        foreach (chunked_paginate($ds, $paginate) as $coll) {
-            dbg('page', $pagenr);
-            $context['path'] = $pagepath;
-            $content = page(
-                $pagename,
-                ['collection' => $coll],
-                $template_helper,
-                template_context('page', $context, $coll, $ds, $config)
-            );
-            $content = remove_tags($content, ['page-query']);
-            write($content, $pagepath, null, $dist);
-            $pagenr++;
-            $pagepath = $path . '/' . $pagenr;
-        }
-    } elseif ($page_query) {
-        if ($page_query['paginate']) {
-            [$info, $pagequery] = $ds->query_paginated($page_query['__content'], $page_query['paginate'], []);
-
-            for ($pagenr = 1; $pagenr <= $info['minpage']; $pagenr++) {
-                $qres = $pagequery($pagenr);
-                $pagination = pagination($info, $pagenr ?: 1);
-
-                $context['path'] = $pagepath;
-                $content = page($pagename, ['page' => $qres, 'pagination' => $pagination], $template_helper, template_context('page', $context, $qres, $ds, $config));
-                $content = remove_tags($content, ['page-query']);
-                $pagepath_pg = $pagepath . '/' . $pagenr;
-                write($content, $pagepath, $pagenr, $dist);
-            }
-        } else {
-            $qres = $ds->query($page_query['__content']);
-            $context['path'] = $pagepath;
-            $content = page($pagename, ['page' => $qres, 'pagination' => []], $template_helper, template_context('page', $context, $qres, $ds, $config));
-            $content = remove_tags($content, ['page-query']);
-            write($content, $pagepath, null, $dist);
-        }
-    } else {
-        $content = page($pagename, [], $template_helper, template_context('page', $context, [], $ds, $config));
-        write($content, $pagepath, null, $dist);
-    }
-    shell_info();
-}
-#exit;
-*/
-
-
-#print memory_get_usage() . " pages ok\n";
 
 shell_info("copy assets");
 
-`cp -R $src/assets $dist/assets`;
-`cp -R $base/var/rendered-images $dist/images`;
+`cp -R {$project->src}/assets {$project->dist()}/assets`;
+`cp -R $project->base/var/rendered-images {$project->dist()}/images`;
 
 shell_info();
 
 if (isset($config->hooks['after_build'])) {
-    $config->hooks['after_build']($config);
+    $config->hooks['after_build']($project->config);
 }
 shell_info("⚡️ done", true);

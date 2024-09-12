@@ -18,19 +18,11 @@ use slowfoot\store;
 use slowfoot\util\server;
 use wrun\runner;
 
-require __DIR__ . '/../_boot.php';
+$IS_PROD = false;
 
-/** @var configuration $config */
-/** @var store $ds */
-/** @var array $template_helper */
-/** @var string $src */
-/** @var array $pages */
+/** @var project $project */
+$project = require __DIR__ . '/../_boot.php';
 
-
-
-
-#dbg("++start");
-#dbg("SERVER", $_SERVER);
 ini_set("precision", 16);
 define('START_TIME', microtime(true));
 
@@ -48,40 +40,39 @@ $router->setBasePath("");
 $hr = false;
 $debug = true;
 
-$router->mount('/__api', function () use ($router, $ds, $config, $src) {
+$router->mount('/__api', function () use ($router, $project) {
     #dbg('server', $_SERVER);
     server::send_cors();
 
-    $router->post("/fetch", function () use ($config) {
-        $config->fresh_store();
-        $dataloader = $config->get_loader();
-        $ds = $dataloader->load();
+    $router->post("/fetch", function () use ($project) {
+        $project->config->fresh_store();
+        $project->load();
         server::resp(["ok" => true]);
     });
 
-    $router->get('/index', function () use ($ds) {
+    $router->get('/index', function () use ($project) {
 
         #print "hallo";
 
         //$rows = $db->run('SELECT * FROM docs LIMIT 20');
         // $rows = $db->run('SELECT _type, count(*) AS total FROM docs GROUP BY _type');
 
-        server::resp($ds->info());
+        server::resp($project->ds->info());
     });
 
-    $router->get('/type/([-\w.]+)(/\d+)?', function ($type, $page = 1) use ($ds) {
+    $router->get('/type/([-\w.]+)(/\d+)?', function ($type, $page = 1) use ($project) {
         dbg("[api] type", $type);
         #print "hallo";
         if ($type == '__paths') {
-            if ($ds->db->db)
-                $rows = $ds->db->db->safeQuery('SELECT * FROM paths LIMIT ? OFFSET ?', [20, 0]);
+            if ($project->ds->db->db)
+                $rows = $project->ds->db->db->safeQuery('SELECT * FROM paths LIMIT ? OFFSET ?', [20, 0]);
             else $rows = array_values(array_map(fn($p) => [
                 "id" => $p["_"],
                 "path" => $p["_"],
                 "name" => "_"
-            ], $ds->db->paths));
+            ], $project->ds->db->paths));
         } else {
-            $rows = $ds->query_type($type);
+            $rows = $project->ds->query_type($type);
         }
         //$rows = $db->run('SELECT * FROM docs LIMIT 20');
         //$rows = $db->q('SELECT _id, body FROM docs WHERE _type = ? LIMIT 20', $type);
@@ -89,28 +80,28 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src) {
         server::resp(['rows' => $rows]);
     });
 
-    $router->get('/id', function () use ($ds) {
+    $router->get('/id', function () use ($project) {
         $id = $_GET['id'];
         //$row = $db->row('SELECT _id, _type, body FROM docs WHERE _id = ? ', $id);
-        $row = $ds->get($id);
+        $row = $project->ds->get($id);
         server::resp($row);
     });
 
-    $router->get('/lolql', function () use ($ds) {
+    $router->get('/lolql', function () use ($project) {
         $query = trim($_GET['query'] ?? "");
         //$row = $db->row('SELECT _id, _type, body FROM docs WHERE _id = ? ', $id);
-        $rows = $ds->query($query);
+        $rows = $project->ds->query($query);
         server::resp($rows);
     });
 
-    $router->get('/fts', function () use ($ds) {
+    $router->get('/fts', function () use ($project) {
         $q = $_GET['q'];
-        $rows = $ds->q("SELECT _id, snippet(docs_fts,1, '<b>', '</b>', '[...]', 30) body FROM docs_fts WHERE docs_fts = ? ", $q);
+        $rows = $project->ds->q("SELECT _id, snippet(docs_fts,1, '<b>', '</b>', '[...]', 30) body FROM docs_fts WHERE docs_fts = ? ", $q);
         server::resp($rows);
     });
 
 
-    $router->get('/preview/(.*)', function ($id_type) use ($config, $src) {
+    $router->get('/preview/(.*)', function ($id_type) use ($project) {
         list($id, $type) = explode('/', $id_type);
         dbg("[api/preview]", $id_type);
 
@@ -121,11 +112,11 @@ $router->mount('/__api', function () use ($router, $ds, $config, $src) {
         #dbg('[api/preview] template', $preview_obj);
         $context = [
             'mode' => 'dev',
-            'src' => $src,
+            'src' => $project->src,
             'path' => $id_type,
-            'site_name' => $config['site_name'] ?? '',
-            'site_description' => $config['site_description'] ?? '',
-            'site_url' => $config['site_url'] ?? '',
+            'site_name' => $project->config['site_name'] ?? '',
+            'site_description' => $project->config['site_description'] ?? '',
+            'site_url' => $project->config['site_url'] ?? '',
 
         ];
         // TODO: migrate
@@ -185,7 +176,7 @@ $router->all('/__run/(.*)', function ($requestpath) {
 
 #dbg("++ image path", $config['assets']['path']);
 
-$router->get($config->assets->path . '/' . '(.*\.\w{1,5})', function ($requestpath) {
+$router->get($project->config->assets->path . '/' . '(.*\.\w{1,5})', function ($requestpath) {
     dbg('[dev] asssets', $requestpath);
     $docbase = $_SERVER['DOCUMENT_ROOT'] . '/../var/rendered-images';
     #dbg("++ image path base", $docbase, $requestpath);
@@ -200,7 +191,7 @@ $router->get('(.*\.\w{1,5})', function ($requestpath) {
     exit;
 });
 
-$router->get('(.*)?', function ($requestpath) use ($ds, $config, $pages, $src, $template_helper) {
+$router->get('(.*)?', function ($requestpath) use ($project) {
     dbg('[dev] page/template', $requestpath);
     server::send_nocache();
     $requestpath = '/' . $requestpath;
@@ -208,15 +199,15 @@ $router->get('(.*)?', function ($requestpath) use ($ds, $config, $pages, $src, $
     if ($requestpath == '/' || $requestpath == '') {
         $requestpath = '/index';
     }
-    $builder = new pagebuilder($config, $ds, $template_helper);
+    $builder = new pagebuilder($project->config, $project->ds, $project->template_helper);
     #dbg("dev: req", $requestpath);
-    [$obj_id, $name] = $ds->get_by_path($requestpath);
+    [$obj_id, $name] = $project->ds->get_by_path($requestpath);
     dbg("dev ID - name", $obj_id, $name, $requestpath);
     $context = new context(
         mode: 'dev',
-        src: $src,
+        src: $project->src,
         path: $requestpath,
-        config: $config
+        config: $project->config
     );
 
     if ($obj_id) {
@@ -229,7 +220,7 @@ $router->get('(.*)?', function ($requestpath) use ($ds, $config, $pages, $src, $
         }
 
         dbg('page...', $pagename, $pagenr, $requestpath);
-        $obj_id = array_search($pagename, $pages);
+        $obj_id = array_search($pagename, $project->pages);
         $content = $builder->make_page($pagename, $pagenr, $requestpath, $context);
     }
     $debug = true;

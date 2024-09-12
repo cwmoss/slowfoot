@@ -48,10 +48,12 @@ class configuration {
     public array $plugins = [],
     public array $preview = [],
     public string|array $build = ['dist' => 'dist'],
+    public bool $is_prod = false
   ) {
   }
-  static function load(string $dir, bool $fresh_fetch = false, ?configuration $conf = null): self {
+  static function load(string $dir, bool $fresh_fetch = false, ?configuration $conf = null, $is_prod = false): self {
     if (!$conf) $conf = require($dir . '/slowfoot-config.php');
+    $conf->is_prod = $is_prod;
     $conf->base = '/' . get_absolute_path($dir);
     $conf->src = $conf->base . '/src';
     $conf->dist = $conf->base . '/dist';
@@ -79,7 +81,7 @@ class configuration {
     $this->db = $this->get_store(true);
   }
 
-  public function get_loader() {
+  public function get_loader(): loader {
     return new loader($this);
   }
   public function get_store(bool $fresh_fetch = false): store {

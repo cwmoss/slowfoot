@@ -7,7 +7,7 @@ class loader {
     public function __construct(public configuration $config) {
     }
 
-    public function load() {
+    public function load(): store {
         $db = $this->config->get_store();
         $db_store = get_class($db->db);
         $onload = $this->config->hooks['on_load'] ?? null;
@@ -27,6 +27,9 @@ class loader {
             shell_info("fetching $name");
 
             foreach ($fun($this->config, $db) as $row) {
+                if ($this->config->is_prod && isset($row["_draft"]) && $row["_draft"]) {
+                    continue;
+                }
                 if (!isset($row['_type']) || !$row['_type']) {
                     #print_r($row);
                     $row['_type'] = $opts['type'];
