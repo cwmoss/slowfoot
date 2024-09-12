@@ -3,6 +3,7 @@ $project_dir ??= "";
 
 require $project_dir . '/vendor/autoload.php';
 
+use slowfoot\document;
 use slowfoot\setup;
 use slowfoot\util\console;
 use slowfoot\store;
@@ -156,6 +157,12 @@ if ($args['init']) {
   require $slft_lib_base . '/cli/init.php';
 }
 if ($args['info']) {
+
+  $d = new document("eins", "page", ["hu" => "bba"]);
+
+  print_r($d);
+  var_dump($d["_type"] ? true : false);
+  exit;
   $PDIR = $args['-d'];
   if ($PDIR && $PDIR[0] != '/') {
     $PDIR = SLOWFOOT_BASE . '/' . $PDIR;

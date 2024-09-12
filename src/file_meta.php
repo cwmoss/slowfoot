@@ -30,8 +30,9 @@ class file_meta {
     ) {
         // fullpath already contains the basepath?
         if ($base && str_starts_with($full, $base)) {
-            $this->full = substr($full, strlen($base));
+            $full = substr($full, strlen($base));
         }
+        $this->full = ltrim($full, "/.");
         $this->read();
         $this->path_info();
     }
@@ -45,9 +46,10 @@ class file_meta {
     }
 
     public function path_info() {
+        dbg("+++ file_meta path_info", $this->full, $this->remove_prefix);
         $fname = $this->full;
         if ($this->remove_prefix) {
-            $fname = preg_replace("~^{$this->remove_prefix}~", "", $this->full);
+            $fname = preg_replace("~^{$this->remove_prefix}~", "", $fname);
         }
         $this->path = $fname;
         $info = pathinfo($fname);

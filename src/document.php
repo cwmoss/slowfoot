@@ -33,24 +33,27 @@ class document implements ArrayAccess, JsonSerializable {
     }
 
     public function offsetSet($offset, $value): void {
-        if (is_null($offset)) {
-            $this->data[] = $value;
-        } else {
-            $this->data[$offset] = $value;
-        }
+        match ($offset) {
+            "_id", "_type" => $this->$offset = $value,
+            default => $this->data[$offset] = $value
+        };
     }
 
     public function offsetExists($offset): bool {
-        return isset($this->data[$offset]);
+        return match ($offset) {
+            "_id", "_type" => isset($this->$offset),
+            default => isset($this->data[$offset])
+        };
     }
-
+    // TODO: _id, _type?
     public function offsetUnset($offset): void {
         unset($this->data[$offset]);
     }
 
     public function offsetGet($offset): mixed {
-        if ($offset == "_id") return $this->_id;
-        if ($offset == "_type") return $this->_type;
-        return isset($this->data[$offset]) ? $this->data[$offset] : null;
+        return match ($offset) {
+            "_id", "_type" => $this->$offset,
+            default => isset($this->data[$offset]) ? $this->data[$offset] : null
+        };
     }
 }
