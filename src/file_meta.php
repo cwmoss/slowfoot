@@ -20,7 +20,7 @@ class file_meta {
     public int $modified;
     public int $created;
     public int $size;
-    public string $content;
+    private string $content;
 
     public function __construct(public string $full, private string $base, private string $current = "", private string $remove_prefix = "") {
         $this->read();
