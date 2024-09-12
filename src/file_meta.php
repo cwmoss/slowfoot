@@ -22,7 +22,16 @@ class file_meta {
     public int $size;
     public string $content;
 
-    public function __construct(public string $full, private string $base, private string $current = "", private string $remove_prefix = "") {
+    public function __construct(
+        public string $full,
+        private string $base,
+        private string $current = "",
+        private string $remove_prefix = ""
+    ) {
+        // fullpath already contains the basepath?
+        if ($base && str_starts_with($full, $base)) {
+            $this->full = substr($full, strlen($base));
+        }
         $this->read();
         $this->path_info();
     }
@@ -48,7 +57,7 @@ class file_meta {
     }
 
     public function get_document($id = null, string $type = "file"): document {
-        return new document($id ?? $this->get_id(), $type, ["_file" => $this, "content" => $this->get_content()]);
+        return new document($id ?? $this->get_id(), $type, ["_file" => $this, "content" => $this->content]);
     }
 
     public function get_id(): string {

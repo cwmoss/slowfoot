@@ -14,6 +14,9 @@ class document implements ArrayAccess, JsonSerializable {
         private array $data
     ) {
     }
+    public function update(array $data) {
+        $this->data = array_merge($this->data, $data);
+    }
 
     public function jsonSerialize(): mixed {
         return ["_id" => $this->_id, "_type" => $this->_type, ...$this->data];
