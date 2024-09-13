@@ -53,9 +53,12 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
 
     // wird auch für !image tags aufgerufen
     protected function resolve_link($href) {
+        dbg("resolve link", $href);
         if ($href[0] == '/') {
             return PATH_PREFIX . $href;
         }
+        if (str_starts_with($href, "http")) return $href;
+
         #TODO: parse_url
 
         #$id = get_absolute_path(dirname($this->current_obj['page']['_id']).'/'.$href );
@@ -77,7 +80,11 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
     }
 
     protected function resolve_image_path($imgpath) {
-
+        return join("/", [
+            $this->current_obj["page"]->_file["prefix"],
+            $imgpath
+        ]);
+        /*
         $path = get_absolute_path_from_base(
             $imgpath,
             dirname($this->current_obj["page"]->_file["full"]),
@@ -85,6 +92,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
         );
         dbg("image path", $this->context['conf']->base, $imgpath, $this->current_obj["page"]->_id, $path);
         return $path;
+        */
     }
     /*
 https://github.com/erusev/parsedown/issues/723
@@ -122,11 +130,11 @@ https://github.com/erusev/parsedown/issues/723
             'extent' => strlen($Excerpt['text']),
             'element' => array(
                 "allowRawHtmlInSafeMode" => true,
-                "rawHtml" => $res,
+                "rawHtml" => $res[1],
                 'name' => 'div',
                 // 'text' => $matches[1],
                 'attributes' => array(
-                    'shortcode' => true,
+                    'shortcode' => $res[0],
                 ),
                 'handler' => 'hdl_shortcode'
                 /*array(

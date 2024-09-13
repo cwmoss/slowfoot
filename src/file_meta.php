@@ -20,6 +20,7 @@ class file_meta {
     public int $modified;
     public int $created;
     public int $size;
+    public string $prefix;
     private string $content;
 
     public function __construct(
@@ -33,6 +34,7 @@ class file_meta {
             $full = substr($full, strlen($base));
         }
         $this->full = ltrim($full, "/.");
+        $this->prefix = $remove_prefix;
         $this->read();
         $this->path_info();
     }

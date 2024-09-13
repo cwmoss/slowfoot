@@ -2,6 +2,7 @@
 
 namespace slowfoot;
 
+use DateTimeZone;
 use OutOfRangeException;
 use slowfoot\store;
 use slowfoot\store\memory;
@@ -32,6 +33,7 @@ class configuration {
   public string $base;
   public string $src;
   public string $dist;
+  public DateTimeZone $tz;
   public ?store $db;
 
   public function __construct(
@@ -48,8 +50,11 @@ class configuration {
     public array $plugins = [],
     public array $preview = [],
     public string|array $build = ['dist' => 'dist'],
-    public bool $is_prod = false
+    public bool $is_prod = false,
+    public string $timezone = "Europe/Berlin"
   ) {
+    $this->tz = new DateTimeZone($timezone);
+    date_default_timezone_set($timezone);
   }
   static function load(string $dir, bool $fresh_fetch = false, ?configuration $conf = null, $is_prod = false): self {
     if (!$conf) $conf = require($dir . '/slowfoot-config.php');

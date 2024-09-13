@@ -2,6 +2,7 @@
 
 namespace slowfoot_plugin\markdown;
 
+use DateTime;
 use slowfoot\configuration;
 use Mni\FrontYAML\Parser;
 use slowfoot\file_meta;
@@ -10,7 +11,8 @@ class loader {
 
     public function __construct(
         public string $file,
-        public ?string $remove_prefix = null
+        public ?string $remove_prefix = null,
+        public ?string $date_input_format = "d.m.Y"
     ) {
     }
 
@@ -31,6 +33,10 @@ class loader {
             $data = $document->getYAML() ?? [];
             $md = $document->getContent() ?? '';
 
+            if ($data["date"] ?? null) {
+                $date = DateTime::createFromFormat($this->date_input_format, $data["date"]);
+                $data["date"] = $date->format("Y-m-d H:i:s");
+            }
             $data["slug"] ??= $doc->_id;
             $data["mdbody"] = $md;
             $doc->update($data);

@@ -491,3 +491,8 @@ if (!function_exists('is_assoc')) {
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
 }
+
+function format_date($f, $d) {
+    $date = DateTime::createFromFormat("Y-m-d H:i:s", $d);
+    return $date->format($f);
+}
