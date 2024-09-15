@@ -492,7 +492,7 @@ if (!function_exists('is_assoc')) {
     }
 }
 
-function format_date($f, $d) {
-    $date = DateTime::createFromFormat("Y-m-d H:i:s", $d);
-    return $date->format($f);
+function format_date($format, $date) {
+    $date = DateTime::createFromFormat("Y-m-d H:i:s", $date);
+    return $date->format($format);
 }
