@@ -86,8 +86,8 @@ foreach ($project->pages as $pagename) {
 
 shell_info("copy assets");
 
-`cp -R {$project->src}/assets {$project->dist()}/assets`;
-`cp -R $project->base/var/rendered-images {$project->dist()}/images`;
+`cp -R {$project->src}/assets {$project->dist()}/`;
+`cp -a $project->base/var/rendered-images/. {$project->dist()}/images`;
 
 shell_info();
 
