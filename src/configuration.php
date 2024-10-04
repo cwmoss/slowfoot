@@ -32,6 +32,7 @@ class configuration {
 
   public string $base;
   public string $src;
+  public string $var;
   public string $dist;
   public DateTimeZone $tz;
   public ?store $db;
@@ -56,19 +57,32 @@ class configuration {
     $this->tz = new DateTimeZone($timezone);
     date_default_timezone_set($timezone);
   }
-  static function load(string $dir, bool $fresh_fetch = false, ?configuration $conf = null, $is_prod = false): self {
+  static function load(
+    string $dir,
+    bool $fresh_fetch = false,
+    ?configuration $conf = null,
+    $is_prod = false,
+    string $write_path = ""
+  ): self {
     if (!$conf) $conf = require($dir . '/slowfoot-config.php');
     $conf->is_prod = $is_prod;
     $conf->base = '/' . get_absolute_path($dir);
     $conf->src = $conf->base . '/src';
-    $conf->dist = $conf->base . '/dist';
+    if ($write_path) {
+      $conf->dist = $conf->base . "/" . $write_path . "/dist";
+      $conf->var = $conf->base .  "/" . $write_path . "/var";
+    } else {
+      $conf->dist = $conf->base . "/dist";
+      $conf->var = $conf->base . "/var";
+    }
+
     $conf->init($fresh_fetch);
     return $conf;
   }
 
   public function init(bool $fresh_fetch) {
-    if (!is_dir($this->base . "/var")) {
-      mkdir($this->base . "/var");
+    if (!is_dir($this->var)) {
+      mkdir($this->var);
     }
     foreach ($this->templates as $name => $t) {
       $this->templates[$name] = $this->normalize_template_config($name, $t);
@@ -144,16 +158,19 @@ class configuration {
 
   function normalize_store_config() {
     $store = ['adapter' => $this->store];
-    $store['base'] = $this->base . '/var';
+    $store['base'] = $this->var;
     return $store;
   }
 
   function normalize_assets_config(?image\configuration $assets): image\configuration {
     if (!$assets) {
-      $assets = new image\configuration($this->base);
+      $assets = new image\configuration($this->base, var: $this->var);
       return $assets;
     }
     $assets->base = $this->base;
+    $assets->var = $this->var;
+    $assets->update_paths();
+
     if (!$assets->map) {
       $assets->map = function ($img) {
         return hook::invoke_filter('assets_map', $img, $this->db);

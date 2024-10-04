@@ -45,7 +45,12 @@ if (file_exists("$base/.env")) {
 
 $_ENV = array_merge(getenv(), $_ENV);
 
-$project = new project(configuration::load($base, (isset($FETCH) && $FETCH), is_prod: $IS_PROD));
+$project = new project(configuration::load(
+  $base,
+  (isset($FETCH) && $FETCH),
+  is_prod: $IS_PROD,
+  write_path: $_ENV["SLFT_WRITE_PATH"] ?? ""
+));
 
 // for testserver
 if ($boot_only_config ?? null) return $project;

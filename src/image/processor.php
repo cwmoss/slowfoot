@@ -69,7 +69,7 @@ class processor {
 
       if ($this->conf->download) {
         $dl_name = $img->_id;
-        $download_file = $this->conf->base . '/var/download/' . $dl_name;
+        $download_file = $this->conf->var . '/download/' . $dl_name;
 
         dbg("[image] download to ", $download_file);
 
@@ -92,7 +92,7 @@ class processor {
     }
 
     $name = $this->get_name($img, $profile);
-    $dest = $this->conf->base . '/' . $this->conf->dest . '/' . $name;
+    $dest = $this->conf->dest . '/' . $name;
 
     // $src = $img->download_file ?: $img->_id;
     $src = $img->download_file ?: $img->path;

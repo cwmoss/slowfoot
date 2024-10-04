@@ -18,7 +18,7 @@ slowfoot.
 Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
   slowfoot build [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot init [-d <project directory>]
+  slowfoot init [-d <project directory>] --webdeploy
   slowfoot preview [-d <project directory>]
   slowfoot (-h | --help)
   slowfoot fetch [-d <project directory>]
@@ -120,8 +120,9 @@ if ($args['dev']) {
 if ($args['build']) {
   $IS_PROD = true;
   print $logo . "\n";
-  $project = require $slft_lib_base . '/_boot.php';
+
   (new setup(SLF_PROJECT_DIR))->setup();
+  $project = require $slft_lib_base . '/_boot.php';
   require $slft_lib_base . '/cli/build.php';
 }
 

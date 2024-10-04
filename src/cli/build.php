@@ -14,6 +14,9 @@ if (!$project->dist()) {
     die('NO DIST-PATH FOUND');
 }
 
+$dist = $project->dist();
+print "DIST: $dist";
+
 print console::console_table(['_type' => 'type', 'total' => 'total'], $project->info_types());
 
 shell_info("removing old dist/ folder");
@@ -87,11 +90,17 @@ foreach ($project->pages as $pagename) {
 shell_info("copy assets");
 
 `cp -R {$project->src}/assets {$project->dist()}/`;
-`cp -a $project->base/var/rendered-images/. {$project->dist()}/images`;
+`cp -a {$project->config->var}/rendered-images/. {$project->dist()}/images`;
 
 shell_info();
 
-if (isset($config->hooks['after_build'])) {
-    $config->hooks['after_build']($project->config);
+if (isset($project->config->hooks['after_build'])) {
+    shell_info("after build hook");
+    $project->config->hooks['after_build']($project->config);
+    shell_info();
+} else {
+    shell_info("no after build hook configured", true);
 }
+
+// print getenv("SLFT_WRITE_PATH");
 shell_info("⚡️ done", true);

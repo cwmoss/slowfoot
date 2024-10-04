@@ -22,7 +22,7 @@ class project {
     }
 
     public function dist(): string {
-        return $this->config->build['dist'];
+        return $this->config->dist; // $this->config->build['dist'];
     }
 
     public function info(): array {

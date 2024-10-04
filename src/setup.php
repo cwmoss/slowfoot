@@ -10,6 +10,11 @@ class setup {
   }
 
   public function setup(): bool {
+    // TODO: inject somewhere
+    $writebase = getenv("SLFT_WRITE_PATH");
+    if ($writebase) $writebase = $this->project_dir . "/" . $writebase;
+    else $writebase = $this->project_dir;
+
     $writeable = [
       'var',
       'var/download',
@@ -18,7 +23,7 @@ class setup {
     ];
 
     foreach ($writeable as $dir) {
-      $fdir = $this->project_dir . '/' . $dir;
+      $fdir = $writebase . '/' . $dir;
       dbg("+ setup check $fdir");
       if (!file_exists($fdir)) {
         mkdir($fdir);
@@ -57,6 +62,24 @@ class setup {
       if (!is_dir(dirname($destfile))) mkdir(dirname($destfile), recursive: true);
       copy($file, $destfile);
       // print $file . " => $dest => $destfile\n";
+    }
+    return $skipped;
+  }
+
+  public function webdeploy(): array {
+    $skipped = [];
+    $projectbase = realpath($this->project_dir);
+    $sourcedir = realpath(__DIR__ . "/../webdeploy");
+    $destdir = $projectbase . "/webdeploy";
+    mkdir($destdir);
+    $files = ["index.php"];
+    foreach ($files as $file) {
+      $destfile = $destdir . "/" . $file;
+      if (file_exists($destfile)) {
+        $skipped[] = "webdeploy/$file";
+        continue;
+      }
+      copy($sourcedir . "/" . $file, $destfile);
     }
     return $skipped;
   }

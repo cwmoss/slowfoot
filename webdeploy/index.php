@@ -10,4 +10,4 @@ define('SLOWFOOT_BASE', dirname(__DIR__));
 
 require SLOWFOOT_BASE . '/vendor/autoload.php';
 
-require SLOWFOOT_BASE . '/vendor/cwmoss/slowfoot-lib/src/webdeploy.php';
+require SLOWFOOT_BASE . '/vendor/cwmoss/slowfoot/src/_main/webdeploy.php';
