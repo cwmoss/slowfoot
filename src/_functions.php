@@ -138,13 +138,13 @@ function evaluate_single($key, $value, $data) {
     }
 
     if (!is_assoc($data)) {
-        return array_find($data, $value, $current);
+        return array_find_prop($data, $value, $current);
     } else {
         return $data[$current] == $value;
     }
 }
 */
-function array_find($haystack, $needle, $prop) {
+function array_find_prop($haystack, $needle, $prop) {
     foreach ($haystack as $val) {
         if ($val[$prop] == $needle) {
             return true;
