@@ -18,7 +18,7 @@ slowfoot.
 Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
   slowfoot build [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot init [-d <project directory>] --webdeploy
+  slowfoot init [-d <project directory>] [--webdeploy]
   slowfoot preview [-d <project directory>]
   slowfoot (-h | --help)
   slowfoot fetch [-d <project directory>]
