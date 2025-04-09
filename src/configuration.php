@@ -52,7 +52,8 @@ class configuration {
     public array $preview = [],
     public string|array $build = ['dist' => 'dist'],
     public bool $is_prod = false,
-    public string $timezone = "Europe/Berlin"
+    public string $timezone = "Europe/Berlin",
+    public string $template_engine = template::class,
   ) {
     $this->tz = new DateTimeZone($timezone);
     date_default_timezone_set($timezone);
@@ -112,8 +113,8 @@ class configuration {
     }
     return new store($db, $this->templates);
   }
-  public function get_template_engine(): template {
-    return new template($this);
+  public function get_template_engine(): template_contract {
+    return new $this->template_engine($this);
   }
 
   public function get_image_processor() {

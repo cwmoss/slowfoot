@@ -14,7 +14,7 @@ class markdown_plugin {
     public shortcode $shortcode;
 
     public function init() {
-        dbg("+++ hook shortcodes", hook::invoke_filter("markdown.shortcodes", []));
+        // dbg("+++ hook shortcodes", hook::invoke_filter("markdown.shortcodes", []));
 
         hook::add('bind_template_helper', function ($ds, $src, configuration $config) {
             return $this->markdown_helper($config, $ds);
@@ -43,12 +43,13 @@ class markdown_plugin {
     public function markdown_parser($config, $ds) {
         $parser = new markdown_sfp();
         # return $parser;
-        $parser->setSetting('toc', true);
-        $parser->setSetting('smarty', false);
+        $parser->config()->set('toc', true);
+        // $parser->setSetting('toc', true);
+        $parser->config()->set('smartypants', false);
         # this extension eats chars
-        $parser->setSetting("typographer", false);
-        $parser->setSetting("abbreviations", true);
-        $parser->setSetting("comments", true);
+        $parser->config()->set("typographer", false);
+        $parser->config()->set("abbreviations", true);
+        $parser->config()->set("comments", true);
 
         /* $Parser->setSetting('smarty', [
             'substitutions' => [
@@ -71,7 +72,7 @@ class markdown_plugin {
     }
 
     public function markdown_helper($config = null, $ds = null) {
-        dbg("+++ markdown helper vanilla");
+        // dbg("+++ markdown helper vanilla");
         $parser = $this->markdown_parser($config, $ds);
 
         return [
@@ -87,15 +88,17 @@ class markdown_plugin {
                 // we need a new parser
                 $parser = $this->markdown_parser($config, $ds);
                 $parser->body($text);
+                // dbg("+++ markdown TOC", $parser->contentsList());
+                // die();
                 return $parser->contentsList();
             },
         ];
     }
 
     public function markdown_helper_with_obj($parser, $data = null) {
-        dbg("+++ markdown helper object", $data, func_get_args());
+        // dbg("+++ markdown helper object", $data, func_get_args());
         return function ($text) use ($parser, $data) {
-            dbg("+++ call MD w object");
+            // dbg("+++ call MD w object");
             return $parser($text, $data);
         };
     }

@@ -54,6 +54,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
     // wird auch für !image tags aufgerufen
     protected function resolve_link($href) {
         dbg("resolve link", $href);
+        if ($href[0] == "#") return $href;
         if ($href[0] == '/') {
             return PATH_PREFIX . $href;
         }

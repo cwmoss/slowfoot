@@ -7,7 +7,7 @@ use slowfoot\util\html;
 
 class pagebuilder {
 
-  public template $engine;
+  public template_contract $engine;
 
   public function __construct(
     public configuration $config,
