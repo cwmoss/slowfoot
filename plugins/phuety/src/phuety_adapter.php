@@ -19,8 +19,9 @@ class phuety_adapter implements template_contract {
             'page.*' => 'pages/*',
             'template.*' => 'templates/*',
             // 'form.*' => 'form/',
-            'doc.*' => 'components/'
-        ], __DIR__ . "/compiled");
+            'doc.*' => 'components/',
+            'part.*' => 'partials/'
+        ], $config->src . "/compiled");
     }
     public function run(string $_template, array $data, array $helper, context $__context): string {
         $name = $_template;
