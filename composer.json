@@ -10,7 +10,8 @@
     "psr-4": {
       "slowfoot\\": "src",
       "slowfoot_plugin\\markdown\\": "plugins/markdown/src",
-      "slowfoot_plugin\\sanity\\": "plugins/sanity/src"
+      "slowfoot_plugin\\sanity\\": "plugins/sanity/src",
+      "slowfoot_plugin\\phuety\\": "plugins/phuety/src"
     }
   },
   "bin": [
