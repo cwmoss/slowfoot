@@ -34,9 +34,11 @@ class phuety_adapter implements template_contract {
     }
 
     public function run_page(string $_template, array $data, array $helper, context $__context): string {
-        $name = $_template;
+        $name = ltrim($_template, "/");
         $cname = $__context->is_page ? "page.{$name}" : "page.{$name}";
         dbg("++ run page", $cname, $name, $__context);
+        $this->engine->set_helper($helper);
+        $this->engine->set_custom_tag("page-query");
         ob_start();
         $this->engine->run($cname, $helper + $data);
         return ob_get_clean();

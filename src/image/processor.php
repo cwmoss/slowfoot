@@ -90,7 +90,7 @@ class processor {
         }
       }
     }
-
+    dbg("+++ imageobject", $img);
     $name = $this->get_name($img, $profile);
     $dest = $this->conf->dest . '/' . $name;
 
