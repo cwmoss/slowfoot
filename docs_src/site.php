@@ -18,7 +18,7 @@ class site {
 
     public function show_sourcecode(array $code, ?document $current_obj, configuration $conf): string {
         $file = $code[0];
-        $file = get_absolute_path_from_base($file, $current_obj->_file["full"], $conf->base);
+        $file = get_absolute_path_from_base($file, $current_obj->_file->full, $conf->base);
         $source = file_get_contents($file);
         $source = htmlspecialchars($source);
         $lang = $code[1];
@@ -33,11 +33,11 @@ class site {
         //$current_section = $current['dir']?basename($current['dir']):basename($chapters[0]['_file']['dir']);
         $current_section = "";
         $chapters = array_reduce($chapters, function ($res, $chapter) use ($current_section) {
-            $sid = basename($chapter['_file']['dir']);
+            $sid = basename($chapter->_file->dir);
             if (!isset($res[$sid])) {
                 $res[$sid] = [
                     'sid' => $sid,
-                    'title' => $chapter['chapter_title'] ?? $sid,
+                    'title' => $chapter->chapter_title ?? $sid,
                     'active' => $sid == $current_section,
                     'c' => [$chapter]
                 ];
