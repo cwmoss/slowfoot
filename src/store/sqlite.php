@@ -23,6 +23,8 @@ class sqlite {
   public $was_filled = false;
   public $db;
 
+  public static $json_array_mode = false;
+
   public function __construct($config, $fresh_create = false) {
     $this->config = $config;
     $adapter = explode(':', $config['adapter']);
@@ -88,7 +90,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     #var_dump($q);
     #var_dump($res);
     $res = array_map(function ($r) {
-      return json_decode($r['body'], true);
+      return json_decode($r['body'], self::$json_array_mode);
     }, $res);
     return $res;
     /*
@@ -117,7 +119,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
       $q .= " LIMIT {$limit_per_page} OFFSET $off";
       $res = $this->db->run($q);
       $res = array_map(function ($r) {
-        return json_decode($r['body'], true);
+        return json_decode($r['body'], self::$json_array_mode);
       }, $res);
       return $res;
     };
@@ -151,7 +153,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     dbg("[store sqlite] query", $q, $query['order_raw'], $query['limit'], $query['limit_raw']);
     $res = $this->db->run($q);
     $res = array_map(function ($r) {
-      return json_decode($r['body'], true);
+      return json_decode($r['body'], self::$json_array_mode);
     }, $res);
     return $res;
     /*
@@ -182,7 +184,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
   public function query_type($type) {
     $res = $this->db->run("select body from docs WHERE _type=?", $type);
     $res = array_map(function ($r) {
-      return json_decode($r['body'], true);
+      return json_decode($r['body'], self::$json_array_mode);
     }, $res);
     return $res;
     /*    $filter = ['_type' => $type];
@@ -249,7 +251,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
   }
 
   public function _select_one($id) {
-    return json_decode($this->db->cell('SELECT body from docs WHERE _id=?', $id), true);
+    return json_decode($this->db->cell('SELECT body from docs WHERE _id=?', $id), self::$json_array_mode);
   }
 
   public function info() {

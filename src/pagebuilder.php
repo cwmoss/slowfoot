@@ -115,7 +115,7 @@ class pagebuilder {
   ): string {
     #$pagination_query = check_pagination($pagename, $src);
     $pp = $this->engine->preprocess($pagename, $context->src);
-    #dbg('page query', $pp);
+    dbg('page query', $pp);
     if ($page_query = ($pp['page-query'] ?? null)) {
       //var_dump($paginate);
       dbg('[page] query', $page_query);

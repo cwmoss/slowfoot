@@ -75,9 +75,11 @@ class server {
 
     /**
     http related
+    TODO: response object, meta/timer object
      */
     static public function resp($data) {
         $elapsed = microtime(true) - SLOWFOOT_START;
+        $data = (array) $data;
         if (!isset($data['res'])) {
             $data = ['res' => $data];
         }

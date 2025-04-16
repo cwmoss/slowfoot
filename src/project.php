@@ -51,7 +51,8 @@ class project {
     public function load_pages() {
         $pages = glob($this->src . '/pages/*.php');
         $this->pages = array_map(function ($p) {
-            return '/' . basename($p, '.php');
+            // pagename is everything before the first dot (can have multiple suffixes)
+            return '/' . explode(".", basename($p))[0];
         }, $pages);
     }
 }

@@ -26,7 +26,7 @@ class loader {
         $files = globstar($filep);
         foreach ($files as $f) {
             // dbg("++ md file:", $f);
-            $meta = new file_meta($f, $config->base, remove_prefix: $this->remove_prefix);
+            $meta = new file_meta($f, $config->base, remove_prefix: (string) $this->remove_prefix);
             $doc = $meta->get_document(type: "");
 
             $document = $front->parse($doc->content, false);

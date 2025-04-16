@@ -215,11 +215,12 @@ $router->get('(.*)?', function ($requestpath) use ($project) {
     } else {
         list($dummy, $pagename, $pagenr) = explode('/', $requestpath) + [2 => 0];
         $pagename = '/' . $pagename;
-        if ($pagename == '') {
+        if ($pagename == '/') {
             //    $pagename='/index';
+            // $pagename = "/index";
         }
 
-        dbg('page...', $pagename, $pagenr, $requestpath);
+        dbg('page...', $pagename, $pagenr, $requestpath, $project->pages);
         $obj_id = array_search($pagename, $project->pages);
         $content = $builder->make_page($pagename, $pagenr, $requestpath, $context);
     }
