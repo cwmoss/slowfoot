@@ -51,7 +51,7 @@ foreach ($project->templates() as $type => $conf) {
     foreach (query_type($project->ds, $type) as $row) {
         foreach ($conf as $templateconf) {
             //	process_template_data($row, path($row['_id']));
-            $path = $ds->get_fpath($row['_id'], $templateconf['name']);
+            $path = $ds->get_fpath($row->_id, $templateconf['name']);
             if ($path == '/index') {
                 $path = '/';
             }
