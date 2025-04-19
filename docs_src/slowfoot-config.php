@@ -22,5 +22,12 @@ return new configuration(
         new site(),
         new markdown\markdown_plugin(),
     ],
-    build: "../docs"
+    // build: "../docs"
+    hooks: [
+        "after_build" => function () {
+            $dist = __DIR__ . "/dist/";
+            $docs = __DIR__ . "/../docs/";
+            `rsync -avz --delete $dist $docs`;
+        }
+    ]
 );

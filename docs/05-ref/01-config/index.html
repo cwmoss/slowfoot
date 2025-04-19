@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     <link rel="SHORTCUT ICON" type="image/png" href="/slowfoot/assets/gfx/favicon-96x96.png">
 
-    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1725472490" type="text/css">
-    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1725472490" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/prism.css?1745085255" type="text/css">
+    <link rel="stylesheet" href="/slowfoot/assets/css/app.css?1745085255" type="text/css">
 
     <script src="/slowfoot/assets/js/app.js"></script>
     <title>slowfoot Documentation</title>
@@ -62,7 +62,7 @@
 </nav>
         <article>
     <h1>Configuration Options</h1>
-    <p><div shortcode="1"><pre class="language-php"><code>&lt;?php
+    <p><div shortcode="source"><pre class="language-php"><code>&lt;?php
 require_once(&quot;site.php&quot;);
 
 use slowfoot\configuration;
@@ -86,7 +86,14 @@ return new configuration(
         new site(),
         new markdown\markdown_plugin(),
     ],
-    build: &quot;../docs&quot;
+    // build: &quot;../docs&quot;
+    hooks: [
+        &quot;after_build&quot; =&gt; function () {
+            $dist = __DIR__ . &quot;/dist/&quot;;
+            $docs = __DIR__ . &quot;/../docs/&quot;;
+            `rsync -avz --delete $dist $docs`;
+        }
+    ]
 );
 </code></pre></div></p>
 <h2 id="site-name">site_name</h2>
@@ -97,8 +104,8 @@ return new configuration(
 <aside>
     <h4>ON THIS PAGE</h4>
     <ul>
-<li><a href="/slowfoot">site_name</a></li>
-<li><a href="/slowfoot">path_prefix</a></li>
+<li><a href="#site-name">site_name</a></li>
+<li><a href="#path-prefix">path_prefix</a></li>
 </ul></aside>
     </main>
 

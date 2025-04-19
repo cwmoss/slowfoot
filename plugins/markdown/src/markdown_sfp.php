@@ -65,7 +65,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
         #$id = get_absolute_path(dirname($this->current_obj['page']['_id']).'/'.$href );
         $id = get_absolute_path_from_base(
             $href,
-            dirname($this->current_obj['page']['_id'] ?? ""),
+            dirname($this->current_obj['page']->_id ?? ""),
             $this->context['conf']->base
         );
 
@@ -82,7 +82,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
 
     protected function resolve_image_path($imgpath) {
         return join("/", [
-            $this->current_obj["page"]->_file["prefix"],
+            $this->current_obj["page"]->_file->prefix,
             $imgpath
         ]);
         /*
