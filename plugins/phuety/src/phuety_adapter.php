@@ -15,10 +15,8 @@ class phuety_adapter implements template_contract {
         $this->engine = new phuety($config->src, [
             'app.layout' => 'layouts/layout',
             'app.assets' => 'assets',
-            // 'phuety-*' => '*',
             'page.*' => 'pages/*',
             'template.*' => 'templates/*',
-            // 'form.*' => 'form/',
             'doc.*' => 'components/',
             'part.*' => 'components/*'
         ], $config->src . "/compiled");
@@ -31,9 +29,9 @@ class phuety_adapter implements template_contract {
         $component = $this->engine->get_component($cname);
         $query = $component->custom_tags["page-query"] ?? null;
         if ($query) {
-            return ["page-query" => $query[0] + [
-                '__content' => $query[1],
-                '__tag' => "page-query"
+            return ["page-query" => $query["attrs"] + [
+                '__content' => $query["content"],
+                '__tag' => $query["name"]
             ]];
         }
         return [];

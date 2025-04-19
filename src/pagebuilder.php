@@ -21,15 +21,16 @@ class pagebuilder {
     string $name, /* eigentlich type */
     context $context,
     ?string $obj_id = null,
-    ?array $data = null,
+    null|array|object $data = null,
     ?array $template_conf = null
   ): string {
     if (!$data) {
       $data = $this->ds->get($obj_id);
     } else {
-      $obj_id = $data["_id"];
+      //var_dump($data);
+      $obj_id = $data->_id;
     }
-    $obj = document::new($data);
+    $obj = document::new((array) $data);
     dbg("template object data", $data, $obj_id);
     if (is_null($template_conf)) {
       $template_conf = $this->config->templates[$obj->_type][$name];
