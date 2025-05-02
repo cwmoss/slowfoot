@@ -14,7 +14,6 @@ class phuety_adapter implements template_contract {
     public function __construct(public configuration $config) {
         $this->engine = new phuety($config->src, [
             'app.layout' => 'layouts/layout',
-            'app.assets' => 'assets',
             'page.*' => 'pages/*',
             'template.*' => 'templates/*',
             'doc.*' => 'components/',
