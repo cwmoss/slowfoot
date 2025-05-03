@@ -11,4 +11,4 @@ Name
 
 ## path_prefix
 
-prefix, if not root
+prefix, default: "/"

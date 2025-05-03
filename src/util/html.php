@@ -44,7 +44,7 @@ class html {
         }
 
         if ($data === true) {
-            return $store[$storename];
+            return $store[$storename] ?? null;
         }
         if (!isset($store[$storename])) {
             $store[$storename] = [];

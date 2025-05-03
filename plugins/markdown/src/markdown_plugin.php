@@ -21,7 +21,7 @@ class markdown_plugin {
         });
 
         hook::add('bind_late_template_helper', function ($helper, $base, $data) {
-            dbg("++ late MD", $helper, $base, $data);
+            dbg("++++++++ late MD", $helper, $base, $data);
             $md = $helper['markdown'];
             return ['markdown' => $this->markdown_helper_with_obj($md, $data)];
         });

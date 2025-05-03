@@ -9,7 +9,7 @@
     <link rel="stylesheet" :href="path_asset('/css/prism.css', true)" type="text/css">
     <link rel="stylesheet" :href="path_asset('/css/app.css', true)" type="text/css">
 
-    <script src="<?= path_asset('/js/app.js') ?>"></script>
+    <script :src="path_asset('/js/app.js')"></script>
     <title>{{title}}</title>
 
 </head>

@@ -2,45 +2,61 @@ name: Make Doku
 
 on:
   push:
-    branches: [ "main" ]
-
+    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    #- name: Validate composer.json and composer.lock
-    #  run: composer validate --strict
+      #- name: Validate composer.json and composer.lock
+      #  run: composer validate --strict
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Setup PHP and disable opcache
-      uses: shivammathur/setup-php@verbose
-      with:
-        php-version: '8.3'
-        ini-values: short_open_tag=On
-      env:
-        COMPOSER_PROCESS_TIMEOUT: 300
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      - name: Setup PHP and disable opcache
+        uses: shivammathur/setup-php@verbose
+        with:
+          php-version: "8.4"
+        env:
+          COMPOSER_PROCESS_TIMEOUT: 300
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+      # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+      # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    - name: build docs
-      run: composer make-docs
-    #  run: php -m
+      - name: build docs
+        run: composer make-docs
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist/
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

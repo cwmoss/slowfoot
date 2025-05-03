@@ -26,10 +26,10 @@ return new configuration(
     template_engine: phuety_adapter::class,
     // build: "../docs"
     hooks: [
-        "after_build" => function () {
+        /*    "after_build" => function () {
             $dist = __DIR__ . "/dist/";
             $docs = __DIR__ . "/../docs/";
             `rsync -avz --delete $dist $docs`;
         }
-    ]
+            */]
 );
