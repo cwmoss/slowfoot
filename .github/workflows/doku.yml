@@ -33,6 +33,7 @@ jobs:
         uses: shivammathur/setup-php@verbose
         with:
           php-version: "8.4"
+        #    ini-values: short_open_tag=On
         env:
           COMPOSER_PROCESS_TIMEOUT: 300
       - name: Install dependencies

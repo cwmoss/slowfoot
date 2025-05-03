@@ -3,7 +3,7 @@ chapter_title: Templates
 title: Template Types
 ---
 
-Templates are written in with phuety. There are different types of templates: page templates (folder `pages`), collection templates (folder `templates`), layout templates (folder `layouts`) and partials templates (folder `partials`).
+Templates are written in plain php. There are different types of templates: page templates (folder `pages`), collection templates (folder `templates`), layout templates (folder `layouts`) and partials templates (folder `partials`).
 
 ## Page Templates
 
