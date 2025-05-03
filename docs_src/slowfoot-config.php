@@ -5,6 +5,7 @@ use slowfoot\configuration;
 use slowfoot\loader\dataset;
 use slowfoot\store;
 use slowfoot_plugin\markdown;
+use slowfoot_plugin\phuety\phuety_adapter;
 
 return new configuration(
     site_name: 'slowfoot Documentation',
@@ -22,6 +23,7 @@ return new configuration(
         new site(),
         new markdown\markdown_plugin(),
     ],
+    template_engine: phuety_adapter::class,
     // build: "../docs"
     hooks: [
         "after_build" => function () {
