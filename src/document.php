@@ -33,6 +33,11 @@ class document implements ArrayAccess, JsonSerializable {
         return $this->data[$prop] ?? null;
     }
 
+    public function __set($prop, $value) {
+        $this->data[$prop] = $value;
+        return $this;
+    }
+
     public function offsetSet($offset, $value): void {
         match ($offset) {
             "_id", "_type" => $this->$offset = $value,
