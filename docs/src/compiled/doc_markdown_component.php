@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 class doc_markdown_component extends component {
-    public string $uid = "doc_markdown---6816527362526";
+    public string $uid = "doc_markdown---681a3f2375492";
     public bool $is_layout = false;
     public string $name = "doc_markdown";
     public string $tagname = "doc.markdown";
@@ -48,7 +48,7 @@ else print $helper->markdown($props->body);
 
     public function debug_info(){
         return array (
-  'src' => '/Users/rw/dev/slowfoot/docs_src/src/components/doc_markdown.phue.php',
+  'src' => '/Users/rw/dev/slowfoot/docs/src/components/doc_markdown.phue.php',
   'php' => 1,
 );
     }

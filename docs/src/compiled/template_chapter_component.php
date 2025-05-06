@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 class template_chapter_component extends component {
-    public string $uid = "template_chapter---68165273609ba";
+    public string $uid = "template_chapter---681a40984a2ca";
     public bool $is_layout = false;
     public string $name = "template_chapter";
     public string $tagname = "template.chapter";
@@ -27,7 +27,7 @@ class template_chapter_component extends component {
     public int $total_rootelements = 1;
     public ?array $components = array (
   0 => 'layout.default',
-  1 => 'doc.markdown',
+  1 => 'sft.markdown',
 );
 
     public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): array{
@@ -46,18 +46,18 @@ $html = "<em>hi</em>";
         ?><?php array_unshift($__s, []); ob_start(); ?>
     <article>
         <h1><?= tag::h($__d->_get("page")->title) ?></h1>
-        <?php $__runner($__runner, "doc.markdown", $__d->_get("phuety")->with($this->tagname, "doc.markdown"), ["body"=> $__d->_get("page")->mdbody] + array (
+        <?php $__runner($__runner, "sft.markdown", $__d->_get("phuety")->with($this->tagname, "sft.markdown"), ["body"=> $__d->_get("page")->mdbody] + array (
 ) ); ?>
     </article>
 
     <aside>
         <h4>ON THIS PAGE</h4>
-        <?php $__runner($__runner, "doc.markdown", $__d->_get("phuety")->with($this->tagname, "doc.markdown"), ["body"=> $__d->_get("page")->mdbody] + array (
+        <?php $__runner($__runner, "sft.markdown", $__d->_get("phuety")->with($this->tagname, "sft.markdown"), ["body"=> $__d->_get("page")->mdbody] + array (
   'toc' => '',
 ) ); ?>
     </aside>
 <?php $__runner($__runner, "layout.default", $__d->_get("phuety")->with($this->tagname, "layout.default"), ["title"=> $__d->_get("page")->title, "page"=> $__d->_get("page")] + array (
-  'class' => 'template_chapter---68165273609ba root',
+  'class' => 'template_chapter---681a40984a2ca root',
 ) , ["default" => ob_get_clean()]+array_shift($__s)); ?>
 
 <?php // return ob_get_clean();
@@ -66,7 +66,7 @@ $html = "<em>hi</em>";
 
     public function debug_info(){
         return array (
-  'src' => '/Users/rw/dev/slowfoot/docs_src/src/templates/chapter.phue.php',
+  'src' => '/Users/rw/dev/slowfoot/docs/src/templates/chapter.phue.php',
   'php' => 18,
 );
     }

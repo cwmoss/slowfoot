@@ -7,6 +7,7 @@ use slowfoot\template_contract;
 use slowfoot\configuration;
 use slowfoot\context;
 use slowfoot\hook;
+use slowfoot\components;
 
 class phuety_adapter implements template_contract {
 
@@ -17,7 +18,14 @@ class phuety_adapter implements template_contract {
             'layout.*' => 'layouts/*',
             'page.*' => 'pages/*',
             'template.*' => 'templates/*',
-            'doc.*' => 'components/',
+            '*' => 'components/',
+            'sft.*' => function ($tag) {
+                $cls = str_replace(".", "_", $tag);
+                $cls = substr($cls, 4);
+                $cls = "slowfoot\\components\\$cls";
+                // require_once(__DIR__ . "/../fixtures/render_components/music_index.php");
+                return new $cls;
+            }
         ], $config->src . "/compiled");
         $this->engine->set_custom_tag("page-query");
     }
@@ -48,7 +56,7 @@ class phuety_adapter implements template_contract {
         $helper = $this->load_late_template_helper($helper, $__context->src, $data, $__context);
         $this->engine->set_helper($helper);
         ob_start();
-        $this->engine->run($cname, $helper + $data);
+        $this->engine->run($cname, $data, $helper, $__context);
         return ob_get_clean();
     }
 
@@ -57,9 +65,8 @@ class phuety_adapter implements template_contract {
         $cname = $__context->is_page ? "page.{$name}" : "page.{$name}";
         dbg("++ run page", $cname, $name, $__context);
         $this->engine->set_helper($helper);
-
         ob_start();
-        $this->engine->run($cname, $helper + $data);
+        $this->engine->run($cname, $data, $helper, $__context);
         return ob_get_clean();
     }
 

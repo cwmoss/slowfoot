@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 class layout_default_component extends component {
-    public string $uid = "layout_default---6816527361bf0";
+    public string $uid = "layout_default---681a40984a98c";
     public bool $is_layout = true;
     public string $name = "layout_default";
     public string $tagname = "layout.default";
@@ -26,7 +26,7 @@ class layout_default_component extends component {
 );
     public int $total_rootelements = 2;
     public ?array $components = array (
-  0 => 'doc.nav',
+  0 => 'top.nav',
 );
 
     public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): array{
@@ -74,7 +74,7 @@ $title = "HUH"; // $__context->config->site_name;
 
     <main>
 
-        <?php $__runner($__runner, "doc.nav", $__d->_get("phuety")->with($this->tagname, "doc.nav"), ["current_id"=> $__d->_get("page")->_id, "current"=> (($__d->_get("page")->_file) ? ($__d->_get("page")->_file) : ([]))] + array (
+        <?php $__runner($__runner, "top.nav", $__d->_get("phuety")->with($this->tagname, "top.nav"), ["current_id"=> $__d->_get("page")->_id, "current"=> (($__d->_get("page")->_file) ? ($__d->_get("page")->_file) : ([]))] + array (
 ) ); ?>
 
         <?=$slots["default"]??""?>
@@ -96,7 +96,7 @@ $title = "HUH"; // $__context->config->site_name;
 
     public function debug_info(){
         return array (
-  'src' => '/Users/rw/dev/slowfoot/docs_src/src/layouts/default.phue.php',
+  'src' => '/Users/rw/dev/slowfoot/docs/src/layouts/default.phue.php',
   'php' => 42,
 );
     }
