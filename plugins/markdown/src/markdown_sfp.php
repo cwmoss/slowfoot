@@ -129,7 +129,7 @@ https://github.com/erusev/parsedown/issues/723
     protected function inlineShortcode($Excerpt) {
         dbg("+++ shortcode excerpt", $Excerpt);
 
-        $res = $this->shortcodes->resolve($Excerpt);
+        $res = $this->shortcodes->resolve($Excerpt, $this->context["conf"], $this->current_obj["page"]);
         if (!$res) return;
 
         $el = [
