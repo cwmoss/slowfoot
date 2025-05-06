@@ -7,7 +7,7 @@ class shortcode {
     public function __construct(public array $codes = []) {
     }
 
-    public function resolve($Excerpt) {
+    public function resolve($Excerpt, configuration $conf, $page) {
         /*dbg(
             "+++ shortcode excerpt +++",
             get_class($Excerpt["parent"]->context["conf"]),
@@ -19,9 +19,9 @@ class shortcode {
         dbg("found shortcode?", isset($this->shortcodes[$shortcode]));
         if (!isset($this->codes[$shortcode])) return;
         // TODO: current_obj vs current_obj[page] vs nothing
-        dbg("+++ object", $Excerpt["parent"]->current_obj["page"], $Excerpt["parent"]->current_obj);
+        dbg("+++ shortcode object", $shortcode, $page);
         $m = $this->codes[$shortcode];
         array_shift($test);
-        return [$shortcode, $m($test, $Excerpt["parent"]->current_obj["page"], $Excerpt["parent"]->context["conf"])];
+        return [$shortcode, $m($test, $page, $conf)];
     }
 }

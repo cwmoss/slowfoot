@@ -36,6 +36,11 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
         // $this->inlineMarkerList .= '^';
     }
 
+    protected function processTag($elementMarkup) {
+        if (!$elementMarkup) return "";
+        return parent::processTag($elementMarkup);
+    }
+
     # TODO:
     #   - check protocol
     #   - check images
@@ -132,6 +137,7 @@ https://github.com/erusev/parsedown/issues/723
             'element' => array(
                 "allowRawHtmlInSafeMode" => true,
                 "rawHtml" => $res[1],
+                "text" => $res[1],
                 'name' => 'div',
                 // 'text' => $matches[1],
                 'attributes' => array(
