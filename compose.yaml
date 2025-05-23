@@ -1,0 +1,19 @@
+services:
+  sf:
+    image: wolfi-php
+    build:
+      context: ./
+      dockerfile: docker/wolfi-php-cli
+    volumes:
+      - ./:/app/
+    entrypoint:
+      ["/app/bin/slowfoot", "dev", "--server", "0.0.0.0:1199", "-d", "docs/"]
+    ports:
+      - 1199:1199
+
+  install:
+    image: wolfi-php
+    volumes:
+      - ./:/app
+    restart: no
+    entrypoint: ["sh"]

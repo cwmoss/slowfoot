@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 class top_nav_component extends component {
-    public string $uid = "top_nav---681a40984ac88";
+    public string $uid = "top_nav---6830a08988060";
     public bool $is_layout = false;
     public string $name = "top_nav";
     public string $tagname = "top.nav";
@@ -55,7 +55,7 @@ $current_section = $props->current->dir ? basename($props->current->dir) : basen
 
     public function debug_info(){
         return array (
-  'src' => '/Users/rw/dev/slowfoot/docs/src/components/top_nav.phue.php',
+  'src' => '/app/docs/src/components/top_nav.phue.php',
   'php' => 10,
 );
     }
