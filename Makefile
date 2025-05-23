@@ -1,7 +1,7 @@
 all: make-docs test analyze
 
 make-docs:
-	bin/slowfoot build -d docs_src/ -f
+	bin/slowfoot build -d docs/ -f
 
 test: 
 	php vendor/bin/phpunit tests

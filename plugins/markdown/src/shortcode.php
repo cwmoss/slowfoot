@@ -2,6 +2,8 @@
 
 namespace slowfoot_plugin\markdown;
 
+use slowfoot\configuration;
+
 class shortcode {
 
     public function __construct(public array $codes = []) {

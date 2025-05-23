@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 class layout_default_component extends component {
-    public string $uid = "layout_default---6830a08987ab3";
+    public string $uid = "layout_default---6830b92ee8793";
     public bool $is_layout = true;
     public string $name = "layout_default";
     public string $tagname = "layout.default";
@@ -96,7 +96,7 @@ $title = "HUH"; // $__context->config->site_name;
 
     public function debug_info(){
         return array (
-  'src' => '/app/docs/src/layouts/default.phue.php',
+  'src' => '/Users/rw/dev/slowfoot/docs/src/layouts/default.phue.php',
   'php' => 42,
 );
     }

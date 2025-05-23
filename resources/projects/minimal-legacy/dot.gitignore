@@ -1,6 +1,5 @@
 vendor/
 var/
 dist/
-src/compiled/
 .DS_Store
 composer.lock
