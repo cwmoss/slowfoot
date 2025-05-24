@@ -9,6 +9,11 @@ if ($args['--webdeploy']) {
   $skipped = $setup->webdeploy();
 } else {
   shell_info("initializing new project in " . SLF_PROJECT_DIR);
+  if (!directory_is_empty(SLF_PROJECT_DIR) && !$args['--force']) {
+    print "\ndirectory is not empty, aborting init\n" .
+      "  if you want to init anyways, use the --force flag\n";
+    exit(1);
+  }
   $skipped = $setup->init("minimal");
 }
 

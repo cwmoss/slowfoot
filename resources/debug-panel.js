@@ -70,10 +70,11 @@ class DebugPanel extends HTMLElement {
     this.fetchbtn = this.shadowRoot.querySelector("#refetch");
 
     document.body.addEventListener("keydown", (e) => {
-      // console.log(e)
-      if (e.ctrlKey && e.key == "d") {
-        console.log("strg D gedrückt");
-
+      // console.log(e, e.target.matches("input"));
+      if (e.key == "d" && !e.target.matches("input,textarea,select,option")) {
+        // if (e.ctrlKey && e.key == "d") {
+        console.log("pressed 'd'!");
+        e.preventDefault();
         this.toggleAttribute("hidden");
       }
     });

@@ -10,18 +10,18 @@ use slowfoot_plugin\phuety\phuety_adapter;
 return new configuration(
   site_name: "I ❤️ my cat",
 
-  //sources: [
-  //  "chapter" => new markdown\loader('content/**/*.md', remove_prefix: "content/"),
-  //  'chapter_index' => site::load_chapter_index(...)
-  //],
-  /*
-  templates: [
-    'chapter' => '/:slug',
+  sources: [
+    "content" => new markdown\loader('content/**/*.md', remove_prefix: "content/"),
+    //  'chapter_index' => site::load_chapter_index(...)
   ],
-  */
+
+  templates: [
+    'content' => '/:slug',
+  ],
+
   plugins: [
     //  new site(),
-    //  new markdown\markdown_plugin(),
+    new markdown\markdown_plugin(),
   ],
   template_engine: phuety_adapter::class,
   // build: "../docs"

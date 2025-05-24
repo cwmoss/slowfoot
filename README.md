@@ -48,6 +48,10 @@ available hooks
 ./path/to.jpg relative to file-content-source-current-directory
 /path/to.jpg relative to project-source-directory
 
+## global cli
+
+alias slowfoot="/Users/rw/dev/slowfoot/bin/slowfoot -d ."
+
 ## docker
 
 docker run --rm -it -v ${PWD}:/project sft info

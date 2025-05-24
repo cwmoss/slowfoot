@@ -19,7 +19,7 @@ slowfoot.
 Usage:
   slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
   slowfoot build [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot init [-d <project directory>] [--webdeploy]
+  slowfoot init [-d <project directory>] [--webdeploy] [--force]
   slowfoot preview [-d <project directory>]
   slowfoot (-h | --help)
   slowfoot fetch [-d <project directory>]
@@ -73,7 +73,7 @@ if ($need_pdir) {
     $PDIR = trim($args['-d'] ?? "");
     $PDIR = match (true) {
         $PDIR == ".", $PDIR == "./" => getcwd(),
-        $PDIR[0] != '/' => SLOWFOOT_BASE . '/' . $PDIR,
+        $PDIR && $PDIR[0] != '/' => SLOWFOOT_BASE . '/' . $PDIR,
         default => $PDIR
     };
     define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);

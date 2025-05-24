@@ -35,7 +35,10 @@ class loader {
 
             if ($data["date"] ?? null) {
                 $date = DateTime::createFromFormat($this->date_input_format, $data["date"]);
-                $data["date"] = $date->format("Y-m-d H:i:s");
+                if ($date) {
+                    $data["date"] = $date->format("Y-m-d H:i:s");
+                    // $data["date_dt"] = $date;
+                }
             }
             $data["slug"] ??= $doc->_id;
             $data["mdbody"] = $md;

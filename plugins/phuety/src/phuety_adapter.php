@@ -55,6 +55,8 @@ class phuety_adapter implements template_contract {
 
         $helper = $this->load_late_template_helper($helper, $__context->src, $data, $__context);
         $this->engine->set_helper($helper);
+        debug_js("props", $data);
+        debug_js("globals", $__context);
         ob_start();
         $this->engine->run($cname, $data, $helper, $__context);
         return ob_get_clean();
@@ -64,6 +66,8 @@ class phuety_adapter implements template_contract {
         $name = ltrim($_template, "/");
         $cname = $__context->is_page ? "page.{$name}" : "page.{$name}";
         dbg("++ run page", $cname, $name, $__context);
+        debug_js("props", $data);
+        debug_js("globals", $__context);
         $this->engine->set_helper($helper);
         ob_start();
         $this->engine->run($cname, $data, $helper, $__context);

@@ -274,7 +274,9 @@ function get_absolute_path($path) {
     return implode(DIRECTORY_SEPARATOR, $absolutes);
 }
 
-
+function directory_is_empty($dir) {
+    return (count(scandir($dir)) == 2);
+}
 
 function dbg($txt, ...$vars) {
     // im servermodus wird der zeitstempel automatisch gesetzt
