@@ -47,3 +47,9 @@ available hooks
 ../parent/path/to.jpg relative to file-content-source-current-directory
 ./path/to.jpg relative to file-content-source-current-directory
 /path/to.jpg relative to project-source-directory
+
+## docker
+
+docker run --rm -it -v ${PWD}:/project sft info
+
+alias slowfoot=docker run --rm -it -p 1199:1199 -v ${PWD}:/project ghcr.io/cwmoss/slowfoot:latest

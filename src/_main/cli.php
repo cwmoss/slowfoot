@@ -1,6 +1,7 @@
 <?php
 $project_dir ??= "";
-
+error_reporting(E_ALL ^ E_DEPRECATED);
+// error_reporting(E_ALL);
 require $project_dir . '/vendor/autoload.php';
 
 use slowfoot\document;
@@ -8,7 +9,7 @@ use slowfoot\setup;
 use slowfoot\util\console;
 use slowfoot\store;
 
-error_reporting(E_ALL);
+
 ini_set("display_errors", 0);
 $slft_lib_base = dirname(__DIR__);
 
@@ -59,117 +60,119 @@ $logo = '
 
  ';
 $need_fetch = match (true) {
-  $args['preview'], $args['init'], $args['info'], $args['starship'] => false,
-  default => true
+    $args['preview'], $args['init'], $args['info'], $args['starship'] => false,
+    default => true
 };
 $need_pdir = match (true) {
-  default => true
+    default => true
 };
 if ($need_fetch) {
-  $FETCH = $args['-f'];
+    $FETCH = $args['-f'];
 }
 if ($need_pdir) {
-  $PDIR = $args['-d'];
-  if ($PDIR && $PDIR[0] != '/') {
-    $PDIR = SLOWFOOT_BASE . '/' . $PDIR;
-  }
-  define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+    $PDIR = trim($args['-d'] ?? "");
+    $PDIR = match (true) {
+        $PDIR == ".", $PDIR == "./" => getcwd(),
+        $PDIR[0] != '/' => SLOWFOOT_BASE . '/' . $PDIR,
+        default => $PDIR
+    };
+    define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
 }
 
 if ($args['dev']) {
-  print $logo . "\n";
+    print $logo . "\n";
 
-  $dev_src = 'src/';
-  if ($PDIR) {
-    $dev_src = $PDIR . '/src/';
-  }
+    $dev_src = 'src/';
+    if ($PDIR) {
+        $dev_src = $PDIR . '/src/';
+    }
 
-  $devserver = explode(':', $args['--server'] ?? 'localhost:1199');
-  if ($args['--port']) {
-    $devserver[1] = $args['--port'];
-  }
-  $devserver = join(":", $devserver);
+    $devhostport = explode(':', $args['--server'] ?? '0.0.0.0:1199', 2) +
+        [1 => $args['--port'] ?? "1199"];
 
-  // evtl. fetching data
-  $project = require $slft_lib_base . '/_boot.php';
+    $devserver = join(":", $devhostport);
 
-  (new setup(SLF_PROJECT_DIR))->setup();
+    // evtl. fetching data
+    $project = require $slft_lib_base . '/_boot.php';
 
-  print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
+    (new setup(SLF_PROJECT_DIR))->setup();
 
-  // this wont work :)
-  // `(sleep 1 ; open http://localhost:1199/ )&`;
-  // this works!
-  # automatisches öffnen gefällt mir nicht mehr
-  # shell_exec('(sleep 1 ; open http://localhost:1199/ ) 2>/dev/null >/dev/null &');
-  $command = "XXXPHP_CLI_SERVER_WORKERS=4 php -d short_open_tag=On -S {$devserver} -t {$dev_src} {$slft_lib_base}/_main/development.php";
-  print "\n\n";
+    print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
 
-  print "starting development server\n\n";
-  print "   🌈 http://$devserver\n\n";
-  print "<cmd> click\n";
-  print "have fun!\n\n";
-  print $command . "\n";
-  $wss = "php {$slft_lib_base}/wss.php " . SLOWFOOT_BASE;
-  #shell_exec("$wss &");
-  #print "end";
-  `$command`;
-  #`($command &) && ($wss &)`;
+    // this wont work :)
+    // `(sleep 1 ; open http://localhost:1199/ )&`;
+    // this works!
+    # automatisches öffnen gefällt mir nicht mehr
+    # shell_exec('(sleep 1 ; open http://localhost:1199/ ) 2>/dev/null >/dev/null &');
+    $command = "XXXPHP_CLI_SERVER_WORKERS=4 php -d short_open_tag=On -S {$devserver} -t {$dev_src} {$slft_lib_base}/_main/development.php";
+    print "\n\n";
+
+    print "starting development server\n\n";
+    print "   🌈 http://$devserver\n\n";
+    print "<cmd> click\n";
+    print "have fun!\n\n";
+    print $command . "\n";
+    $wss = "php {$slft_lib_base}/wss.php " . SLOWFOOT_BASE;
+    #shell_exec("$wss &");
+    #print "end";
+    `$command`;
+    #`($command &) && ($wss &)`;
 }
 
 if ($args['build']) {
-  $IS_PROD = true;
-  print $logo . "\n";
+    $IS_PROD = true;
+    print $logo . "\n";
 
-  (new setup(SLF_PROJECT_DIR))->setup();
-  $project = require $slft_lib_base . '/_boot.php';
-  require $slft_lib_base . '/cli/build.php';
+    (new setup(SLF_PROJECT_DIR))->setup();
+    $project = require $slft_lib_base . '/_boot.php';
+    require $slft_lib_base . '/cli/build.php';
 }
 
 if ($args['preview']) {
-  shell_info("starting testserver. you can review your build here.", true);
-  $boot_only_config = true;
-  require $slft_lib_base . '/_boot.php';
-  $testserver = "localhost:11999";
-  $command = "php -S {$testserver} -t {$project->dist()}";
-  print "\n";
-  print "   🤟 http://$testserver\n\n";
-  print "<cmd> click\n";
-  print "have fun!\n\n";
-  `$command`;
+    shell_info("starting testserver. you can review your build here.", true);
+    $boot_only_config = true;
+    require $slft_lib_base . '/_boot.php';
+    $testserver = "localhost:11999";
+    $command = "php -S {$testserver} -t {$project->dist()}";
+    print "\n";
+    print "   🤟 http://$testserver\n\n";
+    print "<cmd> click\n";
+    print "have fun!\n\n";
+    `$command`;
 }
 if ($args['fetch']) {
-  $FETCH = true;
-  require $slft_lib_base . '/_boot.php';
+    $FETCH = true;
+    require $slft_lib_base . '/_boot.php';
 }
 
 if ($args['init']) {
-  require $slft_lib_base . '/cli/init.php';
+    require $slft_lib_base . '/cli/init.php';
 }
 
 if ($args['info']) {
-  $boot_only_config = false;
-  $boot_quiet = true;
-  $project = require $slft_lib_base . '/_boot.php';
-  print "🌈 slowfoot\n";
+    $boot_only_config = false;
+    $boot_quiet = true;
+    $project = require $slft_lib_base . '/_boot.php';
+    print "🌈 slowfoot\n";
+    print "=> $PDIR\n";
 
-  (new setup(SLF_PROJECT_DIR))->setup();
+    (new setup(SLF_PROJECT_DIR))->setup();
 
-  print console::console_table(['_type' => 'type', 'total' => 'total'], $project->config->db->info());
+    print console::console_table(['_type' => 'type', 'total' => 'total'], $project->config->db->info());
 }
 
 if ($args['starship']) {
 
-  $boot_only_config = true;
-  $boot_quiet = true;
-  $project = require $slft_lib_base . '/_boot.php';
-  print "🌈 slft";
+    $boot_only_config = true;
+    $boot_quiet = true;
+    $project = require $slft_lib_base . '/_boot.php';
+    print "🌈 slft";
 
-  if (file_exists(SLF_PROJECT_DIR . "/var/slowfoot.db")) {
-    $db = new store\sqlite(["adapter" => "sqlite:" . SLF_PROJECT_DIR . "/var/slowfoot.db"]);
-    $info = $db->info_line();
-    printf(" %s docs, %s paths", $info[0], $info[1]);
-  } else {
-    print " no db";
-  }
+    if (file_exists(SLF_PROJECT_DIR . "/var/slowfoot.db")) {
+        $db = new store\sqlite(["adapter" => "sqlite:" . SLF_PROJECT_DIR . "/var/slowfoot.db"]);
+        $info = $db->info_line();
+        printf(" %s docs, %s paths", $info[0], $info[1]);
+    } else {
+        print " no db";
+    }
 }

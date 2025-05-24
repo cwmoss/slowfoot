@@ -1,0 +1,7 @@
+.git
+var
+docker
+composer.lock
+vendor
+tests
+docs
