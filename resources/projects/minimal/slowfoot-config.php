@@ -16,7 +16,7 @@ return new configuration(
   ],
 
   templates: [
-    'content' => '/:slug',
+    'content' => '/meine-seiteninhalte/:slug',
   ],
 
   plugins: [

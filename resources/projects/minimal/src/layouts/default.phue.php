@@ -14,7 +14,9 @@
   <header>
     <top.nav></top.nav>
   </header>
-  <slot.></slot.>
+  <main>
+    <slot.></slot.>
+  </main>
 </body>
 
 </html>
