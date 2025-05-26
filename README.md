@@ -56,4 +56,4 @@ alias slowfoot="/Users/rw/dev/slowfoot/bin/slowfoot -d ."
 
 docker run --rm -it -v ${PWD}:/project sft info
 
-alias slowfoot="docker run --rm -it -p 1199:1199 -v ${PWD}:/project ghcr.io/cwmoss/slowfoot:main"
+alias slowfoot="docker run --rm -it -p 1199:1199 -v ${PWD}:/project ghcr.io/cwmoss/slowfoot"
