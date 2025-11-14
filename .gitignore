@@ -4,3 +4,4 @@ composer.lock
 var/
 docs_src/var/
 dist/
+test-*
