@@ -139,6 +139,7 @@ export default class JsonExplorer extends HTMLElement {
     if (this.reflinks && key == "_ref") {
       val = `<a href="/__ui/id/${encodeURIComponent(val)}">${val}</a>`;
     } else {
+      if (val === null) val = "null";
       val = this.html_encode(val);
     }
     node.insertAdjacentHTML(
@@ -159,7 +160,8 @@ export default class JsonExplorer extends HTMLElement {
       if (Array.isArray(val)) {
         this.render_array(list, index, val);
       } else {
-        if (typeof val === "object") {
+        if (val == null) this.render_value(list, index, val);
+        else if (typeof val === "object") {
           this.render_object(list, index, val);
         } else {
           this.render_value(list, index, val);
@@ -178,8 +180,7 @@ export default class JsonExplorer extends HTMLElement {
     if (open) tag.setAttribute("open", "");
     tag.insertAdjacentHTML(
       "beforeend",
-      `<summary><strong>${key}:</strong> {${
-        Object.keys(o).length
+      `<summary><strong>${key}:</strong> {${Object.keys(o).length
       } keys}</summary>`
     );
     let list = document.createElement("ul");
@@ -188,7 +189,8 @@ export default class JsonExplorer extends HTMLElement {
       if (Array.isArray(val)) {
         this.render_array(list, key, val);
       } else {
-        if (typeof val === "object") {
+        if (val == null) this.render_value(list, key, val);
+        else if (typeof val === "object") {
           this.render_object(list, key, val);
         } else {
           this.render_value(list, key, val);
