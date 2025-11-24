@@ -61,7 +61,7 @@ class deployer {
         private string $write_path,
         private string $siteprefix = ""
     ) {
-        $this->origin = $server['HTTP_ORIGIN'] ?? $server["HTTP_REFERER"];
+        $this->origin = $server['HTTP_ORIGIN'] ?? $server["HTTP_REFERER"] ?? "";
     }
 
     public function build() {
