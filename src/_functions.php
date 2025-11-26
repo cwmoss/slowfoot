@@ -279,6 +279,7 @@ function directory_is_empty($dir) {
 }
 
 function dbg($txt, ...$vars) {
+    if (defined("SLOWFOOT_NO_DEBUG") && constant("SLOWFOOT_NO_DEBUG")) return;
     // im servermodus wird der zeitstempel automatisch gesetzt
     //	$log = [date('Y-m-d H:i:s')];
     $log = [];

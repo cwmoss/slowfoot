@@ -17,13 +17,13 @@ $doc = <<<DOC
 slowfoot.
 
 Usage:
-  slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>] [--colors <ansi mode>]
-  slowfoot build [-f | --fetch <content source>] [-d <project directory>] [--colors <ansi mode>]
-  slowfoot init [-d <project directory>] [--webdeploy] [--force] [--colors <ansi mode>]
-  slowfoot preview [-d <project directory>] [--colors <ansi mode>]
+  slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>] [--colors <ansi mode>] [-v]
+  slowfoot build [-f | --fetch <content source>] [-d <project directory>] [--colors <ansi mode>] [-v]
+  slowfoot init [-d <project directory>] [--webdeploy] [--force] [--colors <ansi mode>] [-v]
+  slowfoot preview [-d <project directory>] [--colors <ansi mode>] [-v]
   slowfoot (-h | --help)
-  slowfoot fetch [-d <project directory>] [--colors <ansi mode>]
-  slowfoot info [-d <project directory>] [--colors <ansi mode>]
+  slowfoot fetch [-d <project directory>] [--colors <ansi mode>] [-v]
+  slowfoot info [-d <project directory>] [--colors <ansi mode>] [-v]
   slowfoot starship [-d <project directory>]
   slowfoot --version
 
@@ -36,6 +36,7 @@ Options:
   -P --port <port>          Set port only
   -d <project directory>    Set the project base directory
   --colors <ansi mode>      Set color mode auto, on, off [default: auto]
+  -v                        Set verbose mode for debugging
 
 DOC;
 
@@ -83,6 +84,8 @@ if ($need_pdir) {
 $colors = $args['--colors'];
 // print "colors: $colors";
 console::console($colors);
+
+if (!$args['-v']) define("SLOWFOOT_NO_DEBUG", 1);
 
 if ($args['dev']) {
     print $logo . "\n";
