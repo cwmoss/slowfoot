@@ -66,13 +66,13 @@ class deployer {
 
     public function build() {
         $cmd = sprintf(
-            "%s%s/vendor/bin/slowfoot build -f",
+            "%s%s/vendor/bin/slowfoot build --colors on -f",
             ($this->write_path ? "SLFT_WRITE_PATH={$this->write_path} " : ""),
             $this->base
         );
         $converter = new AnsiToHtmlConverter();
         // print $converter->convert("hier \033[1mfett\033[0m text\n");
-        $converter = null;
+        // $converter = null;
         return $this->live_execute_command($cmd, true, $converter);
     }
 

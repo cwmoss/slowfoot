@@ -7,14 +7,17 @@ use LucidFrame\Console\ConsoleTable;
 
 class console {
 
-    static public function console() {
+    static public function console($mode = "auto") {
         static $console_fn;
+        static $console = new ConsoleColor();
+
         $presets = [
-            'bold' => ['bold'], 'reverse' => ['reverse'],
+            'bold' => ['bold'],
+            'reverse' => ['reverse'],
             'green' => ['color_28'],
         ];
         if (!$console_fn) {
-            $console = new ConsoleColor();
+
             $styles = [];
             $colors = false;
             if ($console->isSupported()) {
@@ -23,11 +26,11 @@ class console {
             if ($console->are256ColorsSupported()) {
                 $colors = true;
             }
-            $console_fn = function ($name, $text) use ($console, $presets) {
+            $console_fn = function ($name, $text) use ($console, $presets, $mode) {
                 if (PHP_SAPI != 'cli') {
                     #    return;
                 }
-
+                if ($mode == "off") return $text;
                 $preset = $presets[$name] ?? null;
                 if (!$preset) {
                     return $text;
@@ -41,6 +44,7 @@ class console {
             };
         }
 
+        if ($mode == "on") $console->setForceStyle(true);
         return $console_fn;
     }
 

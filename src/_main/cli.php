@@ -17,13 +17,13 @@ $doc = <<<DOC
 slowfoot.
 
 Usage:
-  slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot build [-f | --fetch <content source>] [-d <project directory>]
-  slowfoot init [-d <project directory>] [--webdeploy] [--force]
-  slowfoot preview [-d <project directory>]
+  slowfoot dev [-S <server:port>] [-P <port>] [-f | --fetch <content source>] [-d <project directory>] [--colors <ansi mode>]
+  slowfoot build [-f | --fetch <content source>] [-d <project directory>] [--colors <ansi mode>]
+  slowfoot init [-d <project directory>] [--webdeploy] [--force] [--colors <ansi mode>]
+  slowfoot preview [-d <project directory>] [--colors <ansi mode>]
   slowfoot (-h | --help)
-  slowfoot fetch [-d <project directory>]
-  slowfoot info [-d <project directory>]
+  slowfoot fetch [-d <project directory>] [--colors <ansi mode>]
+  slowfoot info [-d <project directory>] [--colors <ansi mode>]
   slowfoot starship [-d <project directory>]
   slowfoot --version
 
@@ -35,6 +35,7 @@ Options:
   -S --server <server:port> Set server and port [default: localhost:1199]
   -P --port <port>          Set port only
   -d <project directory>    Set the project base directory
+  --colors <ansi mode>      Set color mode auto, on, off [default: auto]
 
 DOC;
 
@@ -78,6 +79,10 @@ if ($need_pdir) {
     };
     define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
 }
+
+$colors = $args['--colors'];
+// print "colors: $colors";
+console::console($colors);
 
 if ($args['dev']) {
     print $logo . "\n";

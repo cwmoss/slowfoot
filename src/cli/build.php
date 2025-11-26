@@ -6,8 +6,6 @@ use slowfoot\pagebuilder;
 
 /** @var project $project */
 
-$console = console::console();
-
 print memory_get_usage() . " loaded ok\n";
 
 if (!$project->dist()) {
