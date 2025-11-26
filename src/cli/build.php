@@ -15,11 +15,10 @@ if (!$project->dist()) {
 }
 
 $dist = $project->dist();
-print "DIST: $dist";
 
 print console::console_table(['_type' => 'type', 'total' => 'total'], $project->info_types());
 
-shell_info("removing old dist/ folder");
+shell_info("removing old dist/ folder {$dist}");
 `rm -rf $dist`;
 shell_info();
 

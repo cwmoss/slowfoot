@@ -70,8 +70,8 @@ class deployer {
             ($this->write_path ? "SLFT_WRITE_PATH={$this->write_path} " : ""),
             $this->base
         );
-        // $converter = new AnsiToHtmlConverter();
-        // print $converter->convert("hier \033[1mfett\033[0m text");
+        $converter = new AnsiToHtmlConverter();
+        // print $converter->convert("hier \033[1mfett\033[0m text\n");
         $converter = null;
         return $this->live_execute_command($cmd, true, $converter);
     }

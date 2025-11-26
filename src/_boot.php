@@ -5,6 +5,8 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
   require_once __DIR__ . '/../../../autoload.php';
 }
 
+error_reporting(E_ALL ^ E_WARNING ^ E_DEPRECATED);
+
 use slowfoot\configuration;
 use Dotenv\Dotenv;
 use slowfoot\project;
