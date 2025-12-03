@@ -144,7 +144,7 @@ class deployer {
                 $live_output = $converter->convert($live_output);
             }
             $complete_output = $complete_output . $live_output;
-            echo "$live_output" . $lbr . "<br>";
+            echo "$live_output"; //  . $lbr . "<br>";
             // echo($converter->convert($live_output.$lbr)."<br>");
             // echo json_encode(['txt'=>$live_output]);
             @flush();

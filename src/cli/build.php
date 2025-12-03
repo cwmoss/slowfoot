@@ -16,7 +16,8 @@ $dist = $project->dist();
 
 print console::console_table(['_type' => 'type', 'total' => 'total'], $project->info_types());
 
-shell_info("removing old dist/ folder {$dist}");
+shell_info("removing old dist folder", true);
+shell_info("  => {$dist}");
 `rm -rf $dist`;
 shell_info();
 

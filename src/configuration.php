@@ -128,7 +128,7 @@ class configuration {
     //  raise error?
     public function init_plugins() {
         foreach ($this->plugins as $plugin) {
-            $plugin->init();
+            if (method_exists($plugin, "init")) $plugin->init();
         }
     }
 
