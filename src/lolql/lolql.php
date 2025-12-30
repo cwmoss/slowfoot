@@ -50,7 +50,7 @@ function parse($string, $params = []) {
   //print_r($parts[$qk]);
 
   //print_r($q);
-  if (!($qk == '*' || $qk == '😂' || $qk == '❤️')) {
+  if (!($qk == 'q' || $qk == '*' || $qk == '😂' || $qk == '❤️')) {
     array_unshift(
       $q,
       [
