@@ -288,7 +288,7 @@ function parse_parentheses($string) {
         // add just saved scope to current scope
         $current[] = $t;
         break;
-        /*
+      /*
             case ' ':
                 // make each word its own token
                 $this->push();
@@ -324,7 +324,7 @@ function replace_params($q, $params = []) {
   return $q;
 }
 function parse_condition($string) {
-  $t = token_get_all('<?' . $string . '?>');
+  $t = token_get_all('<?php ' . $string . ' ?>');
   $t = compact_tokens($t);
   //print_r($t);
   $t = combine_tokens($t);
@@ -376,7 +376,7 @@ function combine_tokens($tokens) {
 function compact_tokens($t) {
   $t = array_map(function ($tok) {
     if (is_array($tok)) {
-      return $tok[1] == '<?' || $tok[1] == '?>' ? '' : $tok[1];
+      return $tok[0] == T_OPEN_TAG || $tok[0] == T_CLOSE_TAG ? '' : $tok[1];
     }
     return $tok;
   }, $t);
