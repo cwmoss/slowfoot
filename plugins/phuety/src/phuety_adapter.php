@@ -50,7 +50,8 @@ class phuety_adapter implements template_contract {
 
     public function run(string $_template, array $data, array $helper, context $__context): string {
         $name = $_template;
-        $cname = $__context->is_page ? "template.{$name}" : "template.{$name}";
+        $cname = "template.{$name}"; // $__context->is_page ? "template.{$name}" : "template.{$name}";
+        $__context->name = $cname;
         dbg("++ run template", $cname, $name, $helper["markdown"]("*yo**"));
 
         $helper = $this->load_late_template_helper($helper, $__context->src, $data, $__context);
@@ -64,7 +65,8 @@ class phuety_adapter implements template_contract {
 
     public function run_page(string $_template, array $data, array $helper, context $__context): string {
         $name = ltrim($_template, "/");
-        $cname = $__context->is_page ? "page.{$name}" : "page.{$name}";
+        $cname = "page.{$name}"; // $__context->is_page ? "page.{$name}" : "page.{$name}";
+        $__context->name = $cname;
         dbg("++ run page", $cname, $name, $__context);
         debug_js("props", $data);
         debug_js("globals", $__context);
