@@ -19,6 +19,8 @@ class asset {
   public ?string $resize_url = null;
   public ?array $resize = null;
   public ?array $fp = null;
+  public ?string $resize_name = null;
+  public ?string $resize_file = null;
 
   public function __construct(
     public string $_id,
@@ -29,5 +31,13 @@ class asset {
     public string $h,
     public string $mime
   ) {
+  }
+
+  public function new_result(string $url, array $size, string $file_name) {
+    $new = clone $this;
+    $new->resize_url = $url;
+    $new->resize = $size;
+    $new->resize_file = $file_name;
+    return $new;
   }
 }

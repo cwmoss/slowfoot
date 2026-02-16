@@ -104,7 +104,7 @@ class processor {
     dbg('[image] finished', $res);
     $img->resize_url = $name;
     $img->resize = $res;
-    return $img;
+    return $img->new_result($name, $res, $dest);
     // return $opts['image_prefix'] . '/' . $name;
   }
 

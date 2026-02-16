@@ -42,7 +42,7 @@ class sanity {
     });
     hook::add_filter('assets_map', function ($img, store $store) {
       // sanity images
-      if (isset($img->asset) && $img->asset["_ref"]) {
+      if (isset($img->asset) && $img->asset->_ref) {
         //if ($img->_type == 'sanity.imageAsset') {
         return self::sanity_imagefield_to_slft($img, $store);
       }
