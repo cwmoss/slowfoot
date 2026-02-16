@@ -120,13 +120,13 @@ class sanity {
       _src: $sanity_asset->_src,
       url: $sanity_asset->url,
       path: $sanity_asset->path,
-      w: $sanity_asset->metadata['dimensions']['width'],
-      h: $sanity_asset->metadata['dimensions']['height'],
+      w: $sanity_asset->metadata->dimensions->width,
+      h: $sanity_asset->metadata->dimensions->height,
       mime: $sanity_asset->mimeType
     );
 
     if (isset($img->hotspot)) {
-      $asset->fp = [$img->hotspot['x'], $img->hotspot['y']];
+      $asset->fp = [$img->hotspot->x, $img->hotspot->y];
     }
     return $asset;
   }
