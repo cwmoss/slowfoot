@@ -52,7 +52,7 @@ class phuety_adapter implements template_contract {
         $name = $_template;
         $cname = "template.{$name}"; // $__context->is_page ? "template.{$name}" : "template.{$name}";
         $__context->name = $cname;
-        dbg("++ run template", $cname, $name, $helper["markdown"]("*yo**"));
+        dbg("++ run template", $cname, $name); // $helper["markdown"]("*yo**")
 
         $helper = $this->load_late_template_helper($helper, $__context->src, $data, $__context);
         $this->engine->set_helper($helper);

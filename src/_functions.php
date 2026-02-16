@@ -499,3 +499,11 @@ function format_date($format, $date) {
     $date = DateTime::createFromFormat("Y-m-d H:i:s", $date);
     return $date->format($format);
 }
+
+// sanity block
+function object_to_array($object) {
+    if (!is_object($object) && !is_array($object)) {
+        return $object;
+    }
+    return array_map('object_to_array', (array) $object);
+}
