@@ -507,3 +507,11 @@ function object_to_array($object) {
     }
     return array_map('object_to_array', (array) $object);
 }
+
+function array_to_object($array) {
+    if (!is_array($array)) {
+        return $array;
+    }
+    // return is_array($array) ? (object) array_map([__CLASS__, __METHOD__], $array) : $array;
+    return (object) array_map('array_to_object', $array);
+}
