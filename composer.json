@@ -41,8 +41,7 @@
     "mnapoli/front-yaml": "^2.0",
     "benjaminhoegh/parsedown-extended": "^1.2",
     "cwmoss/wrun": "^1.0",
-    "cwmoss/phuety": "dev-main",
-    "jcupitt/vips": "^2.5"
+    "cwmoss/phuety": "dev-main"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.12",

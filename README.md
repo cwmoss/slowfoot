@@ -61,3 +61,5 @@ alias slowfoot="docker run --rm -it -p 1199:1199 -v ${PWD}:/project ghcr.io/cwmo
 #### todo
 
 resolve urls for pages, remove path_page function
+
+    "jcupitt/vips": "^2.5" removed b.a.w
