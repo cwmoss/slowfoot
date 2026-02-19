@@ -10,7 +10,9 @@ https://stackoverflow.com/questions/56415703/live-execute-git-command-on-php
 test via browser console:
     fetch("/", {method:"POST", headers:{"x-slft-deploy":"1234"}})
 
+curl -vv https://yourdomain.com/webdeploy/whatever.php -H "x-slft-deploy: 1234"
 */
+
 #require_once __DIR__.'/../vendor/autoload.php';
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
@@ -21,7 +23,8 @@ $deployer = new deployer(
     getenv("SLFT_BUILD_KEY"),
     SLOWFOOT_BASE,
     getenv("SLFT_WRITE_PATH"),
-    getenv("SLFT_PATH_PREFIX")
+    getenv("SLFT_PATH_PREFIX"),
+    getenv("SLFT_PHP_BIN")
 );
 
 $deployer->send_cors();
@@ -59,15 +62,18 @@ class deployer {
         private string $token,
         private string $base,
         private string $write_path,
-        private string $siteprefix = ""
+        private string $siteprefix = "",
+        private string $php_bin = ""
     ) {
         $this->origin = $server['HTTP_ORIGIN'] ?? $server["HTTP_REFERER"] ?? "";
+        if ($php_bin) $this->php_bin .= " ";
     }
 
     public function build() {
         $cmd = sprintf(
-            "%s%s/vendor/bin/slowfoot build --colors on -f",
+            "%s%s%s/vendor/bin/slowfoot build --colors on -f",
             ($this->write_path ? "SLFT_WRITE_PATH={$this->write_path} " : ""),
+            $this->php_bin,
             $this->base
         );
         $converter = new AnsiToHtmlConverter();
