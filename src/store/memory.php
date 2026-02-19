@@ -2,6 +2,8 @@
 
 namespace slowfoot\store;
 
+use slowfoot\databucket;
+
 use function lolql\parse;
 use function lolql\query as lquery;
 
@@ -43,16 +45,18 @@ class memory {
   }
   public function query($q, $params = []) {
     $res = lquery($this->docs, $q, $params);
+    $res = array_map(fn($it) => databucket::array_to_object($it), $res);
     return $res;
-    return [$res, count($res)];
+    // return [$res, count($res)];
   }
 
   public function query_type($type) {
     // $filter = ['_type' => $type];
-    $rs = array_filter($this->docs, function ($row) use ($type) {
+    $res = array_filter($this->docs, function ($row) use ($type) {
       return $row["_type"] == $type;
     });
-    return $rs;
+    $res = array_map(fn($it) => databucket::array_to_object($it), $res);
+    return $res;
   }
 
   public function exists($collection, $id) {
@@ -60,7 +64,7 @@ class memory {
   }
 
   public function get($collection, $id) {
-    return $this->$collection[$id] ?? null;
+    return $this->exists($collection, $id) ? databucket::array_to_object($this->$collection[$id]) : null;
   }
 
   public function add($collection, $id, $row) {

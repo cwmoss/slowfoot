@@ -1,5 +1,9 @@
 <?php
 
+namespace slowfoot;
+
+use ArrayAccess;
+
 class databucket implements ArrayAccess {
 
     private $is_array = null;
@@ -90,6 +94,7 @@ class databucket implements ArrayAccess {
         if (!is_array($array)) {
             return $array;
         }
+        if (array_is_list($array)) return array_map(self::array_to_object(...), $array);
         // return is_array($array) ? (object) array_map([__CLASS__, __METHOD__], $array) : $array;
         return (object) array_map(self::array_to_object(...), $array);
     }

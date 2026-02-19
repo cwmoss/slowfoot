@@ -43,10 +43,12 @@ foreach ($project->templates() as $type => $conf) {
     $bs = 100;
     $start = 0;
 
+    // if ($type != "page") continue;
     shell_info("  => $type");
 
     // TODO
     foreach (query_type($project->ds, $type) as $row) {
+        // if ($type == "page") var_dump($row);
         foreach ($conf as $templateconf) {
             //	process_template_data($row, path($row['_id']));
             $path = $ds->get_fpath($row->_id, $templateconf['name']);
@@ -56,6 +58,11 @@ foreach ($project->templates() as $type => $conf) {
             if ($path == "/") {
                 #var_dump($row);
                 #exit;
+            }
+            // print "  path: $path {$row->_id}\n";
+            if (!$path) {
+                print "*** no path for $row->_id\n";
+                continue;
             }
             $context->path = $path;
             $content = $builder->make_template(

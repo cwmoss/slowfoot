@@ -173,7 +173,7 @@ class store {
       'rev' => [$row['_id'], $name],
       'first' => [
         '_id' => $firstid,
-        '_type' => $first['_type'],
+        '_type' => $first->_type,
         'name' => $firstname,
         'row' => $first
       ],
