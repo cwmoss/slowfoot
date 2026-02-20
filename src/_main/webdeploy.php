@@ -24,7 +24,8 @@ $deployer = new deployer(
     SLOWFOOT_BASE,
     getenv("SLFT_WRITE_PATH"),
     getenv("SLFT_PATH_PREFIX"),
-    getenv("SLFT_PHP_BIN")
+    getenv("SLFT_PHP_BIN"),
+    getenv("SLFT_DEPLOYER_LBR")
 );
 
 $deployer->send_cors();
@@ -63,7 +64,8 @@ class deployer {
         private string $base,
         private string $write_path,
         private string $siteprefix = "",
-        private string $php_bin = ""
+        private string $php_bin = "",
+        private string $line_break = ""
     ) {
         $this->origin = $server['HTTP_ORIGIN'] ?? $server["HTTP_REFERER"] ?? "";
         if ($php_bin) $this->php_bin .= " ";
@@ -132,8 +134,7 @@ class deployer {
     }
 
     function live_execute_command($cmd, $err = false, $converter = null) {
-        $lbr = "\n";
-        $lbr = "";
+        $lbr = $this->line_break;
         while (@ob_end_flush()); // end all output buffers if any
 
         if ($err) {
@@ -150,7 +151,7 @@ class deployer {
                 $live_output = $converter->convert($live_output);
             }
             $complete_output = $complete_output . $live_output;
-            echo "$live_output"; //  . $lbr . "<br>";
+            echo "$live_output" . $lbr; //  . $lbr . "<br>";
             // echo($converter->convert($live_output.$lbr)."<br>");
             // echo json_encode(['txt'=>$live_output]);
             @flush();
