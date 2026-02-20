@@ -27,6 +27,7 @@ class sanity {
         public string $project_id,
         public string $token = '',
         public string $dataset = 'production',
+        public string $api_version = '2026-02-20',
         public bool $use_cdn = false,
         public string $query = '*[!(_type match "system.*") && !(_id in path("drafts.**"))]'
     ) {
@@ -89,7 +90,8 @@ class sanity {
             'projectId' => $this->project_id,
             'dataset' => $this->dataset,
             'useCdn' => $this->use_cdn,
-            'token' => $this->token
+            'token' => $this->token,
+            'apiVersion' => $this->api_version
         ]);
     }
 
