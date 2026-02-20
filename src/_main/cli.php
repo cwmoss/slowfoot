@@ -8,7 +8,9 @@ use slowfoot\document;
 use slowfoot\setup;
 use slowfoot\util\console;
 use slowfoot\store;
-
+use slowfoot\app;
+use slowfoot\cli\init;
+use slowfoot\cli\build;
 
 ini_set("display_errors", 0);
 $slft_lib_base = dirname(__DIR__);
@@ -45,7 +47,7 @@ DOC;
 $parsed = Docopt::handle($doc, array('version' => 'slowfoot 0.1'));
 #var_dump($parsed);
 $args = $parsed->args;
-#var_dump($args);
+// var_dump($_SERVER);
 
 $ds = $dist = null;
 $IS_PROD = false;
@@ -65,27 +67,27 @@ $need_fetch = match (true) {
     $args['preview'], $args['init'], $args['info'], $args['starship'] => false,
     default => true
 };
-$need_pdir = match (true) {
-    default => true
-};
+
 if ($need_fetch) {
     $FETCH = $args['-f'];
 }
-if ($need_pdir) {
-    $PDIR = trim($args['-d'] ?? "");
-    $PDIR = match (true) {
-        $PDIR == ".", $PDIR == "./" => getcwd(),
-        $PDIR && $PDIR[0] != '/' => SLOWFOOT_BASE . '/' . $PDIR,
-        default => $PDIR
-    };
-    define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
-}
+
+$PDIR = trim($args['-d'] ?? "");
+$PDIR = match (true) {
+    $PDIR == ".", $PDIR == "./" => getcwd(),
+    $PDIR && $PDIR[0] != '/' => SLOWFOOT_BASE . '/' . $PDIR,
+    default => $PDIR
+};
+define('SLF_PROJECT_DIR', $PDIR ?: $project_dir);
+
 
 $colors = $args['--colors'];
 // print "colors: $colors";
 console::console($colors);
 
-if (!$args['-v']) define("SLOWFOOT_NO_DEBUG", 1);
+// if (!$args['-v']) define("SLOWFOOT_NO_DEBUG", 1);
+
+$app = new app(SLF_PROJECT_DIR, $args['-v'], isset($FETCH) && $FETCH);
 
 if ($args['dev']) {
     print $logo . "\n";
@@ -100,10 +102,10 @@ if ($args['dev']) {
 
     $devserver = join(":", $devhostport);
 
-    // evtl. fetching data
-    $project = require $slft_lib_base . '/_boot.php';
+    $app->setup()->load_data(true);
 
-    (new setup(SLF_PROJECT_DIR))->setup();
+    // evtl. fetching data
+    $project = $app->project;
 
     print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
 
@@ -112,7 +114,7 @@ if ($args['dev']) {
     // this works!
     # automatisches öffnen gefällt mir nicht mehr
     # shell_exec('(sleep 1 ; open http://localhost:1199/ ) 2>/dev/null >/dev/null &');
-    $command = "XXXPHP_CLI_SERVER_WORKERS=4 php -d short_open_tag=On -S {$devserver} -t {$dev_src} {$slft_lib_base}/_main/development.php";
+    $command = "XXXPHP_CLI_SERVER_WORKERS=4 php -d variables_order=EGPCS -d short_open_tag=On -S {$devserver} -t {$dev_src} {$slft_lib_base}/_main/development.php";
     print "\n\n";
 
     print "starting development server\n\n";
@@ -128,18 +130,13 @@ if ($args['dev']) {
 }
 
 if ($args['build']) {
-    $IS_PROD = true;
     print $logo . "\n";
-
-    (new setup(SLF_PROJECT_DIR))->setup();
-    $project = require $slft_lib_base . '/_boot.php';
-    require $slft_lib_base . '/cli/build.php';
+    $app->setup()->load_data(false);
+    new build($app)->run($args);
 }
 
 if ($args['preview']) {
     shell_info("starting testserver. you can review your build here.", true);
-    $boot_only_config = true;
-    require $slft_lib_base . '/_boot.php';
     $testserver = "localhost:11999";
     $command = "php -S {$testserver} -t {$project->dist()}";
     print "\n";
@@ -149,31 +146,29 @@ if ($args['preview']) {
     `$command`;
 }
 if ($args['fetch']) {
-    $FETCH = true;
-    require $slft_lib_base . '/_boot.php';
+    $app->setup()->load_data(true);
 }
 
 if ($args['init']) {
-    require $slft_lib_base . '/cli/init.php';
+    new init($app)->run($args);
 }
 
 if ($args['info']) {
     $boot_only_config = false;
     $boot_quiet = true;
-    $project = require $slft_lib_base . '/_boot.php';
+
+    $app->setup()->load_data(true);
+
     print "🌈 slowfoot\n";
-    print "=> $PDIR\n";
+    print "=> $app->project_dir\n";
 
-    (new setup(SLF_PROJECT_DIR))->setup();
-
-    print console::console_table(['_type' => 'type', 'total' => 'total'], $project->config->db->info());
+    print console::console_table(['_type' => 'type', 'total' => 'total'], $app->project->config->db->info());
 }
 
 if ($args['starship']) {
 
     $boot_only_config = true;
     $boot_quiet = true;
-    $project = require $slft_lib_base . '/_boot.php';
     print "🌈 slft";
 
     if (file_exists(SLF_PROJECT_DIR . "/var/slowfoot.db")) {

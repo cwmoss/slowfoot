@@ -41,7 +41,8 @@ class project {
         return $this->config->templates;
     }
 
-    public function load() {
+    public function load($include_drafts = false) {
+        $this->config->is_prod = !$include_drafts;
         $dataloader = $this->config->get_loader();
         $this->ds = $dataloader->load();
         $this->template_helper = load_template_helper($this->ds, $this->src, $this->config);

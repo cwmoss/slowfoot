@@ -1,6 +1,14 @@
 <?php
 define('SLOWFOOT_START', microtime(true));
 error_reporting(E_ALL ^ E_DEPRECATED);
+if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+    require_once __DIR__ . '/../../vendor/autoload.php';
+} else {
+    require_once __DIR__ . '/../../../../autoload.php';
+}
+
+// error_reporting(E_ALL ^ E_WARNING ^ E_DEPRECATED);
+
 # error_reporting(E_ALL);
 ini_set("display_errors", 0);
 /*
@@ -12,6 +20,7 @@ $PDIR = $project_dir;
 
 //require $project_dir . '/vendor/autoload.php';
 use Bramus\Router\Router;
+use slowfoot\app;
 use slowfoot\context;
 use slowfoot\pagebuilder;
 use slowfoot\configuration;
@@ -19,10 +28,11 @@ use slowfoot\store;
 use slowfoot\util\server;
 use wrun\runner;
 
-$IS_PROD = false;
-
-/** @var project $project */
-$project = require __DIR__ . '/../_boot.php';
+// var_dump($_SERVER);
+// var_dump($_ENV);
+// exit;
+$app = new app($project_dir, true, false)->load_data(true);
+$project = $app->project;
 
 ini_set("precision", 16);
 define('START_TIME', microtime(true));
@@ -47,7 +57,7 @@ $router->mount('/__api', function () use ($router, $project) {
 
     $router->post("/fetch", function () use ($project) {
         $project->config->fresh_store();
-        $project->load();
+        $project->load(true);
         server::resp(["ok" => true]);
     });
 
