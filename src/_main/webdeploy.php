@@ -163,8 +163,8 @@ class deployer {
 
         // return exit status and intended output
         return array(
-            'exit_status'  => intval($matches[0]),
-            'output'       => str_replace("Exit status : " . $matches[0], '', $complete_output)
+            'exit_status'  => intval($matches[0] ?? 0),
+            'output'       => str_replace("Exit status : " . ($matches[0] ?? 0), '', $complete_output)
         );
     }
 
