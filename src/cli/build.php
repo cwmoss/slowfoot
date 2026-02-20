@@ -61,7 +61,7 @@ foreach ($project->templates() as $type => $conf) {
             }
             // print "  path: $path {$row->_id}\n";
             if (!$path) {
-                print "*** no path for $row->_id\n";
+                // print "*** no path for $row->_id\n";
                 continue;
             }
             $context->path = $path;
