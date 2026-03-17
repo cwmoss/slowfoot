@@ -218,15 +218,15 @@ function resolve_dot_value($keys, $data) {
 
     // nested?
     if ($keys) {
-        return resolve_dot_value($keys, $data[$current]);
+        return resolve_dot_value($keys, $data[$current] ?? null);
     }
     if (is_object($data)) {
-        return $data->$current;
+        return $data->$current ?? null;
     }
     if (!is_assoc($data)) {
         return array_column($data, $current);
     } else {
-        return $data[$current];
+        return $data[$current] ?? null;
     }
 }
 function url_safe($path) {
