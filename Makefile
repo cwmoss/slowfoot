@@ -1,5 +1,9 @@
 all: make-docs test analyze
 
+app:
+	composer install --no-dev --classmap-authoritative
+	php -d phar.readonly=0 gen_phar.php
+
 make-docs:
 	bin/slowfoot build -d docs/ -f
 

@@ -125,7 +125,7 @@ if ($args['dev']) {
     $wss = "php {$slft_lib_base}/wss.php " . SLOWFOOT_BASE;
     #shell_exec("$wss &");
     #print "end";
-    `$command`;
+    shell_exec($command);
     #`($command &) && ($wss &)`;
 }
 
@@ -143,7 +143,7 @@ if ($args['preview']) {
     print "   🤟 http://$testserver\n\n";
     print "<cmd> click\n";
     print "have fun!\n\n";
-    `$command`;
+    shell_exec($command);
 }
 if ($args['fetch']) {
     $app->setup()->load_data(true);

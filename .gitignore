@@ -5,3 +5,4 @@ var/
 docs_src/var/
 dist/
 test-*
+app.phar*
