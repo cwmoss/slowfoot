@@ -1,4 +1,23 @@
 <?php
+
+/*
+
+old bin/slowfoot:
+=================
+
+define('SLOWFOOT_START', microtime(true));
+$bin_dir = $_composer_bin_dir ?? __DIR__;
+$project_dir = isset($_composer_bin_dir) ? dirname(dirname($bin_dir)) : dirname($bin_dir);
+
+define('SLOWFOOT_BASE', $project_dir);
+
+// require $project_dir . '/vendor/cwmoss/slowfoot-lib/src/_main/cli.php';
+require __DIR__ . "/../src/_main/cli.php";
+
+*/
+
+
+
 $project_dir ??= "";
 error_reporting(E_ALL ^ E_DEPRECATED);
 // error_reporting(E_ALL);

@@ -1,18 +1,31 @@
 <?php
 
-namespace slowfoot\cli;
+namespace slowfoot\commands;
 
 use slowfoot\util\console;
 use slowfoot\context;
 use slowfoot\pagebuilder;
 use slowfoot\app;
+use cwmoss\final_cli\cli;
 
 class build {
 
     public function __construct(public app $app) {
     }
 
-    public function run(array $args) {
+    // build [-d <project directory>] [-f] 
+    /**
+     * build your project.
+     * 
+     * generates all pages and puts everything
+     * into a dist directory
+     */
+    public function __invoke(
+        #[cli("-d", "Set the project base directory")]
+        ?string $project_directory = null,
+        #[cli("-f", "fetch all contents")]
+        ?bool $f = false
+    ) {
         print memory_get_usage() . " loaded ok\n";
         $project = $this->app->project;
 
@@ -26,7 +39,7 @@ class build {
 
         shell_info("removing old dist folder", true);
         shell_info("  => {$dist}");
-        `rm -rf $dist`;
+        shell_exec("rm -rf $dist");
         shell_info();
 
         $context = new context(
@@ -102,8 +115,8 @@ class build {
 
         shell_info("copy assets");
 
-        `cp -R {$project->src}/assets {$project->dist()}/`;
-        `cp -a {$project->config->var}/rendered-images/. {$project->dist()}/images`;
+        shell_exec("cp -R {$project->src}/assets {$project->dist()}/");
+        shell_exec("cp -a {$project->config->var}/rendered-images/. {$project->dist()}/images");
 
         shell_info();
 

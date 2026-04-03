@@ -1,10 +1,53 @@
-#!/usr/bin/env php 
+#!/usr/bin/env php
 <?php
+
+namespace slowfoot\commands;
+
 define('SLOWFOOT_START', microtime(true));
 $bin_dir = $_composer_bin_dir ?? __DIR__;
 $project_dir = isset($_composer_bin_dir) ? dirname(dirname($bin_dir)) : dirname($bin_dir);
-
 define('SLOWFOOT_BASE', $project_dir);
 
-// require $project_dir . '/vendor/cwmoss/slowfoot-lib/src/_main/cli.php';
-require __DIR__ . "/../src/_main/cli.php";
+require $project_dir . '/vendor/autoload.php';
+
+use cwmoss\final_cli;
+use cwmoss\final_cli\parser;
+use slowfoot\app;
+
+error_reporting(E_ALL ^ E_DEPRECATED);
+
+#class xx {
+#}
+#var_dump(method_exists(xx::class, "__construct"));
+#exit;
+/**
+ * Your friendly Static Site Generator
+ * 
+ * Usage examples:
+ *       
+ * slowfoot dev [-d <project directory>] [-S <server:port>] [-P <port>] [-f]
+ * slowfoot build [-d <project directory>] [-f] 
+ * slowfoot init [-d <project directory>] [--webdeploy] [--force]
+ *
+ */
+$slft = new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>")
+    ->add_command(dev::class)
+    ->add_command(build::class)
+    ->add_command(init::class)
+    ->add_command(preview::class)
+    ->add_command(info::class)
+    ->add_command(starship::class)
+    ->run($argv, function ($class, parser $parser) use ($project_dir) {
+        $dir = (string) $parser->get_opt("d");
+        $dir = match (true) {
+            $dir == ".", $dir == "./" => getcwd(),
+            $dir && $dir[0] != '/' => SLOWFOOT_BASE . '/' . $dir,
+            default => $dir
+        };
+        define('SLF_PROJECT_DIR', $dir ?: $project_dir);
+        $app = new app(SLF_PROJECT_DIR, $parser->get_switch('v', 'verbose'), $parser->get_switch("f"));
+        if (method_exists($class, "__construct")) {
+            return new $class($app);
+        }
+        return new $class;
+    });
