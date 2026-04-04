@@ -26,6 +26,7 @@ class build {
         #[cli("-f", "fetch all contents")]
         ?bool $f = false
     ) {
+        $this->app->setup()->load_data(false);
         print memory_get_usage() . " loaded ok\n";
         $project = $this->app->project;
 
