@@ -31,7 +31,7 @@ use wrun\runner;
 // var_dump($_SERVER);
 // var_dump($_ENV);
 // exit;
-$app = new app($project_dir, true, false)->load_data(true);
+$app = new app($project_dir, true, false)->load_project()->load_data(true);
 $project = $app->project;
 
 ini_set("precision", 16);

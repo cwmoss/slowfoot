@@ -2,7 +2,7 @@
 
 # W.I.P slowfoot
 
-php >= 8.2
+php >= 8.4
 
 ## config
 

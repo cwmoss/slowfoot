@@ -16,21 +16,17 @@ use slowfoot\app;
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
-#class xx {
-#}
-#var_dump(method_exists(xx::class, "__construct"));
-#exit;
 /**
  * Your friendly Static Site Generator
  * 
+ * 
  * Usage examples:
- *       
  * slowfoot dev [-d <project directory>] [-S <server:port>] [-P <port>] [-f]
  * slowfoot build [-d <project directory>] [-f] 
  * slowfoot init [-d <project directory>] [--webdeploy] [--force]
  *
  */
-$slft = new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>")
+$slft = new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>", 3)
     ->add_command(dev::class)
     ->add_command(build::class)
     ->add_command(init::class)
@@ -46,6 +42,8 @@ $slft = new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>")
         };
         define('SLF_PROJECT_DIR', $dir ?: $project_dir);
         $app = new app(SLF_PROJECT_DIR, $parser->get_switch('v', 'verbose'), $parser->get_switch("f"));
+        $noproject = [init::class];
+        if (!in_array($class, $noproject)) $app->load_project();
         if (method_exists($class, "__construct")) {
             return new $class($app);
         }

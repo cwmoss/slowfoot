@@ -8,7 +8,8 @@
 
 ini_set("phar.readonly", 0);
 
-$pharFile = 'app.phar';
+$pharFile = $argv[1]; // ;
+$bin_stub = $argv[2];
 
 // clean up
 if (file_exists($pharFile)) {
@@ -19,10 +20,10 @@ if (file_exists($pharFile . '.gz')) {
 }
 
 // create with alias "project.phar"
-$phar = new Phar('app.phar', 0, 'app.phar');
+$phar = new Phar($pharFile, 0, $pharFile);
 // add all files in the project
 $phar->buildFromDirectory(dirname(__FILE__) . '/', "!/src|vendor|bin|plugins|resources|ui|webdeploy/!");
-$phar->setStub($phar->createDefaultStub('bin/slowfoot'));
+$phar->setStub($phar->createDefaultStub($bin_stub));
 $phar->compress(Phar::GZ);
 
 echo "OK\n";

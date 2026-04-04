@@ -14,7 +14,6 @@ class app {
         $this->base = SLOWFOOT_BASE;
         $this->init();
         $this->set_env();
-        $this->load_project();
     }
 
     public function init() {
@@ -63,6 +62,7 @@ class app {
                 define('PATH_PREFIX', $this->project->path_prefix());
             }
         }
+        return $this;
     }
 
     public function setup() {
