@@ -3,15 +3,16 @@
 namespace slowfoot;
 
 use Exception;
+use FilesystemIterator;
 
 class setup {
 
-  public function __construct(public string $project_dir) {
+  public function __construct(public string $project_dir, public string $writebase = "") {
   }
 
   public function setup(): bool {
     // TODO: inject somewhere
-    $writebase = getenv("SLFT_WRITE_PATH");
+    $writebase = $this->writebase;;
     if ($writebase) $writebase = $this->project_dir . "/" . $writebase;
     else $writebase = $this->project_dir;
 
@@ -42,12 +43,24 @@ class setup {
   public function init(string $projectname): array {
     $skipped = [];
     $projectbase = realpath($this->project_dir);
-    $srcbase = realpath(__DIR__ . "/../resources/projects/$projectname");
-    // print $srcbase . "\n";
+    print __DIR__ . "/../resources/projects/$projectname\n";
+    // $srcbase = realpath(__DIR__ . "/../resources/projects/$projectname");
+    $srcbase = __DIR__ . "/../resources/projects/$projectname";
+    if (!$srcbase) throw new Exception("sourcebase for '$projectname' not found");
+    # print "name $projectname \n";
+    #print $this->project_dir . " D\n";
+    #print $projectbase . " P\n";
+    #print $srcbase . " S\n";
     // return $skipped;
-    foreach (globstar("$srcbase/**/*") as $file) {
-      if (!is_file($file)) continue;
-      $rel_name = \substr($file, mb_strlen($srcbase));
+    #print("globstar $srcbase/**/*\n");
+
+    // $iterator = new FilesystemIterator($srcbase);
+    $iterator = recurse_directory($srcbase);
+    foreach ($iterator as $file) {
+      // if (!$file->isFile()) continue;
+      $rel_name = \substr($file->getPathname(), mb_strlen($srcbase));
+
+      // print "found: " . $file->getFilename() . " // $rel_name  => " . $file->getPathname() . "\n";
       $rel_dir = \dirname($rel_name);
       $rel_file = \basename($rel_name);
       if (str_starts_with($rel_file, "dot.")) {

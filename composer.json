@@ -48,7 +48,8 @@
     "benjaminhoegh/parsedown-extended": "^1.2",
     "cwmoss/wrun": "^1.0",
     "cwmoss/phuety": "dev-main",
-    "cwmoss/final-cli": "dev-main"
+    "cwmoss/final-cli": "dev-main",
+    "workerman/workerman": "^5.1"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.12",

@@ -15,6 +15,7 @@ use cwmoss\final_cli\parser;
 use slowfoot\app;
 
 error_reporting(E_ALL ^ E_DEPRECATED);
+// print micro_get_self_filename();
 
 /**
  * Your friendly Static Site Generator

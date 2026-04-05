@@ -6,11 +6,11 @@ BUILD = build
 all: make-docs test analyze
 
 app:
-	composer install --no-dev --classmap-authoritative
+	# composer install --no-dev --classmap-authoritative
 	php -d phar.readonly=0 gen_phar.php
 
 make-docs:
-	bin/slowfoot build -d docs/ -f
+	bin/slowfoot build -d=docs/ -f
 
 test: 
 	php vendor/bin/phpunit tests
@@ -31,8 +31,8 @@ runner:
 build: $(MICROSFX)/resources/micro.sfx $(PHAR)
 	cat $(MICROSFX)/resources/micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) && cp $(APP) /usr/local/bin/
 
-$(PHAR): bin/slowfoot src/**/*.php
-	composer install --no-dev --classmap-authoritative
+$(PHAR): bin/slowfoot src/*.php src/**/*.php
+	# composer install --no-dev --classmap-authoritative
 	php -d phar.readonly=0 gen_phar.php $(PHAR) bin/slowfoot
 
 build-all: $(PHAR)

@@ -7,7 +7,7 @@ use Dotenv\Dotenv;
 class app {
 
     public string $base;
-    public string $write_path;
+    public string $write_path = "";
     public project $project;
 
     public function __construct(public string $project_dir, public bool $verbose, public bool $fresh) {
@@ -71,7 +71,7 @@ class app {
     }
 
     public function setup_get() {
-        return new setup($this->project_dir);
+        return new setup($this->project_dir, $this->write_path);
     }
 
     // drafts wont be loaded in build bode

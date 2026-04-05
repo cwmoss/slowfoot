@@ -23,12 +23,16 @@ class init {
         bool $webdeploy = false,
         bool $force = false
     ) {
+        // print("init $project_directory\n");
         $setup = $this->app->setup_get();
-
+        // print("setup\n");
         if ($webdeploy) {
             shell_info("copy webdeploy script to " . SLF_PROJECT_DIR);
             $skipped = $setup->webdeploy();
         } else {
+            //    print("init\n");
+            //    print SLF_PROJECT_DIR;
+
             shell_info("initializing new project in " . SLF_PROJECT_DIR);
             if (!directory_is_empty(SLF_PROJECT_DIR) && !$force) {
                 print "\ndirectory is not empty, aborting init\n" .

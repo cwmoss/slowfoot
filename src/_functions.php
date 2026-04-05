@@ -327,6 +327,7 @@ function globstar($pattern, $flags = 0) {
         $restPattern = substr($pattern, $position + 2);
         $patterns = array($rootPattern . $restPattern);
         $rootPattern .= '/*';
+        // print "glob: $rootPattern\n";
         while ($dirs = glob($rootPattern, GLOB_ONLYDIR)) {
             $rootPattern .= '/*';
             foreach ($dirs as $dir) {
@@ -514,4 +515,28 @@ function array_to_object($array) {
     }
     // return is_array($array) ? (object) array_map([__CLASS__, __METHOD__], $array) : $array;
     return (object) array_map('array_to_object', $array);
+}
+
+function recurse_directory(string $basedir): Generator {
+    $dir = new RecursiveDirectoryIterator($basedir);
+
+    // Filter large files ( > 100MB)
+    $files = new RecursiveCallbackFilterIterator($dir, function ($current, $key, $iterator) {
+        // Allow recursion
+        if ($iterator->hasChildren()) {
+            return true;
+        }
+        if (str_starts_with($current->getBasename(), ".")) {
+            return false;
+        }
+        // Check for TODO
+        if ($current->isFile()) {
+            return true;
+        }
+        return false;
+    });
+
+    foreach (new RecursiveIteratorIterator($files) as $file) {
+        yield $file;
+    }
 }
