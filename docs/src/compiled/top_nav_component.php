@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 class top_nav_component extends component {
-    public string $uid = "top_nav---69d139a15539b";
+    public string $uid = "top_nav---69d1be1b99c3b";
     public bool $is_layout = false;
     public string $name = "top_nav";
     public string $tagname = "top.nav";
