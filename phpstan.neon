@@ -12,7 +12,9 @@ parameters:
    # - tests
   excludePaths:
     - src/_main/preview.php
+    - src/_main/cli.php
     - src/hot-reload/ 
+    - src/_removed_boot.php
   scanFiles:
     - bin/slowfoot
   #scanDirectories:

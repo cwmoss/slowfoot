@@ -27,14 +27,14 @@ error_reporting(E_ALL ^ E_DEPRECATED);
  * slowfoot init [-d <project directory>] [--webdeploy] [--force]
  *
  */
-new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>", 3)
+(new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>", 3))
     ->add_command(dev::class)
     ->add_command(build::class)
     ->add_command(init::class)
     ->add_command(preview::class)
     ->add_command(info::class)
     ->add_command(starship::class)
-    ->run($argv, function ($class, parser $parser) use ($project_dir) {
+    ->run($argv ?? [], function ($class, parser $parser) use ($project_dir) {
         $dir = (string) $parser->get_opt("d");
         $dir = match (true) {
             $dir == ".", $dir == "./" => getcwd(),
