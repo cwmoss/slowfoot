@@ -27,7 +27,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
  * slowfoot init [-d <project directory>] [--webdeploy] [--force]
  *
  */
-$slft = new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>", 3)
+new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>", 3)
     ->add_command(dev::class)
     ->add_command(build::class)
     ->add_command(init::class)
