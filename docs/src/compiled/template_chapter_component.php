@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 class template_chapter_component extends component {
-    public string $uid = "template_chapter---69d1be1b9847f";
+    public string $uid = "template_chapter---69d375f3890c1";
     public bool $is_layout = false;
     public string $name = "template_chapter";
     public string $tagname = "template.chapter";
@@ -57,7 +57,7 @@ $html = "<em>hi</em>";
 ) ); ?>
     </aside>
 <?php $__runner($__runner, "layout.default", $__d->_get("phuety")->with($this->tagname, "layout.default"), ["title"=> $__d->_get("page")->title, "page"=> $__d->_get("page")] + array (
-  'class' => 'template_chapter---69d1be1b9847f root',
+  'class' => 'template_chapter---69d375f3890c1 root',
 ) , ["default" => ob_get_clean()]+array_shift($__s)); ?>
 
 <?php // return ob_get_clean();
