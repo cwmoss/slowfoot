@@ -45,25 +45,27 @@ tmpl.innerHTML = /* html */ `
 `;
 
 export default class FetchState extends HTMLElement {
-  constructor() {
-    super()
-      .attachShadow({ mode: "open" })
-      .appendChild(tmpl.content.cloneNode(true));
-    this.spinner = this.shadowRoot.querySelector("#spinner");
-    this.time_spent = this.shadowRoot.querySelector("#time-spent");
+    constructor() {
+        super()
+            .attachShadow({ mode: "open" })
+            .appendChild(tmpl.content.cloneNode(true));
+        this.spinner = this.shadowRoot.querySelector("#spinner");
+        this.time_spent = this.shadowRoot.querySelector("#time-spent");
 
-    document.addEventListener("fetch-start", this);
-    document.addEventListener("fetch-end", this);
-  }
-
-  handleEvent(e) {
-    if (e.type == "fetch-start") {
-      this.spinner.removeAttribute("hidden");
-    } else {
-      this.spinner.setAttribute("hidden", "");
-      this.time_spent.innerHTML = `${e.detail?.time_print}`;
+        document.addEventListener("fetch-start", this);
+        document.addEventListener("fetch-end", this);
     }
-  }
+
+    handleEvent(e) {
+        if (e.type == "fetch-start") {
+            this.spinner.removeAttribute("hidden");
+        } else {
+            this.spinner.setAttribute("hidden", "");
+            let time = e.detail?.time_print;
+            if (time) time = time.replace("us", "µs");
+            this.time_spent.innerHTML = `${time}`;
+        }
+    }
 }
 
 customElements.define("fetch-state", FetchState);

@@ -28,8 +28,9 @@ error_reporting(E_ALL ^ E_DEPRECATED);
  *
  */
 (new final_cli\app("slowfoot", "0.8", "🌈 <b>slowfoot</b>", 3))
-    ->add_command(wmdev::class)
-    ->add_command(dev::class)
+    // ->add_command(wmdev::class)
+    ->add_command(dev_fx::class, "dev")
+    ->add_command(dev::class, "dev-legacy")
     ->add_command(build::class)
     ->add_command(init::class)
     ->add_command(preview::class)
@@ -37,6 +38,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     ->add_command(starship::class)
     ->run($argv ?? [], function ($class, parser $parser) use ($project_dir) {
         $dir = (string) $parser->get_opt("d");
+        // TODO: change logik here. needs more getcwd()
         $dir = match (true) {
             $dir == ".", $dir == "./" => getcwd(),
             $dir && $dir[0] != '/' => SLOWFOOT_BASE . '/' . $dir,
