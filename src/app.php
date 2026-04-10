@@ -9,7 +9,7 @@ class app {
     public string $base;
     public string $write_path = "";
     public project $project;
-
+    public array $original_args = [];
     public function __construct(public string $project_dir, public bool $verbose, public bool $fresh) {
         $this->base = SLOWFOOT_BASE;
         $this->init();

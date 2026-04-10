@@ -9,7 +9,9 @@ use slowfoot\store;
 use slowfoot\app;
 use FrameworkX\App as xapp;
 use FrameworkX\Container;
-use FrameworkX\Runner\HttpServerRunner;
+// use FrameworkX\Runner\HttpServerRunner;
+use slowfoot\dev\HttpServerRunner;
+
 use slowfoot\dev\api_index;
 use slowfoot\dev\error;
 use slowfoot\dev\fun_and_run;
@@ -62,6 +64,7 @@ class dev_fx {
         $project = $this->app->project;
 
         print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
+        $_ENV["X_LISTEN"] = $devserver;
 
         $container = new Container([
             "X_LISTEN" => $devserver,
@@ -70,14 +73,30 @@ class dev_fx {
             project::class => $project
         ]);
 
+        $restart = false;
         // dbg("make app");
         $app = new xapp($container, new error(), timer::class);
         // phpinfo();
-        $this->add_routes($app, $project);
+        $app->get("/__restart", function () use ($container, &$restart) {
+            // $app->
+            dbg("+++ restart");
+            $container->getRunner()->stop();
+            $restart = true;
+            // exit;
+        });
+
+        self::add_routes($app, $project);
         $app->run();
+        // var_dump($restart);
+        // var_dump($this->app->original_args);
+
+        // $cmd = join(" ", $this->app->original_args);
+        // print "$cmd \n";
+        // exec("$cmd > /dev/null &");
+        // $this->execInBackground($this->app->original_args);
     }
 
-    public function add_routes(xapp $app, project $project): xapp {
+    static public function add_routes(xapp $app, project $project): xapp {
         $images = $project->config->assets->path;
 
         $app->post("/__api/fetch", api_index::class);
@@ -97,9 +116,19 @@ class dev_fx {
 
         $app->get("$images/{path:.*}", images_server::class);
         $app->get("/{path:.*}", site::class);
+
+
         return $app;
     }
 
+    public function execInBackground($cmd) {
+        $cmd = join(" ", $cmd);
+        if (substr(php_uname(), 0, 7) == "Windows") {
+            pclose(popen("start /B " . $cmd, "r"));
+        } else {
+            exec($cmd . " &");
+        }
+    }
 
     // https://www.asciiart.eu/text-to-ascii-art
     public string $logo = '
