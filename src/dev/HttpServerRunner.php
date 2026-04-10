@@ -87,7 +87,7 @@ class HttpServerRunner {
                 $logger->log('Received SIGTERM, stopping loop');
 
                 $socket->close();
-                // unset($this->http, $http);
+                unset($http);
                 Loop::stop();
             });
         } catch (\BadMethodCallException $e) {

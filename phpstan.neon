@@ -13,6 +13,8 @@ parameters:
   excludePaths:
     - src/_main/preview.php
     - src/_main/cli.php
+    - src/_main/wss.php
+    - src/commands/wmdev.php 
     - src/hot-reload/ 
     - src/_removed_boot.php
   scanFiles:

@@ -71,7 +71,7 @@ class api_index {
             "type" => $this->type($r),
             "fts" => $this->fts($r),
             "lolql" => $this->lolql($r),
-            "fetch" => $this->fetch($r)
+            "fetch" => $this->fetch()
         };
     }
 }

@@ -27,6 +27,8 @@ error_reporting(E_ALL ^ E_DEPRECATED);
  * slowfoot init [-d <project directory>] [--webdeploy] [--force]
  *
  */
+$argv ??= [];
+
 (new final_cli\app("slowfoot", "0.81", "🌈 <b>slowfoot</b>", 3))
     // ->add_command(wmdev::class)
     ->add_command(dev_fx::class, "dev")
@@ -36,7 +38,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     ->add_command(preview::class)
     ->add_command(info::class)
     ->add_command(starship::class)
-    ->run($argv ?? [], function ($class, parser $parser) use ($project_dir, $argv) {
+    ->run($argv, function ($class, parser $parser) use ($project_dir, $argv) {
         $dir = (string) $parser->get_opt("d");
         // TODO: change logik here. needs more getcwd()
         $dir = match (true) {

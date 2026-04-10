@@ -107,7 +107,7 @@ class fileserver {
         return new Response(
             Response::STATUS_OK,
             $headers,
-            \file_get_contents($path) // @phpstan-ignore-line TODO handle error if file can not be accessed
+            \file_get_contents($path) // @XXXphpstan-ignore-line TODO handle error if file can not be accessed
         );
     }
 }

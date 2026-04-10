@@ -11,31 +11,16 @@ class app {
     public project $project;
     public array $original_args = [];
     public function __construct(public string $project_dir, public bool $verbose, public bool $fresh) {
-        $this->base = SLOWFOOT_BASE;
+        $this->base = $project_dir;
         $this->init();
         $this->set_env();
     }
 
     public function init() {
         if (!$this->verbose) define("SLOWFOOT_NO_DEBUG", 1);
-        if (!defined('SLOWFOOT_BASE')) {
-            // via php cli webserver
-            #    print_r($_SERVER);
-            #    print_r($_SERVER);
-            // different project path without vendor/ dir?
-            // TODO: better ideas
-            $internal = str_replace('vendor/cwmoss/slowfoot-lib/docs_src/src', '', $_SERVER['DOCUMENT_ROOT']);
-            if ($internal == $_SERVER['DOCUMENT_ROOT']) {
-                unset($internal);
-            }
-            define('SLOWFOOT_BASE', $_SERVER['DOCUMENT_ROOT'] . '/../');
-        }
         new error_handler;
         if (!defined('SLOWFOOT_PREVIEW')) {
             define('SLOWFOOT_PREVIEW', false);
-        }
-        if (!defined('SLOWFOOT_WEBDEPLOY')) {
-            define('SLOWFOOT_WEBDEPLOY', false);
         }
     }
 

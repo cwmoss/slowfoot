@@ -137,3 +137,12 @@ class dev_fx {
 └─┘┴─┘└─┘└┴┘└  └─┘└─┘ ┴ 
  ';
 }
+
+/*
+if ($hr) {
+    require_once __DIR__ . '/hot-reload/HotReloader.php';
+    $htrldr = new HotReloader\HotReloader('//localhost:1199/phrwatcher.php');
+    $js = $htrldr->init();
+    $content = str_replace('</html>', $js . '</html>', $content);
+}
+*/

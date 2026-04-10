@@ -1,5 +1,21 @@
 <?php
 /*
+apache:
+SetEnv SLFT_BUILD_KEY ycx-sdfsdf-sdf213213-ewrwe-dfs
+Alias /__web-deploy /var/www/vhosts/kurparkverlag/slowfoot/web-deploy/index.php
+
+caddy:
+    handle_path /__webdeploy/* {
+        root * /app/site/webdeploy/
+        php_server
+    }
+
+request outside docker:
+
+    curl -vv http://localhost:9901/__webdeploy/ -H 'x-slft-deploy: 1234'
+
+*/
+/*
 
 evtl alternativ via event source
 https://developer.mozilla.org/en-US/docs/Web/API/EventSource/EventSource
@@ -13,15 +29,62 @@ test via browser console:
 curl -vv https://yourdomain.com/webdeploy/whatever.php -H "x-slft-deploy: 1234"
 */
 
+namespace webdeployer;
+
 #require_once __DIR__.'/../vendor/autoload.php';
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
+use Exception;
 
-define('SLOWFOOT_WEBDEPLOY', true);
+if (!function_exists('getallheaders')) {
+
+    /**
+     * Get all HTTP header key/values as an associative array for the current request.
+     *
+     * returns The HTTP header key/value pairs.
+     */
+    function getallheaders(): array {
+        $headers = array();
+
+        $copy_server = array(
+            'CONTENT_TYPE'   => 'Content-Type',
+            'CONTENT_LENGTH' => 'Content-Length',
+            'CONTENT_MD5'    => 'Content-Md5',
+        );
+
+        foreach ($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) === 'HTTP_') {
+                $key = substr($key, 5);
+                if (!isset($copy_server[$key]) || !isset($_SERVER[$key])) {
+                    $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
+                    $headers[$key] = $value;
+                }
+            } elseif (isset($copy_server[$key])) {
+                $headers[$copy_server[$key]] = $value;
+            }
+        }
+
+        if (!isset($headers['Authorization'])) {
+            if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+                $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+            } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
+                $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+                $headers['Authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
+            } elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) {
+                $headers['Authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
+            }
+        }
+
+        return $headers;
+    }
+}
+
+
+// define('SLOWFOOT_WEBDEPLOY', true);
 
 $deployer = new deployer(
     $_SERVER,
     getenv("SLFT_BUILD_KEY"),
-    SLOWFOOT_BASE,
+    getenv("SLFT_PROJECT_DIR") ?: dirname(__DIR__),
     getenv("SLFT_WRITE_PATH"),
     getenv("SLFT_PATH_PREFIX"),
     getenv("SLFT_PHP_BIN"),
@@ -54,26 +117,41 @@ if ($NOCLI) {
 // print $cmd;
 
 
+
 class deployer {
 
     public string $origin;
+    private array $server;
+    private string $token;
+    private string $base;
+    private string $write_path;
+    private string $siteprefix = "";
+    private string $php_bin = "";
+    private string $line_break = "";
 
+    // MUST work with php7
     public function __construct(
-        private array $server,
-        private string $token,
-        private string $base,
-        private string $write_path,
-        private string $siteprefix = "",
-        private string $php_bin = "",
-        private string $line_break = ""
+        array $server,
+        string $token,
+        string $base,
+        string $write_path,
+        string $siteprefix = "",
+        string $php_bin = "",
+        string $line_break = ""
     ) {
         $this->origin = $server['HTTP_ORIGIN'] ?? $server["HTTP_REFERER"] ?? "";
-        if ($php_bin) $this->php_bin .= " ";
+        $this->server = $server;
+        $this->token = $token;
+        $this->base = $base;
+        $this->write_path = $write_path;
+        $this->siteprefix = $siteprefix;
+        $this->line_break = $line_break;
+        $this->php_bin = $php_bin ?: "slowfoot";
     }
 
     public function build() {
         $cmd = sprintf(
-            "%s%s%s/vendor/bin/slowfoot build --colors on -f",
+            "%s%s build -d=%s --colors=on -f",
             ($this->write_path ? "SLFT_WRITE_PATH={$this->write_path} " : ""),
             $this->php_bin,
             $this->base
@@ -189,5 +267,220 @@ class deployer {
         if ("OPTIONS" == $this->server['REQUEST_METHOD']) {
             exit(0);
         }
+    }
+}
+
+
+
+/*
+ * This file is part of ansi-to-html.
+ *
+ * (c) 2013 Fabien Potencier
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace SensioLabs\AnsiConverter\Theme;
+
+/**
+ * Base theme.
+ */
+class Theme {
+    public function asCss($prefix = 'ansi_color') {
+        $css = array();
+        foreach ($this->asArray() as $name => $color) {
+            $css[] = sprintf('.%s_fg_%s { color: %s }', $prefix, $name, $color);
+            $css[] = sprintf('.%s_bg_%s { background-color: %s }', $prefix, $name, $color);
+        }
+
+        return implode("\n", $css);
+    }
+
+    public function asArray() {
+        return array(
+            'black' => 'black',
+            'red' => 'darkred',
+            'green' => 'green',
+            'yellow' => 'yellow',
+            'blue' => 'blue',
+            'magenta' => 'darkmagenta',
+            'cyan' => 'cyan',
+            'white' => 'white',
+
+            'brblack' => 'black',
+            'brred' => 'red',
+            'brgreen' => 'lightgreen',
+            'bryellow' => 'lightyellow',
+            'brblue' => 'lightblue',
+            'brmagenta' => 'magenta',
+            'brcyan' => 'lightcyan',
+            'brwhite' => 'white',
+        );
+    }
+}
+
+/*
+ * This file is part of ansi-to-html.
+ *
+ * (c) 2013 Fabien Potencier
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace SensioLabs\AnsiConverter;
+
+use SensioLabs\AnsiConverter\Theme\Theme;
+
+/**
+ * Converts an ANSI text to HTML5.
+ */
+class AnsiToHtmlConverter {
+    protected $theme;
+    protected $charset;
+    protected $inlineStyles;
+    protected $inlineColors;
+    protected $colorNames;
+
+    public function __construct(?Theme $theme = null, $inlineStyles = true, $charset = 'UTF-8') {
+        $this->theme = null === $theme ? new Theme() : $theme;
+        $this->inlineStyles = $inlineStyles;
+        $this->charset = $charset;
+        $this->inlineColors = $this->theme->asArray();
+        $this->colorNames = array(
+            'black',
+            'red',
+            'green',
+            'yellow',
+            'blue',
+            'magenta',
+            'cyan',
+            'white',
+            '',
+            '',
+            'brblack',
+            'brred',
+            'brgreen',
+            'bryellow',
+            'brblue',
+            'brmagenta',
+            'brcyan',
+            'brwhite',
+        );
+    }
+
+    public function convert($text) {
+        // remove cursor movement sequences
+        $text = preg_replace('#\e\[(K|s|u|2J|2K|\d+(A|B|C|D|E|F|G|J|K|S|T)|\d+;\d+(H|f))#', '', $text);
+        // remove character set sequences
+        $text = preg_replace('#\e(\(|\))(A|B|[0-2])#', '', $text);
+
+        $text = htmlspecialchars($text, PHP_VERSION_ID >= 50400 ? ENT_QUOTES | ENT_SUBSTITUTE : ENT_QUOTES, $this->charset);
+
+        // carriage return
+        $text = preg_replace('#^.*\r(?!\n)#m', '', $text);
+
+        $tokens = $this->tokenize($text);
+
+        // a backspace remove the previous character but only from a text token
+        foreach ($tokens as $i => $token) {
+            if ('backspace' == $token[0]) {
+                $j = $i;
+                while (--$j >= 0) {
+                    if ('text' == $tokens[$j][0] && strlen($tokens[$j][1]) > 0) {
+                        $tokens[$j][1] = substr($tokens[$j][1], 0, -1);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        $html = '';
+        foreach ($tokens as $token) {
+            if ('text' == $token[0]) {
+                $html .= $token[1];
+            } elseif ('color' == $token[0]) {
+                $html .= $this->convertAnsiToColor($token[1]);
+            }
+        }
+
+        if ($this->inlineStyles) {
+            $html = sprintf('<span style="background-color: %s; color: %s">%s</span>', $this->inlineColors['black'], $this->inlineColors['white'], $html);
+        } else {
+            $html = sprintf('<span class="ansi_color_bg_black ansi_color_fg_white">%s</span>', $html);
+        }
+
+        // remove empty span
+        $html = preg_replace('#<span[^>]*></span>#', '', $html);
+
+        return $html;
+    }
+
+    public function getTheme() {
+        return $this->theme;
+    }
+
+    protected function convertAnsiToColor($ansi) {
+        $bg = 0;
+        $fg = 7;
+        $as = '';
+        if ('0' != $ansi && '' != $ansi) {
+            $options = explode(';', $ansi);
+
+            foreach ($options as $option) {
+                if ($option >= 30 && $option < 38) {
+                    $fg = $option - 30;
+                } elseif ($option >= 40 && $option < 48) {
+                    $bg = $option - 40;
+                } elseif (39 == $option) {
+                    $fg = 7;
+                } elseif (49 == $option) {
+                    $bg = 0;
+                }
+            }
+
+            // options: bold => 1, underscore => 4, blink => 5, reverse => 7, conceal => 8
+            if (in_array(1, $options)) {
+                $fg += 10;
+                $bg += 10;
+            }
+
+            if (in_array(4, $options)) {
+                $as = '; text-decoration: underline';
+            }
+
+            if (in_array(7, $options)) {
+                $tmp = $fg;
+                $fg = $bg;
+                $bg = $tmp;
+            }
+        }
+
+        if ($this->inlineStyles) {
+            return sprintf('</span><span style="background-color: %s; color: %s%s">', $this->inlineColors[$this->colorNames[$bg]], $this->inlineColors[$this->colorNames[$fg]], $as);
+        } else {
+            return sprintf('</span><span class="ansi_color_bg_%s ansi_color_fg_%s">', $this->colorNames[$bg], $this->colorNames[$fg]);
+        }
+    }
+
+    protected function tokenize($text) {
+        $tokens = array();
+        preg_match_all("/(?:\e\[(.*?)m|(\x08))/", $text, $matches, PREG_OFFSET_CAPTURE);
+
+        $offset = 0;
+        foreach ($matches[0] as $i => $match) {
+            if ($match[1] - $offset > 0) {
+                $tokens[] = array('text', substr($text, $offset, $match[1] - $offset));
+            }
+            $tokens[] = array("\x08" == $match[0] ? 'backspace' : 'color', $matches[1][$i][0]);
+            $offset = $match[1] + strlen($match[0]);
+        }
+        if ($offset < strlen($text)) {
+            $tokens[] = array('text', substr($text, $offset));
+        }
+
+        return $tokens;
     }
 }

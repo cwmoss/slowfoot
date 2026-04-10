@@ -27,7 +27,7 @@ class preview {
             'path' => $id_type,
             'site_name' => $this->project->config->site_name ?? '',
             'site_description' => $this->project->config->site_description ?? '',
-            'site_url' => $project->config->site_url ?? '',
+            'site_url' => $this->project->config->site_url ?? '',
 
         ];
         // TODO: migrate

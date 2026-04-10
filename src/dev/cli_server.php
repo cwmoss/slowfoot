@@ -8,7 +8,7 @@
 
     ex:
     php -d variables_order=EGPCS -d short_open_tag=On -S 0.0.0.0:1199 -t docs/src src/dev/cli_server.php
-    
+
     php -d variables_order=EGPCS -d short_open_tag=On -S 0.0.0.0:1199 -t ./src/ ../../slowfoot/src/dev/cli_server.php 
 */
 
@@ -35,7 +35,7 @@ if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
 ini_set("display_errors", 0);
 
 $project_dir = $_SERVER['DOCUMENT_ROOT'] . '/../';
-define('SLOWFOOT_BASE', $project_dir);
+// define('SLOWFOOT_BASE', $project_dir);
 
 $app = (new app($project_dir, true, false))->load_project()->load_data(true);
 $project = $app->project;
