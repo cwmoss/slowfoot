@@ -17,6 +17,7 @@ use Sanity\Client as SanityClient;
 use slowfoot\configuration;
 use slowfoot\hook;
 use slowfoot\image\asset;
+use slowfoot\image\profile;
 use slowfoot\store;
 
 use function http_build_query;
@@ -137,16 +138,16 @@ class sanity {
         return $asset;
     }
 
-    static public function sanity_resize($img, $opts) {
+    static public function sanity_resize($img, profile $opts) {
         // print_r($opts);
         $params = ['q' => 90];
-        if ($opts['w']) {
-            $params['w'] = $opts['w'];
+        if ($opts->w) {
+            $params['w'] = $opts->w;
         }
-        if ($opts['h']) {
-            $params['h'] = $opts['h'];
+        if ($opts->h) {
+            $params['h'] = $opts->h;
         }
-        return $img['url'] . '?' . http_build_query($params);
+        return $img->url . '?' . http_build_query($params);
     }
 
     /*
