@@ -47,7 +47,8 @@
     "cwmoss/wrun": "dev-main",
     "cwmoss/phuety": "dev-main",
     "cwmoss/final-cli": "dev-main",
-    "clue/framework-x": "dev-main"
+    "clue/framework-x": "dev-main",
+    "sanity/sanity-php": "^1.5"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.12",
