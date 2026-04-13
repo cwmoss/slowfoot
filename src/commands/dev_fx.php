@@ -28,6 +28,51 @@ class dev_fx {
 
     public function __construct(public app $app) {
     }
+
+    /**
+     * start the php-cli webserver as dev server.
+     * 
+     * with the dev server you can easily watch
+     * your changes as you are working on templates
+     */
+    public function cli_server(
+        #[cli("-d", "Set the project base directory")]
+        ?string $project_directory = null,
+
+        #[cli("-S --server server:port", "Set server and port")]
+        string $server_port = "0.0.0.0:1199",
+
+        #[cli("-p --port port", "Set port only")]
+        int $port = 1199,
+
+        #[cli("-f", "fetch all contents")]
+        ?bool $f = false
+    ) {
+        terminal::println($this->logo);
+        $src = $this->app->project_dir . "/src";
+        $slft_lib_base = dirname(__DIR__);
+
+        $devhostport = explode(':', $server_port, 2) +
+            [1 => $port];
+
+        $devserver = join(":", $devhostport);
+
+        $this->app->setup()->load_data(true);
+
+        // evtl. fetching data
+        $project = $this->app->project;
+
+        print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
+        // XXXPHP_CLI_SERVER_WORKERS=4 
+        $command = "php -d variables_order=EGPCS -d short_open_tag=On -S {$devserver} -t {$src} {$slft_lib_base}/dev/cli_server.php";
+        print "\n\n";
+
+        print "starting development server\n\n";
+        print "   🌈 http://$devserver\n\n";
+        print "have fun!\n\n";
+        print $command . "\n";
+        shell_exec($command);
+    }
     // dev [-S <server:port>] [-P <port>] [-f] [-d <project directory>]
     /**
      * start the dev server.

@@ -91,8 +91,10 @@ class configuration {
 
         $this->store = $this->normalize_store_config();
         $this->db = $this->get_store($fresh_fetch);
+
         $this->assets = $this->normalize_assets_config($this->assets);
         $this->init_plugins();
+
         $this->build = $this->normalize_build_config($this->build);
     }
 

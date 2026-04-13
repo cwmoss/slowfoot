@@ -79,7 +79,7 @@ class HttpServerRunner {
                 $logger->log('Received !!! SIGINT, stopping loop');
 
                 $socket->close();
-                $http->__destruct();
+                // $http->__destruct();
                 unset($http);
                 Loop::stop();
             });

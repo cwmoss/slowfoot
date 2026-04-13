@@ -36,17 +36,19 @@ class sanity {
 
     public function init() {
         hook::add('bind_template_helper', function ($ds, $src, $config) {
-            dbg("++ bind sanity text helper", $ds);
             return ['sanity_text' => function ($text, $opts = []) use ($ds, $config) {
-                //print_r($sl);
                 return self::sanity_text($text, $opts, $ds, $config, $this);
             }];
         });
         hook::add_filter('assets_map', function ($img, store $store) {
             // sanity images
+            // a ref to an asset?
             if (isset($img->asset) && $img->asset->_ref) {
-                //if ($img->_type == 'sanity.imageAsset') {
                 return self::sanity_imagefield_to_slft($img, $store);
+
+                // it's an asset already
+            } elseif ($img->_type == 'sanity.imageAsset') {
+                return self::sanity_image_to_asset($img);
             }
             return $img;
         });
@@ -56,7 +58,6 @@ class sanity {
         $me = $config->get_plugin(self::class);
         $client = $me->get_client();
         $query = $me->query;
-        #print "\n".$query."\n";
         $res = $client->fetch($query);
         // falls mehrteilige query => flach machen
         if ($res && !isset($res[0])) {
@@ -115,9 +116,9 @@ class sanity {
       that is a reference to the document._type "sanity.imageAsset"
     */
     static public function sanity_imagefield_to_slft(object $img, store $store): asset {
-        dbg("##### sanity imagefield to asset #####", $img);
+        // dbg("##### sanity imagefield to asset #####", $img);
         $sanity_asset = (object) $store->ref($img->asset);
-        dbg($sanity_asset);
+        // dbg($sanity_asset);
         return self::sanity_image_to_asset($sanity_asset);
     }
 
@@ -139,7 +140,6 @@ class sanity {
     }
 
     static public function sanity_resize($img, profile $opts) {
-        // print_r($opts);
         $params = ['q' => 90];
         if ($opts->w) {
             $params['w'] = $opts->w;
@@ -156,9 +156,8 @@ class sanity {
         - internal (reference)
         - route (string) destination path
         - external (string) complete url with host
-  */
+    */
     static public function sanity_link_url($link, $ds) {
-        // var_dump($link);
         return $link['internal'] ? $ds->get_path($link['internal']['_ref']) : ($link['route'] ? path_page($link['route']) : $link['external']);
     }
 }
