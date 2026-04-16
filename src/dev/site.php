@@ -40,6 +40,7 @@ class site {
             config: $project->config
         );
 
+
         if ($obj_id) {
             $content = $builder->make_template($name, $context, $obj_id);
         } else {

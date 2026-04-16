@@ -2,6 +2,7 @@
 
 namespace slowfoot\commands;
 
+use cwmoss\final_cli\app as final_cli;
 use slowfoot\util\console;
 use slowfoot\context;
 use slowfoot\pagebuilder;
@@ -26,7 +27,9 @@ class build {
         #[cli("-f", "fetch all contents")]
         ?bool $f = false
     ) {
-        // TODO: warnings only with -v
+        if (final_cli::$verbose == 0) {
+            ini_set("error_reporting", E_ALL & ~E_DEPRECATED & ~E_WARNING & ~E_NOTICE);
+        }
         $this->app->setup()->load_data(false);
         print memory_get_usage() . " loaded ok\n";
         $project = $this->app->project;
