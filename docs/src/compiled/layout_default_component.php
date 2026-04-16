@@ -12,8 +12,12 @@ use function phuety\dbg;
 
 
 
+/**
+ * /Users/rw/dev/slowfoot/docs/src/layouts/default.phue.php ~ 42
+ */
+
 class layout_default_component extends component {
-    public string $uid = "layout_default---Hcr/e0";
+    public string $uid = "layout_default---8fcb4f";
     public bool $is_layout = true;
     public string $name = "layout_default";
     public string $tagname = "layout.default";
@@ -94,10 +98,7 @@ $title = "HUH"; // $__context->config->site_name;
         // dbg("+++ assetsholder ", $this->is_start, $this->assetholder);
     }
 
-    public function debug_info(){
-        return array (
-  'src' => '/Users/rw/dev/slowfoot/docs/src/layouts/default.phue.php',
-  'php' => 42,
-);
-    }
+    // public function debug_info(){
+    //    return /Users/rw/dev/slowfoot/docs/src/layouts/default.phue.php ~ 42;
+    // }
 }

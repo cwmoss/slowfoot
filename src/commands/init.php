@@ -27,14 +27,14 @@ class init {
         $setup = $this->app->setup_get();
         // print("setup\n");
         if ($webdeploy) {
-            shell_info("copy webdeploy script to " . SLF_PROJECT_DIR);
+            shell_info("copy webdeploy script to " . $this->app->project_dir . "/webdeploy/");
             $skipped = $setup->webdeploy();
         } else {
             //    print("init\n");
             //    print SLF_PROJECT_DIR;
 
-            shell_info("initializing new project in " . SLF_PROJECT_DIR);
-            if (!directory_is_empty(SLF_PROJECT_DIR) && !$force) {
+            shell_info("initializing new project in " . $this->app->project_dir);
+            if (!directory_is_empty($this->app->project_dir) && !$force) {
                 print "\ndirectory is not empty, aborting init\n" .
                     "  if you want to init anyways, use the --force flag\n";
                 exit(1);

@@ -12,8 +12,12 @@ use function phuety\dbg;
 
 
 
+/**
+ * /Users/rw/dev/slowfoot/docs/src/components/top_nav.phue.php ~ 10
+ */
+
 class top_nav_component extends component {
-    public string $uid = "top_nav---2mVFmV";
+    public string $uid = "top_nav---6635a6";
     public bool $is_layout = false;
     public string $name = "top_nav";
     public string $tagname = "top.nav";
@@ -43,20 +47,17 @@ $current_section = $props->current->dir ? basename($props->current->dir) : basen
         $__s = [];
         ?><?= tag::tag_open_merged_attrs("nav", [], array (
 ) , $__d->_get("props")) ?>
-    <?php foreach($__d->_get("chapters")->index as  $section){$__d->_add_block(["section"=>$section ]); ?><?= tag::tag_open_merged_attrs("details", ["open"=> ((($__d->_get("section")->sid == $__d->_get("current_section"))) ? ("open") : ("")), "class"=> ["active" => ($__d->_get("sid") == $__d->_get("current_section"))]], array (
+    <?php if(($_loop_06daa2171cc5ea69 = $__d->_get("chapters")->index) && ((!$_loop_06daa2171cc5ea69 instanceof \Generator && !$_loop_06daa2171cc5ea69 instanceof \Iterator) || $_loop_06daa2171cc5ea69->valid())) { foreach($_loop_06daa2171cc5ea69 as  $section){$__d->_add_block(["section"=>$section ]); ?><?= tag::tag_open_merged_attrs("details", ["open"=> ((($__d->_get("section")->sid == $__d->_get("current_section"))) ? ("open") : ("")), "class"=> ["active" => ($__d->_get("sid") == $__d->_get("current_section"))]], array (
 ) ) ?>
         <summary><?= tag::h($__d->_get("section")->title) ?></summary>
-        <?php foreach($__d->_get("section")->c as  $chapter){$__d->_add_block(["chapter"=>$chapter ]); ?><?= tag::tag_open_merged_attrs("a", ["href"=> $__d->_get("helper")->path($__d->_get("chapter")), "class"=> ["active" => ($__d->_get("chapter")->_file->path == $__d->_get("current")->path)]], array (
-) ) ?><?= tag::h($__d->_get("chapter")->title) ?></a><?php $__d->_remove_block();} ?>
-    </details><?php $__d->_remove_block();} ?>
+        <?php if(($_loop_8100e076b9024685 = $__d->_get("section")->c) && ((!$_loop_8100e076b9024685 instanceof \Generator && !$_loop_8100e076b9024685 instanceof \Iterator) || $_loop_8100e076b9024685->valid())) { foreach($_loop_8100e076b9024685 as  $chapter){$__d->_add_block(["chapter"=>$chapter ]); ?><?= tag::tag_open_merged_attrs("a", ["href"=> $__d->_get("helper")->path($__d->_get("chapter")), "class"=> ["active" => ($__d->_get("chapter")->_file->path == $__d->_get("current")->path)]], array (
+) ) ?><?= tag::h($__d->_get("chapter")->title) ?></a><?php $__d->_remove_block();}}  ?>
+    </details><?php $__d->_remove_block();}}  ?>
 </nav><?php // return ob_get_clean();
         // dbg("+++ assetsholder ", $this->is_start, $this->assetholder);
     }
 
-    public function debug_info(){
-        return array (
-  'src' => '/Users/rw/dev/slowfoot/docs/src/components/top_nav.phue.php',
-  'php' => 10,
-);
-    }
+    // public function debug_info(){
+    //    return /Users/rw/dev/slowfoot/docs/src/components/top_nav.phue.php ~ 10;
+    // }
 }

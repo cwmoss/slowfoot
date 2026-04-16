@@ -172,6 +172,7 @@ function slow_query_cmd($q) {
 }
 */
 
+
 function path_asset($asset, $cachebust = false) {
     return PATH_PREFIX . "/assets{$asset}" . cachebuster($cachebust);
 }

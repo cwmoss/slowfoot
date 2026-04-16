@@ -12,8 +12,12 @@ use function phuety\dbg;
 
 
 
+/**
+ * /Users/rw/dev/slowfoot/docs/src/templates/chapter.phue.php ~ 18
+ */
+
 class template_chapter_component extends component {
-    public string $uid = "template_chapter---TsmQtz";
+    public string $uid = "template_chapter---6b567d";
     public bool $is_layout = false;
     public string $name = "template_chapter";
     public string $tagname = "template.chapter";
@@ -57,17 +61,14 @@ $html = "<em>hi</em>";
 ) ); ?>
     </aside>
 <?php $__runner($__runner, "layout.default", $__d->_get("phuety")->with($this->tagname, "layout.default"), ["title"=> $__d->_get("page")->title, "page"=> $__d->_get("page")] + array (
-  'class' => 'template_chapter---TsmQtz root',
+  'class' => 'template_chapter---6b567d root',
 ) , ["default" => ob_get_clean()]+array_shift($__s)); ?>
 
 <?php // return ob_get_clean();
         // dbg("+++ assetsholder ", $this->is_start, $this->assetholder);
     }
 
-    public function debug_info(){
-        return array (
-  'src' => '/Users/rw/dev/slowfoot/docs/src/templates/chapter.phue.php',
-  'php' => 18,
-);
-    }
+    // public function debug_info(){
+    //    return /Users/rw/dev/slowfoot/docs/src/templates/chapter.phue.php ~ 18;
+    // }
 }
