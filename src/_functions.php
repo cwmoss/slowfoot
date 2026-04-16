@@ -349,7 +349,7 @@ function shell_info($start = null, $single = false) {
     static $console;
 
     // last resort to non-cli stuff
-    if (PHP_SAPI != 'cli') {
+    if (PHP_SAPI != 'cli' && PHP_SAPI != 'micro') {
         if (!(defined('SLOWFOOT_WEBDEPLOY') && SLOWFOOT_WEBDEPLOY)) {
             return;
         }

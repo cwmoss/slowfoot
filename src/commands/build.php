@@ -36,7 +36,7 @@ class build {
         }
 
         $dist = $project->dist();
-
+        // print PHP_SAPI . " -- " . php_sapi_name() . " -- ";
         print console::console_table(['_type' => 'type', 'total' => 'total'], $project->info_types());
 
         shell_info("removing old dist folder", true);

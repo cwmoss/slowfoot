@@ -30,6 +30,7 @@ runner:
 
 build: $(MICROSFX)/resources/micro.sfx $(PHAR)
 	cat $(MICROSFX)/resources/micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) && cp $(APP) /usr/local/bin/
+	ls -alh /usr/local/bin/$(APP)
 
 $(PHAR): bin/slowfoot src/*.php src/**/*.php
 	# composer install --no-dev --classmap-authoritative

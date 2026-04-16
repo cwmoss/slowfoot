@@ -59,6 +59,6 @@ class console {
                 $table->addColumn($row[$name]);
             }
         }
-        return $table->getTable();
+        return str_replace(["<pre>", "</pre>"], "", $table->getTable());
     }
 }
