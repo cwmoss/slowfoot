@@ -21,8 +21,43 @@ if (file_exists($pharFile . '.gz')) {
 
 // create with alias "project.phar"
 $phar = new Phar($pharFile, 0, $pharFile);
+$include = ["bin", "src", "vendor", "plugins", "resources", "ui"];
+$exclude = ["/.git/",   "/."];
+$filter = function ($file, $key, $iterator) use ($include, $exclude) {
+    $f = str_replace(__DIR__ . DIRECTORY_SEPARATOR, "", $file);
+    $in = false;
+    // print "incl? $f $key\n";
+    foreach ($include as $incl) {
+        if (str_starts_with($f, $incl)) {
+            $in = true;
+            break;
+        }
+    }
+    if (!$in) return false;
+
+    foreach ($exclude as $excl) {
+        if (str_contains($f, $excl)) {
+            return false;
+        }
+    }
+
+    // print "incl $f\n";
+    return true;
+};
+
+$innerIterator = new RecursiveDirectoryIterator(
+    __DIR__,
+    RecursiveDirectoryIterator::SKIP_DOTS
+);
+$iterator = new RecursiveIteratorIterator(
+    new RecursiveCallbackFilterIterator($innerIterator, $filter)
+);
+
+// $phar = new PharData('project.tar');
+$phar->buildFromIterator($iterator, __DIR__);
+
 // add all files in the project
-$phar->buildFromDirectory(dirname(__FILE__) . '/', "!/src|vendor|bin|plugins|resources|ui|webdeploy/!");
+// $phar->buildFromDirectory(dirname(__FILE__) . '/', "!/src|vendor|bin|plugins|resources|ui|webdeploy/!");
 $phar->setStub($phar->createDefaultStub($bin_stub));
 $phar->compress(Phar::GZ);
 
