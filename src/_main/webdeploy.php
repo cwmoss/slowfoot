@@ -139,7 +139,7 @@ class deployer {
         string $php_bin = "",
         string $line_break = ""
     ) {
-        $this->origin = $server['HTTP_ORIGIN'] ?? $server["HTTP_REFERER"] ?? "";
+        $this->origin = isset($server['HTTP_ORIGIN']) ? $server['HTTP_ORIGIN'] : (isset($server["HTTP_REFERER"]) ? $server['HTTP_REFERER'] : "");
         $this->server = $server;
         $this->token = $token;
         $this->base = $base;
@@ -151,12 +151,13 @@ class deployer {
 
     public function build() {
         $cmd = sprintf(
-            "%s%s build -d=%s --colors=on -f",
+            "%s%s build -d=%s --html -f",
             ($this->write_path ? "SLFT_WRITE_PATH={$this->write_path} " : ""),
             $this->php_bin,
             $this->base
         );
-        $converter = new AnsiToHtmlConverter();
+        $converter = null;
+        // $converter = new AnsiToHtmlConverter();
         // print $converter->convert("hier \033[1mfett\033[0m text\n");
         // $converter = null;
         return $this->live_execute_command($cmd, true, $converter);
@@ -196,9 +197,7 @@ class deployer {
         # sometimes referer doesn't include the full url (/dashboard)
         # if(!preg_match("!/dashboard$!", $headers['HTTP_REFERER'])) return false;
 
-        $you = $_SERVER["HTTP_ORIGIN"] ?? null;
-        if (!$you) $you = $_SERVER["HTTP_REFERER"] ?? null;
-        $remote = parse_url($you, PHP_URL_HOST);
+        $remote = parse_url($this->origin, PHP_URL_HOST);
 
         $ok = in_array($remote, $allowed);
         if (!$ok) throw new Exception("failed");
@@ -241,9 +240,10 @@ class deployer {
         preg_match('/[0-9]+$/', $complete_output, $matches);
 
         // return exit status and intended output
+        $rc = isset($matches[0]) ? $matches[0] : "0";
         return array(
-            'exit_status'  => intval($matches[0] ?? 0),
-            'output'       => str_replace("Exit status : " . ($matches[0] ?? 0), '', $complete_output)
+            'exit_status'  => intval($rc),
+            'output'       => str_replace("Exit status : " . $rc, '', $complete_output)
         );
     }
 

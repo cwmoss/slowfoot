@@ -7,24 +7,24 @@ class loader {
     public function __construct(public configuration $config) {
     }
 
-    public function load(): store {
+    public function load(?terminal $terminal = null): store {
         $db = $this->config->get_store();
         $db_store = get_class($db->db);
         $onload = $this->config->hooks['on_load'] ?? null;
         # TODO fetch or not
         if ($db->has_data_on_create()) {
-            shell_info("store {$db_store} using old data", true);
+            $terminal?->shell_info("store {$db_store} using old data", true);
             return $db;
         }
 
-        shell_info("fetching data {$db_store}", true);
+        $terminal?->shell_info("fetching data {$db_store}", true);
 
         foreach ($this->config->sources as $name => $loader) {
             $opts = ['loader' => $name, 'type' => $name, 'name' => $name];
 
             $fun = $loader(...);
 
-            shell_info("fetching $name");
+            $terminal?->shell_info("fetching $name");
 
             foreach ($fun($this->config, $db) as $row) {
                 if ($this->config->is_prod && isset($row["_draft"]) && $row["_draft"]) {
@@ -49,7 +49,7 @@ class loader {
                     $db->add($row['_id'], $row);
                 }
             }
-            shell_info();
+            $terminal?->shell_info();
         }
         return $db;
     }

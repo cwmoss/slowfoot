@@ -8,6 +8,7 @@ use slowfoot\context;
 use slowfoot\pagebuilder;
 use slowfoot\app;
 use cwmoss\final_cli\cli;
+use slowfoot\terminal;
 
 class build {
 
@@ -25,14 +26,21 @@ class build {
         #[cli("-d", "Set the project base directory")]
         ?string $project_directory = null,
         #[cli("-f", "fetch all contents")]
-        ?bool $f = false
+        ?bool $f = false,
+        #[cli("--html", "console output as html")]
+        ?bool $html = false
     ) {
         if (final_cli::$verbose == 0) {
             ini_set("error_reporting", E_ALL & ~E_DEPRECATED & ~E_WARNING & ~E_NOTICE);
         }
-        $this->app->setup()->load_data(false);
-        print memory_get_usage() . " loaded ok\n";
+
+        $terminal = new terminal;
+        if ($html) $terminal->set_output("html");
+
         $project = $this->app->project;
+        $project->load(false, $terminal);
+        $terminal->println("mem: " . memory_get_usage() . " loaded ok");
+
 
         if (!$project->dist()) {
             die('NO DIST-PATH FOUND');
@@ -40,12 +48,12 @@ class build {
 
         $dist = $project->dist();
         // print PHP_SAPI . " -- " . php_sapi_name() . " -- ";
-        print console::console_table(['_type' => 'type', 'total' => 'total'], $project->info_types());
+        $terminal->console_table(['_type' => 'type', 'total' => 'total'], $project->info_types());
 
-        shell_info("removing old dist folder", true);
-        shell_info("  => {$dist}");
+        $terminal->shell_info("removing old dist folder", true);
+        $terminal->shell_info("  => {$dist}");
         shell_exec("rm -rf $dist");
-        shell_info();
+        $terminal->shell_info();
 
         $context = new context(
             mode: 'build',
@@ -54,11 +62,9 @@ class build {
             config: $project->config
         );
 
-        shell_info("writing templates", true);
+        $terminal->shell_info("writing templates", true);
 
         dbg("+++ PREFIX", PATH_PREFIX);
-        // print_r($project);
-
         $builder = $project->builder();
         $dist = $project->dist();
         $ds = $project->ds;
@@ -70,7 +76,7 @@ class build {
             $start = 0;
 
             // if ($type != "page") continue;
-            shell_info("  => $type");
+            $terminal->shell_info("  => $type");
 
             // TODO
             foreach (query_type($project->ds, $type) as $row) {
@@ -100,13 +106,13 @@ class build {
                     write($content, $path, null, $dist);
                 }
             }
-            shell_info();
+            $terminal->shell_info();
         }
 
-        shell_info("writing pages", true);
+        $terminal->shell_info("writing pages", true);
 
         foreach ($project->pages as $pagename) {
-            shell_info("  => $pagename");
+            $terminal->shell_info("  => $pagename");
             $pagepath = $pagename;
             if ($pagepath == '/index') {
                 $pagepath = '/';
@@ -115,25 +121,25 @@ class build {
             foreach ($generator as $result) {
                 write($result["content"], $pagepath, $result["pagenr"], $dist);
             }
-            shell_info();
+            $terminal->shell_info();
         }
 
-        shell_info("copy assets");
+        $terminal->shell_info("copy assets");
 
         shell_exec("cp -R {$project->src}/assets {$project->dist()}/");
         shell_exec("cp -a {$project->config->var}/rendered-images/. {$project->dist()}/images");
 
-        shell_info();
+        $terminal->shell_info();
 
         if (isset($project->config->hooks['after_build'])) {
-            shell_info("after build hook");
+            $terminal->shell_info("after build hook");
             $project->config->hooks['after_build']($project->config);
-            shell_info();
+            $terminal->shell_info();
         } else {
-            shell_info("no after build hook configured", true);
+            $terminal->shell_info("no after build hook configured", true);
         }
 
         // print getenv("SLFT_WRITE_PATH");
-        shell_info("⚡️ done", true);
+        $terminal->shell_info("⚡️ done", true);
     }
 }

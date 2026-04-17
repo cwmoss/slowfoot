@@ -8,7 +8,7 @@ display:block;
 /*width:400px;
 height:300px;
 background:green;*/
-font-family: sans-serif;
+
 }
 article {
   margin-top:0.5rem;
@@ -45,9 +45,15 @@ button{
                 
 
 }
-
-
-                
+output{
+    .inv{
+        background-color:black;
+        color:white;
+    }
+    .green{
+        color:green;
+    }
+}
 `
 
 let html_template = () => {
@@ -90,57 +96,61 @@ const deploy = function (secrets, setOutput, cb) {
 };
 
 export default class DeployWidget extends HTMLElement {
-    static properties = {
-        show_dialog: { state: true, type: Boolean },
-        deploying: { state: true, type: Boolean },
-        preferences: { state: true, type: Object },
-        output: {}
-    };
 
-    static styles = [output_styles];
+    url = null
+    apikey = null
 
-    docid = ".deployment";
     constructor() {
         super()
             .attachShadow({ mode: "open" })
             .append(html_template().content.cloneNode(true))
+    }
 
-        this.addEventListener("click", this);
-    }
-    handleEvent(e) {
-        let output = this.shadowRoot.querySelector("output")
-        console.log("event", e, e.target.matches(".deploy"), output);
-    }
     connectedCallback() {
-        // super.connectedCallback();
+        this.shadowRoot.addEventListener("click", this);
+        if (this.getAttribute("preferences-url")) {
+            this.fetch_preferences()
+        } else {
+            this.url = this.getAttribute("url")
+            this.apikey = this.getAttribute("apikey")
+        }
+        console.log("connected deploy", this);
+    }
 
-        console.log("connected deploy", this.preferences);
-
+    fetch_preferences() {
         // let doc = await api.document(this.docid);
         // if (!doc) doc = { _id: this.docid, _type: "deploy" };
         // this.preferences = doc;
-        console.log("connected deploy", this.preferences);
     }
+
     async save_preferences(e) {
-        let doc = e.detail;
-        console.log("$ save", doc);
-        await api.mutate(doc);
-        this.preferences = doc;
+        // let doc = e.detail;
+        // console.log("$ save", doc);
+        // await api.mutate(doc);
+        // this.preferences = doc;
+    }
+
+    handleEvent(e) {
+        let output = this.shadowRoot.querySelector("output")
+        console.log("event", e.target, e.target.matches('button[name="deploy"]'), output);
+        if (e.target.matches('button[name="deploy"]')) {
+            this.do_deploy();
+        }
     }
 
     do_deploy() {
         console.log("preferences", this.preferences);
 
         // this.output = `deploying site ${this.preferences.url}\n<span style="background-color: black; color: white">hier </span>`;
-        let section = this.shadowRoot.querySelector("section")
+        let section = this.shadowRoot.querySelector("main")
         let output = this.shadowRoot.querySelector("output")
-        output.insertAdjacentHTML('beforeend', `deploying site ${this.preferences.url}\n`)
+        output.insertAdjacentHTML('beforeend', `deploying site ${this.url}\n`)
 
         // section.scroll(0, 1);
 
         // ${html`${this.output}`}
 
-        deploy({ url: this.preferences.url, apikey: this.preferences.apikey },
+        deploy({ url: this.url, apikey: this.apikey },
             (res) => {
                 // this.output += res
                 // output.insertAdjacentHTML('beforeend', res)

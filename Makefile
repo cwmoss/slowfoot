@@ -27,6 +27,8 @@ runner:
 	# sed -i -e 's/declare/#declare/g' dot.php
 	tail -n +2 -q src/functions/**/*.php > runner.php
 
+clean:
+	rm -f slowfoot slowfoot.phar slowfoot.phar.gz build/*
 
 build: $(MICROSFX)/resources/micro.sfx $(PHAR)
 	cat $(MICROSFX)/resources/micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) && cp $(APP) /usr/local/bin/

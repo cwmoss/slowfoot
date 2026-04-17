@@ -23,7 +23,7 @@ if (file_exists($pharFile . '.gz')) {
 $phar = new Phar($pharFile, 0, $pharFile);
 // add all files in the project
 $phar->buildFromDirectory(dirname(__FILE__) . '/', "!/src|vendor|bin|plugins|resources|ui|webdeploy/!");
-$phar->setStub($phar->createDefaultStub($bin_stub, "src/_main/development.php"));
+$phar->setStub($phar->createDefaultStub($bin_stub));
 $phar->compress(Phar::GZ);
 
 echo "OK\n";
