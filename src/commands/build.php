@@ -124,6 +124,7 @@ class build {
             $terminal->shell_info();
         }
 
+
         $terminal->shell_info("copy assets");
 
         shell_exec("cp -R {$project->src}/assets {$project->dist()}/");

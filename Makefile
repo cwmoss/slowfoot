@@ -55,8 +55,19 @@ build-all: $(PHAR)
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-macos-x86_64.tar.gz $(APP)
 	cd $(BUILD) && tar xfz $(MICROSFX)/resources/php-8.5.4-micro-win.zip \
-		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
-		&& zip $(APP)-win-x86_64.zip $(APP)
-	
+		&& cat micro.sfx $(PHAR) > $(APP).exe && chmod 0755 $(APP).exe \
+		&& zip $(APP)-win-x86_64.zip $(APP).exe
+
+checksums:
+	echo '  // Generating checksums...'
+	cd build && sha256sum \
+		$(APP)-linux-aarch64.tar.gz \
+		$(APP)-linux-x86_64.tar.gz \
+		$(APP)-macos-aarch64.tar.gz \
+		$(APP)-macos-x86_64.tar.gz \
+		$(APP)-win-x86_64.zip \
+		$(PHAR) \
+    > checksums.txt
+
 $(MICROSFX)/resources/micro.sfx: $(MICROSFX)/resources/php-8.5.4-micro-macos-aarch64.tar.gz
 	tar xfzm $< && mv micro.sfx $(MICROSFX)/resources/

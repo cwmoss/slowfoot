@@ -29,7 +29,8 @@ error_reporting(E_ALL ^ E_DEPRECATED);
  */
 $argv ??= [];
 
-(new final_cli\app("slowfoot", "0.82", "🌈 <b>slowfoot</b>", 3))
+
+(new final_cli\app("slowfoot", "0.84", "🌈 <b>slowfoot</b>", 3))
     // ->add_command(wmdev::class)
     ->add_command(dev_fx::class . "@cli_server", "dev")
     ->add_command(dev_fx::class, "dev-fx")
@@ -39,6 +40,7 @@ $argv ??= [];
     ->add_command(preview::class)
     ->add_command(info::class)
     ->add_command(starship::class)
+    ->add_upgrade_command("cwmoss/slowfoot")
     ->run($argv, function ($class, parser $parser) use ($project_dir, $argv) {
         $dir = (string) $parser->get_opt("d");
         // TODO: change logik here. needs more getcwd()
@@ -57,6 +59,8 @@ $argv ??= [];
         }
         return new $class;
     });
+
+
 
 // print "restarting\n";
 // pcntl_exec("/opt/homebrew/bin/php", $argv);
