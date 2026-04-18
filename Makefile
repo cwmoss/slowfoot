@@ -38,6 +38,8 @@ $(PHAR): bin/slowfoot src/*.php src/**/*.php
 	# composer install --no-dev --classmap-authoritative
 	php -d phar.readonly=0 gen_phar.php $(PHAR) bin/slowfoot
 
+release: clean build-all checksums
+
 build-all: $(PHAR)
 	mkdir -p $(BUILD)
 	rm -rf $(BUILD)/micro.sfx $(BUILD)/$(APP)
