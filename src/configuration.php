@@ -151,7 +151,7 @@ class configuration {
                 $t = ['path' => $t];
             }
             if (is_string($t['path'])) {
-                $t['path'] = make_path_fn($t['path']);
+                $t['path'] = new path($t['path'])->make_function();
             }
             $subname = $t['name'] ?? '_';
             $tpl[$subname] = array_merge(['type' => $name, 'template' => $name, 'name' => $subname], $t);
@@ -190,51 +190,4 @@ class configuration {
         #}
         return $build;
     }
-}
-
-function make_path_fn($pattern) {
-    $replacements = [];
-    if (preg_match_all('!:([^/:]+)!', $pattern, $mat, PREG_SET_ORDER)) {
-        $replacements = $mat;
-    }
-    $replacements = array_map(fn($r) => [$r[0], explode('.', $r[1])], $replacements);
-    // print_r($replacements);
-    // exit;
-    return function ($item) use ($pattern, $replacements) {
-        $path = $pattern;
-        // $item[$r[1]]
-        $replacements = array_map(fn($r) => [$r[0], url_safe(resolve_dot_value($r[1], $item))], $replacements);
-        $path = str_replace(
-            array_column($replacements, 0),
-            array_column($replacements, 1),
-            $path
-        );
-        return $path;
-    };
-}
-function resolve_dot_value($keys, $data) {
-    if (!$data) {
-        return null;
-    }
-    $current = array_shift($keys);
-
-    // nested?
-    if ($keys) {
-        return resolve_dot_value($keys, $data[$current] ?? null);
-    }
-    if (is_object($data)) {
-        return $data->$current ?? null;
-    }
-    if (!is_assoc($data)) {
-        return array_column($data, $current);
-    } else {
-        return $data[$current] ?? null;
-    }
-}
-function url_safe($path) {
-    // TODO
-    // https://gist.github.com/jaywilliams/119517
-    $path = str_replace([' '], ['-'], $path);
-    $path = strtolower($path);
-    return $path;
 }

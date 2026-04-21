@@ -58,6 +58,29 @@ docker run --rm -it -v ${PWD}:/project sft info
 
 alias slowfoot="docker run --rm -it -p 1199:1199 -v ${PWD}:/project ghcr.io/cwmoss/slowfoot"
 
+### control if page gets written
+
+option A
+
+return null or empty array, while fetching the document. no data, no output. good use case are drafts
+for drafts you can also return a row with key `_draft`. the data will be only visible in development mode. 
+it will not be added to the production dataset.
+
+also if document contains key `_no_path`, no path will be created and no page will be created
+
+option B
+
+use a path function in config that returns null for a document. effective, but a litte bit more involved. 
+
+option C
+
+template return empty string. easy for designer but maybe not the most efficient
+
+
+
+
+
+
 #### todo
 
 resolve urls for pages, remove path_page function

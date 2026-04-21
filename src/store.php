@@ -122,7 +122,11 @@ class store {
         }
         foreach ($this->config[$row['_type']] as $name => $conf) {
             //print_r($conf);
+            if (isset($row['_no_path']) && $row['_no_path']) continue;
+
             $path = $conf['path']($row);
+            if ($path === null) continue;
+
             if ($this->db->path_exists($path)) {
                 $this->conflict($path, $name, $row);
             } else {
@@ -131,16 +135,19 @@ class store {
         }
     }
 
-    public function get_path($id, $name = null) {
-        return PATH_PREFIX . $this->get_fpath($id, $name);
+    public function get_path($id, $name = null): ?string {
+        $p = $this->get_fpath($id, $name);
+        if ($p === null) return null;
+        return PATH_PREFIX . $p;
     }
 
-    public function get_fpath(int|string|array|object $id, $name = null) {
+    public function get_fpath(int|string|array|object $id, $name = null): ?string {
         $id = $this->id_maybe_object_or_array($id);
         if (!$name) {
             $name = '_';
         }
         $path = $this->db->path_get($id, $name);
+        if ($path === null) return null;
         if ($path == "/index") {
             $path = "/";
         }

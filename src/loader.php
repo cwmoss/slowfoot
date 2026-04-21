@@ -27,6 +27,8 @@ class loader {
             $terminal?->shell_info("fetching $name");
 
             foreach ($fun($this->config, $db) as $row) {
+                if (!$row) continue;
+
                 if ($this->config->is_prod && isset($row["_draft"]) && $row["_draft"]) {
                     continue;
                 }
@@ -41,13 +43,15 @@ class loader {
                 }
                 if (!$row) {
                     $db->rejected($otype);
-                } else {
-                    if (!$row['_id']) {
-                        $row['_id'] = $row['id'];
-                    }
-                    // $row['_id'] = str_replace('/', '-', $row['_id']);
-                    $db->add($row['_id'], $row);
+                    continue;
                 }
+                $id = $row["_id"] ?? $row["id"] ?? null;
+                if (!$id) {
+                    $db->rejected($otype);
+                    continue;
+                }
+                $row['_id'] = $id;
+                $db->add($row['_id'], $row);
             }
             $terminal?->shell_info();
         }

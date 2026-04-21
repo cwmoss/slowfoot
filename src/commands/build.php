@@ -84,10 +84,10 @@ class build {
                 foreach ($conf as $templateconf) {
                     //	process_template_data($row, path($row['_id']));
                     $path = $ds->get_fpath($row->_id, $templateconf['name']);
-                    if ($path == '/index') {
+                    if ($path === '/index') {
                         $path = '/';
                     }
-                    if ($path == "/") {
+                    if ($path === "/") {
                         #var_dump($row);
                         #exit;
                     }
@@ -103,7 +103,9 @@ class build {
                         data: $row,
                         template_conf: $templateconf
                     );
-                    write($content, $path, null, $dist);
+                    // empty content, means we don't want a page here
+                    if ($content)
+                        write($content, $path, null, $dist);
                 }
             }
             $terminal->shell_info();
@@ -119,7 +121,8 @@ class build {
             }
             $generator = $builder->make_page_bulk($pagename, $context);
             foreach ($generator as $result) {
-                write($result["content"], $pagepath, $result["pagenr"], $dist);
+                if ($result["content"])
+                    write($result["content"], $pagepath, $result["pagenr"], $dist);
             }
             $terminal->shell_info();
         }

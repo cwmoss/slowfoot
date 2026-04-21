@@ -84,12 +84,14 @@ class memory {
     public function path_exists($path) {
         return isset($this->paths_rev[$path]);
     }
+
     public function path_add($path, $id, $name) {
         $this->paths[$id][$name] = $path;
         $this->paths_rev[$path] = [$id, $name];
     }
-    public function path_get($id, $name) {
-        return $this->paths[$id][$name];
+
+    public function path_get($id, $name): ?string {
+        return $this->paths[$id][$name] ?? null;
     }
 
     public function path_get_props($path) {
