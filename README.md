@@ -2,7 +2,27 @@
 
 # W.I.P slowfoot
 
-php >= 8.4
+requires php >= 8.5
+
+your content is data. slowfoot transforms it into beautiful websites.
+
+## how it works
+
+### fetching
+
+you define your content sources. slowfoot fetches every source and creates a dataset of documents. the basic schema for documents is:
+
+* string `_id` a global id of the document
+* string `_type` a document type
+
+### projection
+
+you define your web page paths per type. for every type, if there is a template, all documents are projected to web pages though the template. 
+a document can have multiple paths/templates defined. example: you have a type `artist` and 2 pages: `{artist}/` with the bio and  `{artist}/works/` with a list of works.
+
+### templates
+
+with the templates, you define the output. default template engine is `phuety`. in your templates you can query all data that was previously fetched. slowfoot supports the generation of images and handling of css and javascript.  
 
 ## config
 
