@@ -67,7 +67,9 @@ class path {
     static public function url_safe($path) {
         // TODO
         // https://gist.github.com/jaywilliams/119517
-        $path = str_replace([' '], ['-'], $path);
+        $path = iconv('UTF-8', 'ASCII//TRANSLIT', $path);
+        $path = str_replace(" ", "-", $path);
+        $path = str_replace(['"', "'", "`"], "", $path);
         $path = strtolower($path);
         return $path;
     }
