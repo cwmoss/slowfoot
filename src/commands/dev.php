@@ -33,8 +33,8 @@ class dev {
         #[cli("-f", "fetch all contents")]
         ?bool $f = false
     ) {
-
-        terminal::println($this->logo);
+        $terminal = new terminal;
+        $terminal->println($this->logo);
         $src = $this->app->project_dir . "/src";
         $slft_lib_base = dirname(__DIR__);
 

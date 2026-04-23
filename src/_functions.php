@@ -10,51 +10,6 @@ function get_env() {
     return array_merge($_SERVER, getenv());
 }
 
-function make_path_fn($pattern) {
-    $replacements = [];
-    if (preg_match_all('!:([^/:]+)!', $pattern, $mat, PREG_SET_ORDER)) {
-        $replacements = $mat;
-    }
-    $replacements = array_map(fn($r) => [$r[0], explode('.', $r[1])], $replacements);
-    // print_r($replacements);
-    // exit;
-    return function ($item) use ($pattern, $replacements) {
-        $path = $pattern;
-        // $item[$r[1]]
-        $replacements = array_map(fn($r) => [$r[0], url_safe(resolve_dot_value($r[1], $item))], $replacements);
-        $path = str_replace(
-            array_column($replacements, 0),
-            array_column($replacements, 1),
-            $path
-        );
-        return $path;
-    };
-}
-function resolve_dot_value($keys, $data) {
-    if (!$data) {
-        return null;
-    }
-    $current = array_shift($keys);
-
-    // nested?
-    if ($keys) {
-        return resolve_dot_value($keys, $data[$current]);
-    }
-
-    if (!is_assoc($data)) {
-        return array_column($data, $current);
-    } else {
-        return $data[$current];
-    }
-}
-function url_safe($path) {
-    // TODO
-    // https://gist.github.com/jaywilliams/119517
-    $path = str_replace([' '], ['-'], $path);
-    $path = strtolower($path);
-    return $path;
-}
-
 function query_type($ds, $type) {
     return $ds->query_type($type);
 }
