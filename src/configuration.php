@@ -68,6 +68,7 @@ class configuration {
         string $write_path = "",
         ?string $prefix = null
     ): self {
+        // TODO: run without config
         if (!$conf) $conf = require($dir . '/slowfoot-config.php');
         $conf->is_prod = $is_prod;
         $conf->base = '/' . get_absolute_path($dir);
