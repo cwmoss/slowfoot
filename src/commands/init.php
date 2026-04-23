@@ -10,7 +10,6 @@ class init {
     public function __construct(public app $app) {
     }
 
-    // init [-d <project directory>] [--webdeploy] [--force]
     /**
      * init a project.
      * 
@@ -23,16 +22,11 @@ class init {
         bool $webdeploy = false,
         bool $force = false
     ) {
-        // print("init $project_directory\n");
         $setup = $this->app->setup_get();
-        // print("setup\n");
         if ($webdeploy) {
             shell_info("copy webdeploy script to " . $this->app->project_dir . "/webdeploy/");
             $skipped = $setup->webdeploy();
         } else {
-            //    print("init\n");
-            //    print SLF_PROJECT_DIR;
-
             shell_info("initializing new project in " . $this->app->project_dir);
             if (!directory_is_empty($this->app->project_dir) && !$force) {
                 print "\ndirectory is not empty, aborting init\n" .

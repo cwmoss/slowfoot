@@ -20,9 +20,9 @@ class starship {
         $boot_only_config = true;
         $boot_quiet = true;
         print "🌈 slft";
-
-        if (file_exists(SLF_PROJECT_DIR . "/var/slowfoot.db")) {
-            $db = new sqlite(["adapter" => "sqlite:" . SLF_PROJECT_DIR . "/var/slowfoot.db"]);
+        $dir = getcwd();
+        if (file_exists($dir . "/var/slowfoot.db")) {
+            $db = new sqlite(["adapter" => "sqlite:" . $dir . "/var/slowfoot.db"]);
             $info = $db->info_line();
             printf(" %s docs, %s paths", $info[0], $info[1]);
         } else {

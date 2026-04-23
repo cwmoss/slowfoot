@@ -12,17 +12,17 @@ your content is data. slowfoot transforms it into beautiful websites.
 
 you define your content sources. slowfoot fetches every source and creates a dataset of documents. the basic schema for documents is:
 
-* string `_id` a global id of the document
-* string `_type` a document type
+- string `_id` a global id of the document
+- string `_type` a document type
 
 ### projection
 
-you define your web page paths per type. for every type, if there is a template, all documents are projected to web pages though the template. 
-a document can have multiple paths/templates defined. example: you have a type `artist` and 2 pages: `{artist}/` with the bio and  `{artist}/works/` with a list of works.
+you define your web page paths per type. for every type, if there is a template, all documents are projected to web pages though the template.
+a document can have multiple paths/templates defined. example: you have a type `artist` and 2 pages: `{artist}/` with the bio and `{artist}/works/` with a list of works.
 
 ### templates
 
-with the templates, you define the output. default template engine is `phuety`. in your templates you can query all data that was previously fetched. slowfoot supports the generation of images and handling of css and javascript.  
+with the templates, you define the output. default template engine is `phuety`. in your templates you can query all data that was previously fetched. slowfoot supports the generation of images and handling of css and javascript.
 
 ## config
 
@@ -83,29 +83,22 @@ alias slowfoot="docker run --rm -it -p 1199:1199 -v ${PWD}:/project ghcr.io/cwmo
 option A
 
 return null or empty array, while fetching the document. no data, no output. good use case are drafts
-for drafts you can also return a row with key `_draft`. the data will be only visible in development mode. 
+for drafts you can also return a row with key `_draft`. the data will be only visible in development mode.
 it will not be added to the production dataset.
 
 also if document contains key `_no_path`, no path will be created and no page will be created
 
 option B
 
-use a path function in config that returns null for a document. effective, but a litte bit more involved. 
+use a path function in config that returns null for a document. effective, but a litte bit more involved.
 
 option C
 
 template return empty string. easy for designer but maybe not the most efficient
 
-
-
-
-
-
 #### todo
 
 resolve urls for pages, remove path_page function
-
-    "jcupitt/vips": "^2.5" removed b.a.w
 
 remaining constants:
 

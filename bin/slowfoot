@@ -5,10 +5,9 @@ namespace slowfoot\commands;
 
 define('SLOWFOOT_START', microtime(true));
 $bin_dir = $_composer_bin_dir ?? __DIR__;
-$project_dir = isset($_composer_bin_dir) ? dirname(dirname($bin_dir)) : dirname($bin_dir);
-define('SLOWFOOT_BASE', $project_dir);
+$vendor_dir = isset($_composer_bin_dir) ? dirname(dirname($bin_dir)) : dirname($bin_dir);
 
-require $project_dir . '/vendor/autoload.php';
+require $vendor_dir . '/vendor/autoload.php';
 
 use cwmoss\final_cli;
 use cwmoss\final_cli\parser;
@@ -43,14 +42,17 @@ $argv ??= [];
     ->add_upgrade_command("cwmoss/slowfoot")
     ->run($argv, function ($class, parser $parser) use ($project_dir, $argv) {
         $dir = (string) $parser->get_opt("d");
-        // TODO: change logik here. needs more getcwd()
+        $cwd = getcwd();
         $dir = match (true) {
-            $dir == ".", $dir == "./" => getcwd(),
-            $dir && $dir[0] != '/' => SLOWFOOT_BASE . '/' . $dir,
+            $dir == "", $dir == ".", $dir == "./" => $cwd,
+            $dir && $dir[0] != '/' => $cwd . '/' . $dir,
             default => $dir
         };
-        define('SLF_PROJECT_DIR', $dir ?: $project_dir);
-        $app = new app(SLF_PROJECT_DIR, $parser->get_switch('v', 'verbose'), $parser->get_switch("f"));
+        $app = new app(
+            $dir,
+            $parser->get_switch('v', 'verbose'),
+            $parser->get_switch("f")
+        );
         $app->original_args = $argv;
         $noproject = [init::class];
         if (!in_array($class, $noproject)) $app->load_project();
