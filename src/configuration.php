@@ -10,6 +10,8 @@ use slowfoot\store\sqlite;
 use slowfoot\loader;
 use slowfoot\template;
 use slowfoot\image;
+use slowfoot_plugin\phuety\phuety_adapter;
+
 use function lolql\parse;
 use function lolql\query as lquery;
 
@@ -53,7 +55,7 @@ class configuration {
         public string|array $build = ['dist' => 'dist'],
         public bool $is_prod = false,
         public string $timezone = "Europe/Berlin",
-        public string $template_engine = template::class,
+        public string $template_engine = phuety_adapter::class,
     ) {
         $this->tz = new DateTimeZone($timezone);
         date_default_timezone_set($timezone);
@@ -63,7 +65,8 @@ class configuration {
         bool $fresh_fetch = false,
         ?configuration $conf = null,
         $is_prod = false,
-        string $write_path = ""
+        string $write_path = "",
+        ?string $prefix = null
     ): self {
         if (!$conf) $conf = require($dir . '/slowfoot-config.php');
         $conf->is_prod = $is_prod;
@@ -76,7 +79,8 @@ class configuration {
             $conf->dist = $conf->base . "/dist";
             $conf->var = $conf->base . "/var";
         }
-
+        // override prefix with cli option
+        if (!is_null($prefix)) $conf->path_prefix = $prefix;
         $conf->init($fresh_fetch);
         return $conf;
     }

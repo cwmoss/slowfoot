@@ -40,8 +40,9 @@ $argv ??= [];
     ->add_command(info::class)
     ->add_command(starship::class)
     ->add_upgrade_command("cwmoss/slowfoot")
-    ->run($argv, function ($class, parser $parser) use ($project_dir, $argv) {
+    ->run($argv, function ($class, parser $parser) use ($argv) {
         $dir = (string) $parser->get_opt("d");
+        $prefix = $parser->get_opt("p", "prefix");
         $cwd = getcwd();
         $dir = match (true) {
             $dir == "", $dir == ".", $dir == "./" => $cwd,
@@ -51,7 +52,8 @@ $argv ??= [];
         $app = new app(
             $dir,
             $parser->get_switch('v', 'verbose'),
-            $parser->get_switch("f")
+            $parser->get_switch("f"),
+            prefix: $prefix
         );
         $app->original_args = $argv;
         $noproject = [init::class];

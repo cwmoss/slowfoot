@@ -27,6 +27,8 @@ class build {
         ?string $project_directory = null,
         #[cli("-f", "fetch all contents")]
         ?bool $f = false,
+        #[cli("-p --prefix", "Set the URL prefix")]
+        ?string $prefix = null,
         #[cli("--html", "console output as html")]
         ?bool $html = false
     ) {
@@ -45,6 +47,8 @@ class build {
         if (!$project->dist()) {
             die('NO DIST-PATH FOUND');
         }
+        $prefix = $project->path_prefix();
+        $terminal->println("build with prefix: <b>" . ($prefix ?: "/") . "</b>");
 
         $dist = $project->dist();
         // print PHP_SAPI . " -- " . php_sapi_name() . " -- ";
@@ -129,10 +133,12 @@ class build {
 
 
         $terminal->shell_info("copy assets");
-
-        shell_exec("cp -R {$project->src}/assets {$project->dist()}/");
-        shell_exec("cp -a {$project->config->var}/rendered-images/. {$project->dist()}/images");
-
+        if (is_dir("{$project->src}/assets")) {
+            shell_exec("cp -R {$project->src}/assets {$project->dist()}/");
+        }
+        if (is_dir("{$project->config->var}/rendered-images")) {
+            shell_exec("cp -a {$project->config->var}/rendered-images/. {$project->dist()}/images");
+        }
         $terminal->shell_info();
 
         if (isset($project->config->hooks['after_build'])) {

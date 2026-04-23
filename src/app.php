@@ -10,7 +10,13 @@ class app {
     public string $write_path = "";
     public project $project;
     public array $original_args = [];
-    public function __construct(public string $project_dir, public bool $verbose, public bool $fresh) {
+
+    public function __construct(
+        public string $project_dir,
+        public bool $verbose,
+        public bool $fresh,
+        public ?string $prefix = null
+    ) {
         $this->base = $project_dir;
         $this->init();
         $this->set_env();
@@ -38,8 +44,10 @@ class app {
         $this->project = new project(configuration::load(
             $this->project_dir,
             $this->fresh,
-            write_path: $this->write_path
+            write_path: $this->write_path,
+            prefix: $this->prefix
         ));
+        // TODO: remove const, don't differenciate
         if (!defined('PATH_PREFIX')) {
             if (PHP_SAPI == 'cli-server') {
                 define('PATH_PREFIX', "");
