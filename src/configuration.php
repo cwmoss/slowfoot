@@ -32,8 +32,9 @@ if (! function_exists(__NAMESPACE__ . '\greetings'))
 
 class configuration {
 
+    static public $config_filename = "slowfoot-config.php";
+
     public string $base;
-    public string $src;
     public string $var;
     public string $dist;
     public DateTimeZone $tz;
@@ -55,11 +56,13 @@ class configuration {
         public string|array $build = ['dist' => 'dist'],
         public bool $is_prod = false,
         public string $timezone = "Europe/Berlin",
-        public string $template_engine = phuety_adapter::class,
+        public string|template_contract $template_engine = phuety_adapter::class,
+        public string $src = "src/"
     ) {
         $this->tz = new DateTimeZone($timezone);
         date_default_timezone_set($timezone);
     }
+
     static function load(
         string $dir,
         bool $fresh_fetch = false,
@@ -69,10 +72,10 @@ class configuration {
         ?string $prefix = null
     ): self {
         // TODO: run without config
-        if (!$conf) $conf = require($dir . '/slowfoot-config.php');
+        if (!$conf) $conf = require($dir . "/" . self::$config_filename);
         $conf->is_prod = $is_prod;
         $conf->base = '/' . get_absolute_path($dir);
-        $conf->src = $conf->base . '/src';
+        $conf->src = $conf->base . "/" . $conf->src;
         if ($write_path) {
             $conf->dist = $conf->base . "/" . $write_path . "/dist";
             $conf->var = $conf->base .  "/" . $write_path . "/var";
@@ -90,6 +93,7 @@ class configuration {
         if (!is_dir($this->var)) {
             mkdir($this->var);
         }
+
         foreach ($this->templates as $name => $t) {
             $this->templates[$name] = $this->normalize_template_config($name, $t);
         }
@@ -120,8 +124,14 @@ class configuration {
         }
         return new store($db, $this->templates);
     }
+    public function set_template_engine(template_contract $tpl) {
+        $this->template_engine = $tpl;
+        return $this;
+    }
     public function get_template_engine(): template_contract {
-        return new $this->template_engine($this);
+        if (is_string($this->template_engine))
+            $this->template_engine = new ($this->template_engine)($this);
+        return $this->template_engine;
     }
 
     public function get_image_processor() {

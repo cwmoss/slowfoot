@@ -13,10 +13,14 @@ class phuety_adapter implements template_contract {
 
     public phuety $engine;
 
-    public function __construct(public configuration $config) {
-        $this->engine = new phuety(
-            $config->src,
-            [
+    public function __construct(
+        public ?configuration $config = null,
+        ?array $component_map = null,
+        ?string $template_source = null,
+        ?string $prefix = null
+    ) {
+        if (is_null($component_map)) {
+            $component_map = [
                 'layout.*' => 'layouts/*',
                 'page.*' => 'pages/*',
                 'template.*' => 'templates/*',
@@ -28,9 +32,15 @@ class phuety_adapter implements template_contract {
                     // require_once(__DIR__ . "/../fixtures/render_components/music_index.php");
                     return new $cls;
                 }
-            ],
-            $config->src . "/compiled",
-            path_aliases: ["assets" => $config->path_prefix . "/assets/", "base" => $config->path_prefix . "/"]
+            ];
+        }
+        if (is_null($template_source)) $template_source = $config->src;
+        if (is_null($prefix)) $prefix = $config->path_prefix;
+        $this->engine = new phuety(
+            $template_source,
+            $component_map,
+            $template_source . "/compiled",
+            path_aliases: ["assets" => $prefix . "/assets/", "base" => $prefix . "/"]
         );
         $this->engine->set_custom_tag("page-query");
     }

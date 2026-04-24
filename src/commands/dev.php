@@ -35,8 +35,6 @@ class dev {
     ) {
         $terminal = new terminal;
         $terminal->println($this->logo);
-        $src = $this->app->project_dir . "/src";
-        $slft_lib_base = dirname(__DIR__);
 
         $devhostport = explode(':', $server_port, 2) +
             [1 => $port];
@@ -47,6 +45,9 @@ class dev {
 
         // evtl. fetching data
         $project = $this->app->project;
+        $src = $project->src;
+        $slft_lib_base = dirname(__DIR__);
+
 
         print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
 

@@ -97,8 +97,6 @@ class dev_fx {
         // ini_set("error_log", "php://stdout");
         $terminal = new terminal;
         $terminal->println($this->logo);
-        $src = $this->app->project_dir . "/src";
-        $slft_lib_base = dirname(__DIR__);
 
         $devhostport = explode(':', $server_port, 2) +
             [1 => $port];

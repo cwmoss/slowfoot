@@ -13,7 +13,7 @@ class project {
     public array $pages;
 
     public function __construct(public configuration $config) {
-        $this->src = $config->base . '/src';
+        $this->src = $config->src;
         $this->base = $config->base;
     }
 

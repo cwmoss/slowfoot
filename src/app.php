@@ -3,6 +3,9 @@
 namespace slowfoot;
 
 use Dotenv\Dotenv;
+use slowfoot_plugin\markdown\markdown_plugin;
+use slowfoot_plugin\phuety\phuety_adapter;
+use slowfoot_plugin\markdown;
 
 class app {
 
@@ -41,9 +44,31 @@ class app {
     }
 
     public function load_project() {
+        $conf = null;
+        if (!file_exists($this->project_dir . "/" . configuration::$config_filename)) {
+            $conf = new configuration(
+                src: "",
+                sources: [
+                    "md" => new markdown\loader('*.md'),
+                ],
+                templates: ["md" => "/:_id"],
+                plugins: [
+                    new markdown\markdown_plugin()
+                ],
+                template_engine: new phuety_adapter(null, [
+                    "*" => __DIR__ . "/../resources/default_templates/"
+                ], $this->project_dir, "")
+            );
+            // $tpl = ;
+            // $conf->set_template_engine($tpl);
+            // print_r($conf);
+        }
+        // print "load project\n";
+        // print_r($conf);
         $this->project = new project(configuration::load(
             $this->project_dir,
             $this->fresh,
+            $conf,
             write_path: $this->write_path,
             prefix: $this->prefix
         ));
