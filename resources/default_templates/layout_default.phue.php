@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title :html="title"></title>
     <style>
-        @import "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap";
+        /* @import "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"; */
 
         :root {
             --radius: .5rem;
