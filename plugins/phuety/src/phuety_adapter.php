@@ -36,11 +36,14 @@ class phuety_adapter implements template_contract {
         }
         if (is_null($template_source)) $template_source = $config->src;
         if (is_null($prefix)) $prefix = $config->path_prefix;
+        // var_dump("PREFIX", $prefix);
+
         $this->engine = new phuety(
             $template_source,
             $component_map,
             $template_source . "/compiled",
-            path_aliases: ["assets" => $prefix . "/assets/", "base" => $prefix . "/"]
+            path_aliases: ["assets" => $prefix . "/assets/", "base" => $prefix . "/"],
+            prefix: $prefix
         );
         $this->engine->set_custom_tag("page-query");
     }
