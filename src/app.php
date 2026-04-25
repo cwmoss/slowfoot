@@ -57,7 +57,8 @@ class app {
                 ],
                 template_engine: new phuety_adapter(null, [
                     "*" => __DIR__ . "/../resources/default_templates/"
-                ], $this->project_dir, "")
+                ], $this->project_dir, ""),
+                auto_index: true
             );
             // $tpl = ;
             // $conf->set_template_engine($tpl);

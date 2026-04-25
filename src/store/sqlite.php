@@ -240,9 +240,38 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         ]);
         return true;
     }
+
+    public function path_update($old_path, $id, $name, $new_path) {
+        if (!$name) $name = "_";
+        $affected = $this->db->update('paths', [
+            'path' => $new_path,
+        ], [
+            'path' => $old_path,
+            'id' => $id,
+            'name' => $name
+        ]);
+        // var_dump("path update", $affected, $old_path, $id, $name, $new_path);
+        return true;
+    }
+
     public function path_get($id, $name) {
         $p = $this->db->cell('SELECT path from paths WHERE id=? AND name=?', $id, $name);
         return $p;
+    }
+
+    public function path_get_first(): ?array {
+        // TODO: use some sort criteria?
+        $p = $this->db->row('SELECT id, name, path from paths LIMIT 1');
+        if ($p) return [$p['id'] ?? null, $p['name'] ?? null, $p['path'] ?? null];
+        return null;
+    }
+
+    public function path_get_by_path($path): ?array {
+        $p = $this->db->row('SELECT id,name,path from paths WHERE path=?', $path);
+        if ($p) {
+            return array_values($p);
+        }
+        return $p ?: null;
     }
 
     public function path_get_props($path) {

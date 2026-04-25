@@ -73,6 +73,11 @@ class build {
         $dist = $project->dist();
         $ds = $project->ds;
 
+        if ($project->config->auto_index) {
+            $terminal->shell_info("auto-index", true);
+            $found = $ds->find_or_select_startpage();
+            // var_dump($found);
+        }
         foreach ($project->templates() as $type => $conf) {
             //$count = query('');
             //if($type=='article') continue;

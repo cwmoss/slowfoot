@@ -57,7 +57,8 @@ class configuration {
         public bool $is_prod = false,
         public string $timezone = "Europe/Berlin",
         public string|template_contract $template_engine = phuety_adapter::class,
-        public string $src = "src/"
+        public string $src = "src/",
+        public bool $auto_index = false
     ) {
         $this->tz = new DateTimeZone($timezone);
         date_default_timezone_set($timezone);

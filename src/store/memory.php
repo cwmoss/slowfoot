@@ -94,8 +94,28 @@ class memory {
         return $this->paths[$id][$name] ?? null;
     }
 
+    public function path_update($old_path, $id, $name, $new_path) {
+        if (!$name) $name = "_";
+        $this->paths[$id][$name] = $new_path;
+        $this->paths_rev[$new_path] = [$id, $name];
+        // unset($this->paths_rev[$old_path]);
+    }
+
+    public function path_get_first(): ?array {
+        $first = array_key_first($this->paths_rev);
+        if (!$first) return null;
+        return $this->path_get_by_path($first);
+    }
+
+    public function path_get_by_path($path): ?array {
+        $p = $this->paths_rev[$path] ?? null;
+        if (!$p) return $p;
+        $p[] = $path;
+        return $p;
+    }
+
     public function path_get_props($path) {
-        return $this->paths_rev[$path];
+        return $this->paths_rev[$path] ?? [null, null];
     }
 
     public function info() {

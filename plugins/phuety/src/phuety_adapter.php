@@ -36,7 +36,7 @@ class phuety_adapter implements template_contract {
         }
         if (is_null($template_source)) $template_source = $config->src;
         if (is_null($prefix)) $prefix = $config->path_prefix;
-        // var_dump("PREFIX", $prefix);
+        // var_dump("tpl src...", $template_source, $component_map);
 
         $this->engine = new phuety(
             $template_source,

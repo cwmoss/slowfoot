@@ -154,6 +154,22 @@ class store {
         return $path;
     }
 
+    public function find_or_select_startpage(): ?array {
+        $found = $this->db->path_get_by_path("/index");
+        if ($found) return $found;
+        $tests = ["/readme", "/start", "/home"];
+        foreach ($tests as $test) {
+            $found = $this->db->path_get_by_path($test);
+            if ($found) break;
+        }
+        if (!$found) $found = $this->db->path_get_first();
+        if ($found) {
+            $this->db->path_update($found[2], $found[0], $found[1], "/index");
+            return $found;
+        }
+        return null;
+    }
+
     public function get_by_path($path) {
         // $path = trim($path, "/");
         return $this->db->path_get_props($path);

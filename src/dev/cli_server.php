@@ -36,17 +36,14 @@ ini_set("display_errors", 0);
 
 $project_dir = $_SERVER['DOCUMENT_ROOT'] . '/../';
 // define('SLOWFOOT_BASE', $project_dir);
-
 $app = (new app($project_dir, true, false))->load_project()->load_data(true);
 $project = $app->project;
-
 $container = new Container([
     // "X_LISTEN" => $devserver,
     // "X_EXPERIMENTAL_RUNNER" => HttpServerRunner::class,
     // \FrameworkX\ErrorHandler::class => fn() => new error(),
     project::class => $project
 ]);
-
 $restart = false;
 // dbg("make app");
 $app = new xapp($container, new error(), timer::class);
