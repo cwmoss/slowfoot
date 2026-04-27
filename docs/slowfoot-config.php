@@ -2,8 +2,6 @@
 require_once("site.php");
 
 use slowfoot\configuration;
-use slowfoot\loader\dataset;
-use slowfoot\store;
 use slowfoot_plugin\markdown;
 use slowfoot_plugin\phuety\phuety_adapter;
 

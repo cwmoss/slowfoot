@@ -41,7 +41,6 @@ class phuety_adapter implements template_contract {
         $this->engine = new phuety(
             $template_source,
             $component_map,
-            $template_source . "/compiled",
             path_aliases: ["assets" => $prefix . "/assets/", "base" => $prefix . "/"],
             prefix: $prefix
         );

@@ -35,6 +35,7 @@ class build {
         if (final_cli::$verbose == 0) {
             ini_set("error_reporting", E_ALL & ~E_DEPRECATED & ~E_WARNING & ~E_NOTICE);
         }
+        $this->app->setup_get()->setup();
 
         $terminal = new terminal;
         if ($html) $terminal->set_output("html");

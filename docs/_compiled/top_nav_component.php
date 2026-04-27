@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 /**
- * /Users/rw/dev/slowfoot/docs/src/components/top_nav.phue.php ~ 10
+ * /Users/rw/dev/slowfoot/docs/src//components/top_nav.phue.php ~ 10
  */
 
 class top_nav_component extends component {
@@ -31,7 +31,7 @@ class top_nav_component extends component {
     public int $total_rootelements = 1;
     public ?array $components = NULL;
 
-    public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): array{
+    public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): ?array{
         // dbg("++ props for component", $this->name, $props);
 
 $chapters = $helper->get('chapter_index');
@@ -58,6 +58,6 @@ $current_section = $props->current->dir ? basename($props->current->dir) : basen
     }
 
     // public function debug_info(){
-    //    return /Users/rw/dev/slowfoot/docs/src/components/top_nav.phue.php ~ 10;
+    //    return /Users/rw/dev/slowfoot/docs/src//components/top_nav.phue.php ~ 10;
     // }
 }

@@ -3,7 +3,7 @@
 namespace slowfoot\commands;
 
 use cwmoss\final_cli\cli;
-use cwmoss\final_cli\terminal;
+use slowfoot\terminal;
 use slowfoot\util\console;
 use slowfoot\store;
 use slowfoot\app;
@@ -48,6 +48,7 @@ class dev_fx {
         #[cli("-f", "fetch all contents")]
         ?bool $f = false
     ) {
+
         $terminal = new terminal;
         $terminal->println($this->logo);
 
@@ -61,12 +62,18 @@ class dev_fx {
         // evtl. fetching data
         $project = $this->app->project;
 
-        $src = $project->src;
+        // $src = $project->src;
         $slft_lib_base = dirname(__DIR__);
+
+        if ($project->config->auto_index) {
+            $terminal->shell_info("auto-index", true);
+            $found = $project->ds->find_or_select_startpage();
+            // var_dump($found);
+        }
 
         print console::console_table(['_type' => 'type', 'total' => 'total'], $project->ds->info());
         // XXXPHP_CLI_SERVER_WORKERS=4 
-        $command = "php -d variables_order=EGPCS -d short_open_tag=On -S {$devserver} -t {$src} {$slft_lib_base}/dev/cli_server.php";
+        $command = "php -d variables_order=EGPCS -d short_open_tag=On -S {$devserver} -t {$project->base} {$slft_lib_base}/dev/cli_server.php";
         print "\n\n";
 
         print "starting development server\n\n";

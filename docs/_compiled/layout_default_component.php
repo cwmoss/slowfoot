@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 /**
- * /Users/rw/dev/slowfoot/docs/src/layouts/default.phue.php ~ 42
+ * /Users/rw/dev/slowfoot/docs/src//layouts/default.phue.php ~ 42
  */
 
 class layout_default_component extends component {
@@ -33,7 +33,7 @@ class layout_default_component extends component {
   0 => 'top.nav',
 );
 
-    public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): array{
+    public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): ?array{
         // dbg("++ props for component", $this->name, $props);
 $title = "HUH"; // $__context->config->site_name;
 
@@ -99,6 +99,6 @@ $title = "HUH"; // $__context->config->site_name;
     }
 
     // public function debug_info(){
-    //    return /Users/rw/dev/slowfoot/docs/src/layouts/default.phue.php ~ 42;
+    //    return /Users/rw/dev/slowfoot/docs/src//layouts/default.phue.php ~ 42;
     // }
 }

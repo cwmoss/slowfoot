@@ -34,7 +34,7 @@ if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
 
 ini_set("display_errors", 0);
 
-$project_dir = $_SERVER['DOCUMENT_ROOT'] . '/../';
+$project_dir = $_SERVER['DOCUMENT_ROOT']; //  . '/../';
 // define('SLOWFOOT_BASE', $project_dir);
 $app = (new app($project_dir, true, false))->load_project()->load_data(true);
 $project = $app->project;

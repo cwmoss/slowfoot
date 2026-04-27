@@ -13,7 +13,7 @@ use function phuety\dbg;
 
 
 /**
- * /Users/rw/dev/slowfoot/docs/src/templates/chapter.phue.php ~ 18
+ * /Users/rw/dev/slowfoot/docs/src//templates/chapter.phue.php ~ 18
  */
 
 class template_chapter_component extends component {
@@ -34,7 +34,7 @@ class template_chapter_component extends component {
   1 => 'sft.markdown',
 );
 
-    public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): array{
+    public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): ?array{
         // dbg("++ props for component", $this->name, $props);
 
 // dbg("... template all props", $props->page);
@@ -70,6 +70,6 @@ $html = "<em>hi</em>";
     }
 
     // public function debug_info(){
-    //    return /Users/rw/dev/slowfoot/docs/src/templates/chapter.phue.php ~ 18;
+    //    return /Users/rw/dev/slowfoot/docs/src//templates/chapter.phue.php ~ 18;
     // }
 }
