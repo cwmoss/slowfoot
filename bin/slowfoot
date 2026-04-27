@@ -29,7 +29,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 $argv ??= [];
 
 
-(new final_cli\app("slowfoot", "0.83", "🌈 <b>slowfoot</b>", 3))
+(new final_cli\app("slowfoot", "0.86", "🌈 <b>slowfoot</b>", 3))
     // ->add_command(wmdev::class)
     ->add_command(dev_fx::class . "@cli_server", "dev")
     ->add_command(dev_fx::class, "dev-fx")

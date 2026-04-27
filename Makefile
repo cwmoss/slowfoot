@@ -1,7 +1,8 @@
 APP = slowfoot
 PHAR = slowfoot.phar
-MICROSFX = ~/dev/microsfx
+MICROSFX = ~/dev/microsfx/bulk
 BUILD = build
+PHP_VERSION = 8.5.5
 
 all: make-docs test analyze
 
@@ -30,12 +31,12 @@ runner:
 clean:
 	rm -f slowfoot slowfoot.phar slowfoot.phar.gz build/*
 
-build: $(MICROSFX)/resources/micro.sfx $(PHAR)
-	cat $(MICROSFX)/resources/micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) && cp $(APP) /usr/local/bin/
+build: $(MICROSFX)/micro.sfx $(PHAR)
+	cat $(MICROSFX)/micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) && cp $(APP) /usr/local/bin/
 	ls -alh /usr/local/bin/$(APP)
 
 $(PHAR): bin/slowfoot src/*.php src/**/*.php
-	# composer install --no-dev --classmap-authoritative
+	composer install --no-dev --classmap-authoritative
 	php -d phar.readonly=0 gen_phar.php $(PHAR) bin/slowfoot
 
 release: clean build-all checksums
@@ -44,19 +45,19 @@ build-all: $(PHAR)
 	mkdir -p $(BUILD)
 	rm -rf $(BUILD)/micro.sfx $(BUILD)/$(APP)
 	cp $(PHAR) $(BUILD)/
-	cd $(BUILD) && tar xfz $(MICROSFX)/resources/php-8.5.4-micro-linux-aarch64.tar.gz \
+	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-linux-aarch64.tar.gz \
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-linux-aarch64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/resources/php-8.5.4-micro-linux-x86_64.tar.gz \
+	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-linux-x86_64.tar.gz \
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-linux-x86_64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/resources/php-8.5.4-micro-macos-aarch64.tar.gz \
+	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-macos-aarch64.tar.gz \
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-macos-aarch64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/resources/php-8.5.4-micro-macos-x86_64.tar.gz \
+	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-macos-x86_64.tar.gz \
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-macos-x86_64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/resources/php-8.5.4-micro-win.zip \
+	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-win.zip \
 		&& cat micro.sfx $(PHAR) > $(APP).exe && chmod 0755 $(APP).exe \
 		&& zip $(APP)-win-x86_64.zip $(APP).exe
 
@@ -71,5 +72,5 @@ checksums:
 		$(PHAR) \
     > checksums.txt
 
-$(MICROSFX)/resources/micro.sfx: $(MICROSFX)/resources/php-8.5.4-micro-macos-aarch64.tar.gz
-	tar xfzm $< && mv micro.sfx $(MICROSFX)/resources/
+$(MICROSFX)/micro.sfx: $(MICROSFX)/php-$(PHP_VERSION)-micro-macos-aarch64.tar.gz
+	tar xfzm $< && mv micro.sfx $(MICROSFX)/
