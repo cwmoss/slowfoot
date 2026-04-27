@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='-3.2 -3.2 38.40 38.40' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' fill='%23000000' stroke='%23000000'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round' stroke='%23CCCCCC' stroke-width='0.128'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='-66.775' y1='-171.703' x2='-66.775' y2='-171.817' gradientTransform='matrix(240, 0, 0, -240, 16042, -41206)' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23000000'%3E%3C/stop%3E%3Cstop offset='1' stop-color='%23000000'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Ctitle%3Efile_type_favicon%3C/title%3E%3Crect x='2' y='2' width='28' height='28' rx='1.75' ry='1.75' style='fill:url(%23a)'%3E%3C/rect%3E%3Cpolygon points='16 22.625 9.511 26.033 10.75 18.815 5.5 13.704 12.755 12.65 16 6.083 19.245 12.65 26.5 13.704 21.25 18.815 22.489 26.033 16 22.625' style='fill:%23fefb00'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
     <title :html="title"></title>
     <style>
         /* @import "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"; */
