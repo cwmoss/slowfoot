@@ -28,6 +28,8 @@ error_reporting(E_ALL ^ E_DEPRECATED);
  */
 $argv ??= [];
 
+# phpinfo();
+# exit;
 
 (new final_cli\app("slowfoot", "0.86", "🌈 <b>slowfoot</b>", 3))
     // ->add_command(wmdev::class)

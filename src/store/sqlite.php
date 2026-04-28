@@ -10,7 +10,10 @@ INSERT INTO docs_fts(_id, btext)
 
 namespace slowfoot\store;
 
+use ParagonIE\EasyDB\EasyDB;
 use ParagonIE\EasyDB\Factory;
+use Pdo\Sqlite as PDO_Sqlite;
+use PDO;
 
 class sqlite {
     public $data = [];
@@ -24,6 +27,16 @@ class sqlite {
     public $db;
 
     public static $json_array_mode = false;
+
+    public static function make_easydb(string $dsn) {
+        // alternative for
+        // Factory::fromArray([
+        //     "sqlite:$name"
+        // ]);
+        // supporting new PDO\Sqlite object > php 8.4
+        $pdo = PDO::connect("sqlite:{$dsn}");
+        return new EasyDB($pdo, "sqlite");
+    }
 
     public function __construct($config, $fresh_create = false) {
         $this->config = $config;
@@ -42,9 +55,7 @@ class sqlite {
             $this->was_filled = \file_exists($name);
         }
         // dbg("+++ new sqlite", $name);
-        $this->db = Factory::fromArray([
-            "sqlite:$name"
-        ]);
+        $this->db = self::make_easydb($name);
         $this->create_schema();
     }
 
@@ -105,7 +116,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
         $pdo = $this->db->getPdo();
-        $pdo->sqliteCreateFunction($name, $fn, 1);
+        $pdo->createFunction($name, $fn, 1);
         $q = 'SELECT body from docs WHERE ' . $name . '(body)';
         $order = $this->build_order($query['order_raw']);
         if ($order) {
@@ -138,7 +149,8 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
         #$name = 'lolq';
         $pdo = $this->db->getPdo();
-        $pdo->sqliteCreateFunction($name, $fn, 1);
+        var_dump($pdo);
+        $pdo->createFunction($name, $fn, 1);
         $q = 'SELECT body from docs WHERE ' . $name . '(body)';
         $order = $this->build_order($query['order_raw']);
         if ($order) {

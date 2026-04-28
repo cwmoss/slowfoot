@@ -1,8 +1,8 @@
 APP = slowfoot
 PHAR = slowfoot.phar
-MICROSFX = ~/dev/microsfx/bulk
+MICROSFX = ~/dev/microsfx/resources
 BUILD = build
-PHP_VERSION = 8.5.5
+PHP_VERSION = 8.5.4
 
 all: make-docs test analyze
 

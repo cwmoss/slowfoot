@@ -1,0 +1,29 @@
+Build Provider => static-php-cli 2.8.3
+Compiler => clang 17.0.0
+Configure Command =>  './configure'  '--prefix=' '--with-valgrind=no' '--enable-shared=no' '--enable-static=yes' '--disable-all' '--disable-phpdbg' '--enable-cli' '--enable-fpm' '--disable-embed' '--enable-micro' '--disable-cgi' '--with-config-file-path=/usr/local/etc/php' '--with-config-file-scan-dir=/usr/local/etc/php/conf.d' '--enable-bcmath' '--with-bz2=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--enable-calendar' '--enable-ctype' '--with-curl' '--enable-dom' '--enable-exif' '--enable-fileinfo' '--enable-filter' '--enable-ftp' '--with-zlib' '--enable-gd' '--with-freetype' '--with-jpeg' '--with-webp' '--with-avif' '--with-gmp=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--with-iconv=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--enable-xml' '--enable-mbstring' '--enable-mbregex' '--enable-mysqlnd' '--with-openssl=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--with-openssl-argon2' 'OPENSSL_LIBS=-lz' '--enable-pcntl' '--enable-pdo' '--with-pdo-mysql' '--with-sqlite3=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--with-pdo-sqlite' '--with-pgsql' 'PGSQL_CFLAGS=-I/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot/include' 'PGSQL_LIBS=-L/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot/lib -lpq -lpgcommon -lpgport -lzstd -lldap -llber -lsodium -lgmp -lxslt -lexslt -licuio -licui18n -licuuc -licudata -lpthread -ledit -lncurses -lssl -lcrypto -lxml2 -lm -lz -llzma -liconv -lcharset -lresolv -lc++' '--with-pdo-pgsql=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--enable-phar' '--enable-posix' '--enable-session' '--enable-redis' '--enable-redis-session' '--disable-redis-igbinary' '--disable-redis-msgpack' '--enable-redis-zstd' '--with-libzstd=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--enable-redis-lz4' '--with-liblz4=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--enable-simplexml' '--enable-soap' '--enable-sockets' '--enable-tokenizer' '--enable-xmlwriter' '--enable-xmlreader' '--with-libxml=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' '--with-zip=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot' 'PKG_CONFIG=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/pkgroot/aarch64-darwin/bin/pkg-config' 'PKG_CONFIG_PATH=/Users/runner/work/static-php-cli-hosted/static-php-cli-hosted/buildroot/lib/pkgconfig' 'PHP_BUILD_PROVIDER=static-php-cli 2.8.3' 'PHP_BUILD_COMPILER=clang 17.0.0'
+Server API => micro PHP sfx
+Virtual Directory Support => disabled
+Configuration File (php.ini) Path => /usr/local/etc/php
+Loaded Configuration File => (none)
+Scan this dir for additional .ini files => (none)
+Additional .ini files parsed => (none)
+PHP API => 20250925
+PHP Extension => 20250925
+Zend Extension => 420250925
+Zend Extension Build => API420250925,NTS
+PHP Extension Build => API20250925,NTS
+PHP Integer Size => 64 bits
+Debug Build => no
+Thread Safety => disabled
+Zend Signal Handling => enabled
+Zend Memory Manager => enabled
+Zend Multibyte Support => provided by mbstring
+Zend Max Execution Timers => disabled
+IPv6 Support => enabled
+DTrace Support => disabled
+
+bcmath,bz2,calendar,ctype,curl,dom,exif,fileinfo,filter,ftp,gd,gmp,iconv,xml,mbstring,mbregex,mysqlnd,openssl,pcntl,pdo,pdo_mysql,pdo_sqlite,pdo_pgsql,pgsql,phar,posix,redis,session,simplexml,soap,sockets,sqlite3,tokenizer,xmlwriter,xmlreader,zlib,zip
+
++ intl
+
+bcmath,bz2,calendar,ctype,curl,dom,exif,fileinfo,filter,ftp,gd,gmp,iconv,intl,xml,mbstring,mbregex,mysqlnd,openssl,pcntl,pdo,pdo_mysql,pdo_sqlite,pdo_pgsql,pgsql,phar,posix,redis,session,simplexml,soap,sockets,sqlite3,tokenizer,xmlwriter,xmlreader,zlib,zip
