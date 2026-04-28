@@ -27,7 +27,7 @@
     "make-docs": "@php bin/slowfoot build -d=docs -f"
   },
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.4",
     "composer-runtime-api": "^2.2.2",
     "spatie/async": "^1.5",
     "erusev/parsedown": "^1.7",
