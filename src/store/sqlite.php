@@ -149,7 +149,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
         #$name = 'lolq';
         $pdo = $this->db->getPdo();
-        var_dump($pdo);
+        // var_dump($pdo);
         $pdo->createFunction($name, $fn, 1);
         $q = 'SELECT body from docs WHERE ' . $name . '(body)';
         $order = $this->build_order($query['order_raw']);

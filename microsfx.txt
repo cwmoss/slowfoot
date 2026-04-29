@@ -27,3 +27,15 @@ bcmath,bz2,calendar,ctype,curl,dom,exif,fileinfo,filter,ftp,gd,gmp,iconv,xml,mbs
 + intl
 
 bcmath,bz2,calendar,ctype,curl,dom,exif,fileinfo,filter,ftp,gd,gmp,iconv,intl,xml,mbstring,mbregex,mysqlnd,openssl,pcntl,pdo,pdo_mysql,pdo_sqlite,pdo_pgsql,pgsql,phar,posix,redis,session,simplexml,soap,sockets,sqlite3,tokenizer,xmlwriter,xmlreader,zlib,zip
+
+windows
+no: gmp pcntl posix
+
+bcmath,bz2,calendar,ctype,curl,dom,exif,
+fileinfo,filter,ftp,gd,iconv,intl,xml,
+mbstring,mbregex,mysqlnd,openssl,pdo,
+pdo_mysql,pdo_sqlite,pdo_pgsql,pgsql,phar,
+redis,session,simplexml,soap,sockets,
+sqlite3,tokenizer,xmlwriter,xmlreader,zlib,zip
+
+bcmath,bz2,calendar,ctype,curl,dom,exif,fileinfo,filter,ftp,gd,iconv,intl,xml,mbstring,mbregex,mysqlnd,openssl,pdo,pdo_mysql,pdo_sqlite,pdo_pgsql,pgsql,phar,redis,session,simplexml,soap,sockets,sqlite3,tokenizer,xmlwriter,xmlreader,zlib,zip

@@ -41,12 +41,13 @@ class project {
         return $this->config->templates;
     }
 
-    public function load($include_drafts = false, ?terminal $output_terminal = null) {
+    public function load(bool $include_drafts = false, ?terminal $output_terminal = null) {
         $this->config->is_prod = !$include_drafts;
         $dataloader = $this->config->get_loader();
         $this->ds = $dataloader->load($output_terminal);
         $this->template_helper = load_template_helper($this->ds, $this->src, $this->config);
         $this->load_pages();
+        hook::invoke(hooks::project_loaded, null, $this);
     }
 
     public function load_pages() {

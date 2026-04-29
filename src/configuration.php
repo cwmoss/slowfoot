@@ -32,7 +32,7 @@ if (! function_exists(__NAMESPACE__ . '\greetings'))
 
 class configuration {
 
-    static public $config_filename = "slowfoot-config.php";
+    static public string $config_filename = "slowfoot-config.php";
 
     public string $base;
     public string $var;
@@ -68,7 +68,7 @@ class configuration {
         string $dir,
         bool $fresh_fetch = false,
         ?configuration $conf = null,
-        $is_prod = false,
+        bool $is_prod = false,
         string $write_path = "",
         ?string $prefix = null
     ): self {
@@ -150,14 +150,14 @@ class configuration {
         }
     }
 
-    public function get_plugin($class) {
+    public function get_plugin(object $class) {
         foreach ($this->plugins as $plugin) {
             if ($class == get_class($plugin)) return $plugin;
         }
         throw new OutOfRangeException("plugin $class not found");
     }
 
-    function normalize_template_config($name, $config) {
+    public function normalize_template_config(string $name, string|array $config) {
         if (!is_array($config) || is_assoc($config)) {
             $config = [$config];
         }
