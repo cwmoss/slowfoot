@@ -8,7 +8,7 @@ use slowfoot_plugin\phuety\phuety_adapter;
 return new configuration(
     site_name: 'slowfoot Documentation',
     site_description: 'Docs for slowfoot',
-    path_prefix: "/slowfoot",
+    // path_prefix: "/slowfoot",
     // store: "memory",
     sources: [
         "chapter" => new markdown\loader('content/**/*.md', remove_prefix: "content/"),

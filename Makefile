@@ -11,7 +11,7 @@ app:
 	php -d phar.readonly=0 gen_phar.php
 
 make-docs:
-	bin/slowfoot build -d=docs/ -f
+	bin/slowfoot build -d=docs/ -f -p=/slowfoot
 
 test: 
 	php vendor/bin/phpunit tests
