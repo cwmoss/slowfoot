@@ -300,37 +300,6 @@ function globstar($pattern, $flags = 0) {
     return $files;
 }
 
-function shell_info($start = null, $single = false) {
-    static $stime;
-    static $console;
-
-    // last resort to non-cli stuff
-    if (PHP_SAPI != 'cli' && PHP_SAPI != 'micro') {
-        if (!(defined('SLOWFOOT_WEBDEPLOY') && SLOWFOOT_WEBDEPLOY)) {
-            return;
-        }
-    }
-
-    if (!$console) {
-        $console = console::console();
-    }
-
-    if ($start) {
-        if (!$single) {
-            $stime = microtime(true);
-            print $console('bold', $start);
-            print ' ... ';
-        } else {
-            print $console('green', $start);
-            print PHP_EOL;
-        }
-    } else {
-        $elapsed = microtime(true) - $stime;
-        $stime = null;
-        print $console('reverse', nice_elapsed_time($elapsed)['print']);
-        print PHP_EOL;
-    }
-}
 
 function nice_elapsed_time($elapsed) {
     $nice = [

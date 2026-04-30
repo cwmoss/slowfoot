@@ -23,11 +23,12 @@ class init {
         bool $force = false
     ) {
         $setup = $this->app->setup_get();
+        $terminal = new terminal;
         if ($webdeploy) {
-            shell_info("copy webdeploy script to " . $this->app->project_dir . "/webdeploy/");
+            $terminal->shell_info("copy webdeploy script to " . $this->app->project_dir . "/webdeploy/");
             $skipped = $setup->webdeploy();
         } else {
-            shell_info("initializing new project in " . $this->app->project_dir);
+            $terminal->shell_info("initializing new project in " . $this->app->project_dir);
             if (!directory_is_empty($this->app->project_dir) && !$force) {
                 print "\ndirectory is not empty, aborting init\n" .
                     "  if you want to init anyways, use the --force flag\n";
@@ -36,10 +37,10 @@ class init {
             $skipped = $setup->init("minimal");
         }
 
-        shell_info();
+        $terminal->shell_info();
 
         if ($skipped) {
-            shell_info("some files could not be created, because they are already there:", true);
+            $terminal->shell_info("some files could not be created, because they are already there:", true);
             print_r($skipped);
         }
     }

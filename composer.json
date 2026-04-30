@@ -29,7 +29,6 @@
   "require": {
     "php": ">=8.4",
     "composer-runtime-api": "^2.2.2",
-    "spatie/async": "^1.5",
     "erusev/parsedown": "^1.7",
     "ausi/slug-generator": "^1.1",
     "jbroadway/urlify": "^1.2",
@@ -37,18 +36,14 @@
     "ovidigital/js-object-to-json": "^1.0",
     "league/glide": "^2.0",
     "league/flysystem-memory": "^2.0",
-    "sensiolabs/ansi-to-html": "^1.2",
-    "paragonie/easydb": "^3",
-    "bramus/router": "^1.6",
-    "php-parallel-lint/php-console-color": "^1.0",
     "phplucidframe/console-table": "^1.2",
-    "mnapoli/front-yaml": "^2.0",
     "benjaminhoegh/parsedown-extended": "^1.2",
     "cwmoss/wrun": "dev-main",
     "cwmoss/phuety": "dev-main",
     "cwmoss/final-cli": "dev-main",
     "clue/framework-x": "dev-main",
     "sanity/sanity-php": "^1.5",
+    "symfony/yaml": "^4.0|^5.0|^6.0|^7.0|^8.0",
     "meyfa/php-svg": "^0.16.1"
   },
   "require-dev": {

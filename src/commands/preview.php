@@ -4,6 +4,7 @@ namespace slowfoot\commands;
 
 use cwmoss\final_cli\cli;
 use slowfoot\app;
+use slowfoot\terminal;
 
 class preview {
 
@@ -22,7 +23,8 @@ class preview {
         #[cli("-S --server server:port", "Set server and port")]
         string $server_port = "localhost:11999"
     ) {
-        shell_info("starting testserver. you can review your build here.", true);
+        $terminal = new terminal;
+        $terminal->shell_info("starting testserver. you can review your build here.", true);
         $command = "php -S {$server_port} -t {$this->app->project->dist()}";
         print "\n";
         print "   🤟 http://{$server_port}\n\n";

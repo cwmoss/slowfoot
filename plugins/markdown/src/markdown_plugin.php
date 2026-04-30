@@ -5,10 +5,6 @@ namespace slowfoot_plugin\markdown;
 use slowfoot\hook;
 use slowfoot\configuration;
 
-use Mni\FrontYAML\Parser;
-use ParsedownToc;
-use ParsedownExtended;
-
 class markdown_plugin {
 
     public shortcode $shortcode;

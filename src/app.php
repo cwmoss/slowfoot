@@ -2,8 +2,6 @@
 
 namespace slowfoot;
 
-use Dotenv\Dotenv;
-use slowfoot_plugin\markdown\markdown_plugin;
 use slowfoot_plugin\phuety\phuety_adapter;
 use slowfoot_plugin\markdown;
 
@@ -34,10 +32,7 @@ class app {
     }
 
     public function set_env() {
-        if (file_exists("{$this->project_dir}/.env")) {
-            //print "env: $base/.env";
-            Dotenv::createImmutable($this->project_dir)->load();
-        }
+        new dotenv($this->project_dir)->load();
 
         $_ENV = array_merge(getenv(), $_ENV);
         $this->write_path = $_ENV["SLFT_WRITE_PATH"] ?? "";

@@ -4,8 +4,8 @@ namespace slowfoot_plugin\markdown;
 
 use DateTime;
 use slowfoot\configuration;
-use Mni\FrontYAML\Parser;
 use slowfoot\file_meta;
+use Symfony\Component\Yaml\Yaml;
 
 class loader {
 
@@ -19,7 +19,7 @@ class loader {
     public function __invoke(configuration $config) {
         // $me = $config->get_plugin(self::class);
         $me = $this;
-        $front = new Parser;
+        $front = new frontyaml_splitter();
         $filep = $config->base . '/' . $me->file;
         dbg("++ md glob:", $filep);
 
@@ -29,9 +29,8 @@ class loader {
             $meta = new file_meta($f, $config->base, remove_prefix: (string) $this->remove_prefix);
             $doc = $meta->get_document(type: "");
 
-            $document = $front->parse($doc->content, false);
-            $data = $document->getYAML() ?? [];
-            $md = $document->getContent() ?? '';
+            [$head, $md] = $front->split($doc->content);
+            $data = $head ? Yaml::parse($head) : [];
 
             if ($data["date"] ?? null) {
                 $date = DateTime::createFromFormat($this->date_input_format, $data["date"]);

@@ -10,35 +10,31 @@ INSERT INTO docs_fts(_id, btext)
 
 namespace slowfoot\store;
 
-use ParagonIE\EasyDB\EasyDB;
-use ParagonIE\EasyDB\Factory;
-use Pdo\Sqlite as PDO_Sqlite;
-use PDO;
 
 class sqlite {
-    public $data = [];
+    public array $data = [];
 
     // key: _id, value: [path_name => path]
-    public $paths = [];
+    public array $paths = [];
     // key: path, value: [_id, path_name]
-    public $paths_rev = [];
-    public $config = [];
-    public $was_filled = false;
-    public $db;
+    public array $paths_rev = [];
+    public array $config = [];
+    public bool $was_filled = false;
+    public sqlite_driver $db;
 
-    public static $json_array_mode = false;
+    public static bool $json_array_mode = false;
 
-    public static function make_easydb(string $dsn) {
-        // alternative for
-        // Factory::fromArray([
-        //     "sqlite:$name"
-        // ]);
-        // supporting new PDO\Sqlite object > php 8.4
-        $pdo = PDO::connect("sqlite:{$dsn}");
-        return new EasyDB($pdo, "sqlite");
-    }
+    // public static function make_easydb(string $dsn) {
+    // alternative for
+    // Factory::fromArray([
+    //     "sqlite:$name"
+    // ]);
+    // supporting new PDO\Sqlite object > php 8.4
+    //    $pdo = PDO::connect("sqlite:{$dsn}");
+    //    return new EasyDB($pdo, "sqlite");
+    // }
 
-    public function __construct($config, $fresh_create = false) {
+    public function __construct(array $config, bool $fresh_create = false) {
         $this->config = $config;
         $adapter = explode(':', $config['adapter']);
         $name = $adapter[1] ?? 'slowfoot.db';
@@ -55,7 +51,7 @@ class sqlite {
             $this->was_filled = \file_exists($name);
         }
         // dbg("+++ new sqlite", $name);
-        $this->db = self::make_easydb($name);
+        $this->db = new sqlite_driver($name); // self::make_easydb($name);
         $this->create_schema();
     }
 
@@ -89,13 +85,13 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         #print $ddl;
         foreach ($statements as $ddl_s) {
             if (trim($ddl_s)) {
-                $this->db->run($ddl_s);
+                $this->db->run_ddl($ddl_s);
             }
         }
         return;
     }
 
-    public function query_sql($q, $params = []) {
+    public function query_sql(string $q, array $params = []) {
         $res = $this->db->safeQuery($q, $params);
         dbg("[sqlite] query_sql", $q, $params);
         #var_dump($q);
@@ -111,12 +107,13 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     */
     }
 
-    public function query_paginated($q, $limit_per_page, $params = []) {
+    public function query_paginated(string $q, int $limit_per_page, array $params = []) {
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
-        $pdo = $this->db->getPdo();
-        $pdo->createFunction($name, $fn, 1);
+        // $pdo = $this->db->getPdo();
+        // $pdo->createFunction($name, $fn, 1);
+        $this->db->db->createFunction($name, $fn, 1);
         $q = 'SELECT body from docs WHERE ' . $name . '(body)';
         $order = $this->build_order($query['order_raw']);
         if ($order) {
@@ -136,21 +133,22 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         };
         return [$total, $page_query];
     }
-    public function query_one($q, $params = []) {
+    public function query_one(string $q, array $params = []) {
         $q .= "limit(1)";
         dbg("++ query1 sqlite", $q);
         $res = $this->query($q, $params);
         dbg("++ query1 res", $res);
         return $res[0] ?? null;
     }
-    public function query($q, $params) {
+    public function query(string $q, array $params) {
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
         #$name = 'lolq';
-        $pdo = $this->db->getPdo();
+        // $pdo = $this->db->getPdo();
         // var_dump($pdo);
-        $pdo->createFunction($name, $fn, 1);
+        // $pdo->createFunction($name, $fn, 1);
+        $this->db->db->createFunction($name, $fn, 1);
         $q = 'SELECT body from docs WHERE ' . $name . '(body)';
         $order = $this->build_order($query['order_raw']);
         if ($order) {
@@ -175,7 +173,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     */
     }
 
-    public function build_order($o = []) {
+    public function build_order(array $o = []) {
         if (!$o) {
             return "";
         }
@@ -185,7 +183,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         }
         return join(", ", $sql);
     }
-    public function propname($n) {
+    public function propname(string $n) {
         $name = sprintf(
             "json_extract(body, '\$.%s')",
             $n
@@ -193,7 +191,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return $name;
     }
 
-    public function query_type($type) {
+    public function query_type(string $type) {
         $res = $this->db->run("select body from docs WHERE _type=?", $type);
         $res = array_map(function ($r) {
             return json_decode($r['body'], self::$json_array_mode);
@@ -207,22 +205,22 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
 */
     }
 
-    public function exists($collection, $id) {
+    public function exists(string $collection, string $id) {
         return $this->db->cell('SELECT count(_id) from docs WHERE _id=?', $id) ? true : false;
     }
 
-    public function get($collection, $id) {
+    public function get(string $collection, string $id) {
         return $this->_select_one($id);
     }
 
-    public function add($collection, $id, $row) {
+    public function add(string $collection, string $id, array $row) {
         $this->db->insert('docs', [
             'body' => \json_encode($row),
         ]);
         return true;
     }
 
-    public function update($collection, $id, $row) {
+    public function update(string $collection, string $id, array $row) {
         $this->db->update('docs', [
             'body' => \json_encode($row),
         ], [
@@ -231,7 +229,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return true;
     }
 
-    public function add_ref($src_id, $src_prop, $dest) {
+    public function add_ref(string $src_id, string $src_prop, string $dest) {
         //    $this->data[$src_id][$src_prop][] = ['_ref' => $dest];
 
         $row = $this->get('docs', $src_id);
@@ -240,11 +238,11 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         $this->update('docs', $row['_id'], $row);
     }
 
-    public function path_exists($path) {
+    public function path_exists(string $path) {
         return $this->db->cell('SELECT count(id) from paths WHERE path=?', $path) ? true : false;
     }
 
-    public function path_add($path, $id, $name) {
+    public function path_add(string $path, string $id, string $name) {
         $this->db->insert('paths', [
             'path' => $path,
             'id' => $id,
@@ -253,9 +251,9 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return true;
     }
 
-    public function path_update($old_path, $id, $name, $new_path) {
+    public function path_update(string $old_path, string $id, string $name, string $new_path) {
         if (!$name) $name = "_";
-        $affected = $this->db->update('paths', [
+        $this->db->update('paths', [
             'path' => $new_path,
         ], [
             'path' => $old_path,
@@ -266,7 +264,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return true;
     }
 
-    public function path_get($id, $name) {
+    public function path_get(string $id, string $name) {
         $p = $this->db->cell('SELECT path from paths WHERE id=? AND name=?', $id, $name);
         return $p;
     }
@@ -278,7 +276,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return null;
     }
 
-    public function path_get_by_path($path): ?array {
+    public function path_get_by_path(string $path): ?array {
         $p = $this->db->row('SELECT id,name,path from paths WHERE path=?', $path);
         if ($p) {
             return array_values($p);
@@ -286,12 +284,12 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return $p ?: null;
     }
 
-    public function path_get_props($path) {
+    public function path_get_props(string $path) {
         $p = $this->db->row('SELECT id,name from paths WHERE path=?', $path);
         return [$p['id'] ?? null, $p['name'] ?? null];
     }
 
-    public function _select_one($id) {
+    public function _select_one(string $id) {
         return json_decode($this->db->cell('SELECT body from docs WHERE _id=?', $id), self::$json_array_mode);
     }
 

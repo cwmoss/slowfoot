@@ -121,3 +121,14 @@ test requirements
 
     collator_create Intl
     iconv
+
+TODO remove dependencies:
+
+- front-yaml OK
+- League CommonMark OK
+- dotenv OK
+- easydb OK
+- ausi/slug-generator or jbroadway/urlify
+- composer-runtime-api ?
+- league/glide ?
+- wrun => httpful ??

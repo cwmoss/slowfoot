@@ -2,11 +2,12 @@
 
 namespace slowfoot\util;
 
-use PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor;
+// use PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor;
 use LucidFrame\Console\ConsoleTable;
 
 class console {
 
+    /*
     static public function console($mode = "auto") {
         static $console_fn;
         static $console = new ConsoleColor();
@@ -47,7 +48,7 @@ class console {
         if ($mode == "on") $console->setForceStyle(true);
         return $console_fn;
     }
-
+*/
     static public function console_table($header, $rows) {
         $table = new ConsoleTable();
         foreach ($header as $head) {
