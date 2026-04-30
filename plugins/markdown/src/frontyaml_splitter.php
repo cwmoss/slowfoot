@@ -42,7 +42,7 @@ class frontyaml_splitter {
             . "){1}[\r\n|\n]*(.*)$~s";                               # $matches[4] document content
 
         if (preg_match($regex, $str, $matches) === 1) { // There is a Front matter
-            $yaml = trim($matches[2]) !== '' ? $this->yamlParser->parse(trim($matches[2])) : null;
+            $yaml = trim($matches[2]) !== '' ? trim($matches[2]) : null;
             $str = ltrim($matches[4]);
         }
 

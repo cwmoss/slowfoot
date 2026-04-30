@@ -10,6 +10,9 @@ INSERT INTO docs_fts(_id, btext)
 
 namespace slowfoot\store;
 
+use slowfoot\document;
+
+
 
 class sqlite {
     public array $data = [];
@@ -213,14 +216,14 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return $this->_select_one($id);
     }
 
-    public function add(string $collection, string $id, array $row) {
+    public function add(string $collection, string $id, array|document $row) {
         $this->db->insert('docs', [
             'body' => \json_encode($row),
         ]);
         return true;
     }
 
-    public function update(string $collection, string $id, array $row) {
+    public function update(string $collection, string $id, array|document $row) {
         $this->db->update('docs', [
             'body' => \json_encode($row),
         ], [
