@@ -153,6 +153,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         // $pdo->createFunction($name, $fn, 1);
         $this->db->db->createFunction($name, $fn, 1);
         $q = 'SELECT body from docs WHERE ' . $name . '(body)';
+        // var_dump($query);
         $order = $this->build_order($query['order_raw']);
         if ($order) {
             $q .= ' ORDER BY ' . $order;
@@ -176,7 +177,8 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     */
     }
 
-    public function build_order(array $o = []) {
+    // empty string or array
+    public function build_order(array|string $o = []):string {
         if (!$o) {
             return "";
         }

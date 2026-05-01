@@ -132,7 +132,3 @@ TODO remove dependencies:
 - composer-runtime-api ?
 - league/glide ?
 - wrun => httpful ??
-
-make support for php 8.4
-
-(8.5) Added Sqlite3Result::fetchAll to return all results at once from a query.

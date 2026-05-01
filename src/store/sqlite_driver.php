@@ -66,8 +66,15 @@ class sqlite_driver {
     public function safeQuery(string $query, array $params = []): array {
         $result = $this->execute_query($query, $params);
         if (!$result) return [];
-        // $res = [];
-        return $result->fetchAll(SQLITE3_ASSOC);
+        // php >= 8.5
+        if(method_exists($result, "fetchAll"))
+            return $result->fetchAll(SQLITE3_ASSOC)?:[];
+        
+        $res = [];
+        while($row = $result->fetchArray(SQLITE3_ASSOC)){
+            $res[]=$row;
+        }
+        return $res;
     }
 
     public function execute_query(string $query, array $params): SQLite3Result|false {
