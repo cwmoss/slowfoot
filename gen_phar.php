@@ -19,10 +19,12 @@ if (file_exists($pharFile . '.gz')) {
     unlink($pharFile . '.gz');
 }
 
-// create with alias "project.phar"
+// create with alias "project.phar" 1860 1712
 $phar = new Phar($pharFile, 0, $pharFile);
 $include = ["bin", "src", "vendor", "plugins", "resources", "ui"];
-$exclude = ["/.git/",   "/."];
+$exclude = ["/.git/",   "/.", "projects/minimal-legacy", 
+    "/phuety/showcase", "/phuety/docs", "phuety/tests", "phuety/src/php-vuejs-templating", "phuety/src/smplang",
+    "sanity-php/test", "parsedown-extended/tests", "parsedown-extra/test"];
 $filter = function ($file, $key, $iterator) use ($include, $exclude) {
     $f = str_replace(__DIR__ . DIRECTORY_SEPARATOR, "", $file);
     $in = false;
@@ -41,7 +43,7 @@ $filter = function ($file, $key, $iterator) use ($include, $exclude) {
         }
     }
 
-    // print "incl $f\n";
+    print "$f\n";
     return true;
 };
 

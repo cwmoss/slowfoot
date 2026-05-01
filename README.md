@@ -128,7 +128,7 @@ TODO remove dependencies:
 - League CommonMark OK
 - dotenv OK
 - easydb OK
-- ausi/slug-generator or jbroadway/urlify
+- ausi/slug-generator or jbroadway/urlify => OK jbroadway/urlify
 - composer-runtime-api ?
 - league/glide ?
 - wrun => httpful ??

@@ -37,7 +37,7 @@ build: $(MICROSFX)/micro.sfx $(PHAR)
 
 $(PHAR): bin/slowfoot src/*.php src/**/*.php
 	composer install --no-dev --classmap-authoritative
-	php -d phar.readonly=0 gen_phar.php $(PHAR) bin/slowfoot
+	php -d phar.readonly=0 gen_phar.php $(PHAR) bin/slowfoot > phar.log
 
 release: clean build-all checksums
 

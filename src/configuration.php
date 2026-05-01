@@ -58,7 +58,8 @@ class configuration {
         public string $timezone = "Europe/Berlin",
         public string|template_contract $template_engine = phuety_adapter::class,
         public string $src = "src/",
-        public bool $auto_index = false
+        public bool $auto_index = false,
+        public string $language = "en"
     ) {
         $this->tz = new DateTimeZone($timezone);
         date_default_timezone_set($timezone);
@@ -167,7 +168,7 @@ class configuration {
                 $t = ['path' => $t];
             }
             if (is_string($t['path'])) {
-                $t['path'] = new path($t['path'])->make_function();
+                $t['path'] = new path($t['path'], $this->language)->make_function();
             }
             $subname = $t['name'] ?? '_';
             $tpl[$subname] = array_merge(['type' => $name, 'template' => $name, 'name' => $subname], $t);
