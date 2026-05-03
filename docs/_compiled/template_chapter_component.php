@@ -11,6 +11,8 @@ use phuety\phuety_context;
 use function phuety\dbg;
 
 
+use slowfoot\components\favicon;
+
 
 /**
  * /Users/rw/dev/slowfoot/docs/src//templates/chapter.phue.php ~ 18
@@ -36,7 +38,6 @@ class template_chapter_component extends component {
 
     public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): ?array{
         // dbg("++ props for component", $this->name, $props);
-
 // dbg("... template all props", $props->page);
 $html = "<em>hi</em>";
 // $html = $markdown("**hello**");

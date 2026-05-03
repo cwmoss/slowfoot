@@ -30,13 +30,13 @@ class layout_default_component extends component {
 );
     public int $total_rootelements = 2;
     public ?array $components = array (
-  0 => 'top.nav',
+  0 => 'phuety.assets',
+  1 => 'top.nav',
 );
 
     public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): ?array{
         // dbg("++ props for component", $this->name, $props);
-$title = "HUH"; // $__context->config->site_name;
-
+$title = $props->page->title ?? $props->globals->config->site_name;
 
         return get_defined_vars();
     }
@@ -52,7 +52,6 @@ $title = "HUH"; // $__context->config->site_name;
   'rel' => 'SHORTCUT ICON',
   'type' => 'image/png',
 ) ) ?>
-
     <?= tag::tag_open_merged_attrs("link", ["href"=> $__d->_call("path_asset")("/css/prism.css", true)], array (
   'rel' => 'stylesheet',
   'type' => 'text/css',
@@ -64,12 +63,14 @@ $title = "HUH"; // $__context->config->site_name;
 
     <?= tag::tag_open_merged_attrs("script", ["src"=> $__d->_call("path_asset")("/js/app.js")], array (
 ) ) ?></script>
+    <?php $__runner($__runner, "phuety.assets", $__d->_get("phuety")->with($this->tagname, "phuety.assets"), [] + array (
+) ); ?>
     <title><?= tag::h($__d->_get("title")) ?></title>
 
 
 
 </head><body>
-
+    <!-- <link rel="SHORTCUT ICON" type="image/png" :href="path_asset('/gfx/favicon-96x96.png')"> -->
     <header>
         <div class="logo">slowfoot Docs <a href="https://github.com/cwmoss/slowfoot">github</a></div>
     </header>
