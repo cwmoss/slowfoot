@@ -5,6 +5,7 @@ namespace slowfoot\loader;
 use Exception;
 use slowfoot\configuration;
 use OviDigital\JsObjectToJson\JsConverter;
+use RuntimeException;
 
 class csv {
 
@@ -21,14 +22,12 @@ class csv {
     }
     public function __invoke(configuration $config) {
         $file = $config->base . '/' . $this->file;
-        $header = null;
-        foreach (file($file) as $row) {
-            if (is_null($header)) {
-                $header = str_getcsv($row, $this->separator, $this->enclosure);
-                print_r($header);
-                continue;
-            }
-            $data = str_getcsv($row, $this->separator, $this->enclosure);
+        $handle = fopen($file, "r");
+        if ($handle === false) throw new RuntimeException("could not open csv file $file");
+
+        $header = fgetcsv($handle, null, $this->separator, $this->enclosure, "");
+
+        while (($data = fgetcsv($handle, null, $this->separator, $this->enclosure, "")) !== false) {
 
             if ($this->json) {
                 $data = array_map(fn($val) => json_decode($val, true), $data);
@@ -46,5 +45,6 @@ class csv {
             //return [];
             yield array_combine($header, $data);
         }
+        fclose($handle);
     }
 }
