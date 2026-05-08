@@ -26,6 +26,7 @@ class csv {
         if ($handle === false) throw new RuntimeException("could not open csv file $file");
 
         $header = fgetcsv($handle, null, $this->separator, $this->enclosure, "");
+        $header[0] = file::remove_bom($header[0]);
 
         while (($data = fgetcsv($handle, null, $this->separator, $this->enclosure, "")) !== false) {
 

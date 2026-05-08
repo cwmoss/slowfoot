@@ -324,15 +324,20 @@ function console_log(...$data) {
     $out[] = "</script>";
     print(join("", $out));
 }
+
 function debug_js($k = null, $v = null) {
     static $vars = [];
+
+    # return json_encode($vars, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
     if (is_null($k) && is_null($v)) {
-        return json_encode($vars, JSON_PRETTY_PRINT);
+        // dbg("-- debug vars", $vars);
+        return json_encode($vars, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR); // JSON_PRETTY_PRINT
     }
     $vars[$k] = $v;
 }
 
-function include_to_buffer($incl) {
+function include_to_buffer(string $incl) {
     ob_start();
     include $incl;
     return ob_get_clean();
