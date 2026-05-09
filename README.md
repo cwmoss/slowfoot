@@ -100,6 +100,15 @@ template return empty string. easy for designer but maybe not the most efficient
 
 resolve urls for pages, remove path_page function
 
+- fts (for dev)
+- navigator: add links, add pagination
+- dev debug, catch jsondecode error
+- phuety: control assets location
+- refactor store
+- refactor query lang
+- refactor page query
+- refactor pagination generator
+
 remaining constants:
 
     SLOWFOOT_START
