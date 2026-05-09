@@ -58,7 +58,7 @@ class api_index {
 
     public function fts(R $r): P {
         $q = $r->getQueryParams()["q"] ?? "";
-        $rows = $this->project->ds->query("SELECT _id, snippet(docs_fts,1, '<b>', '</b>', '[...]', 30) body FROM docs_fts WHERE docs_fts = ? ", $q);
+        $rows = $this->project->ds->query_sql("SELECT _id, snippet(docs_fts,1, '<b>', '</b>', '[...]', 30) body FROM docs_fts WHERE docs_fts = ? ", [$q]);
         return P::json($rows);
     }
 
