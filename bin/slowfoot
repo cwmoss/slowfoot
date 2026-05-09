@@ -3,6 +3,7 @@
 
 namespace slowfoot\commands;
 
+ini_set("memory_limit", -1);
 define('SLOWFOOT_START', microtime(true));
 $bin_dir = $_composer_bin_dir ?? __DIR__;
 $vendor_dir = isset($_composer_bin_dir) ? dirname(dirname($bin_dir)) : dirname($bin_dir);

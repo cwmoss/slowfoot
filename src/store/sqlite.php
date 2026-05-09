@@ -144,6 +144,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return $res[0] ?? null;
     }
     public function query(string $q, array $params) {
+        dbg("== LOLQL query", $q, $params);
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
@@ -178,7 +179,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
     }
 
     // empty string or array
-    public function build_order(array|string $o = []):string {
+    public function build_order(array|string $o = []): string {
         if (!$o) {
             return "";
         }
@@ -196,8 +197,10 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return $name;
     }
 
-    public function query_type(string $type) {
-        $res = $this->db->run("select body from docs WHERE _type=?", $type);
+    // TODO: limits
+    public function query_type(string $type, $page = 1, $limit = 1000) {
+        $offset = ($page - 1) * $limit;
+        $res = $this->db->run("select body from docs WHERE _type=? LIMIT $limit OFFSET $offset", $type);
         $res = array_map(function ($r) {
             return json_decode($r['body'], self::$json_array_mode);
         }, $res);

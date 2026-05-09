@@ -89,7 +89,7 @@ class build {
             $terminal->shell_info("  => $type");
 
             // TODO
-            foreach (query_type($project->ds, $type) as $row) {
+            foreach ($project->ds->query_type_batched($type) as $row) {
                 // if ($type == "page") var_dump($row);
                 foreach ($conf as $templateconf) {
                     //	process_template_data($row, path($row['_id']));

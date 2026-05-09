@@ -51,8 +51,25 @@ class store {
         return $this->db->query_one($q, $params);
     }
 
-    public function query_type($type) {
+    public function query_type(string $type) {
         return array_values($this->db->query_type($type));
+    }
+
+    public function query_type_batched(string $type, int $size = 1000) {
+        $info = $this->info();
+        $total = 0;
+        foreach ($info as $i) {
+            if ($i["_type"] == $type) {
+                $total = $i["total"];
+                break;
+            }
+        }
+        $pages = ceil($total / $size);
+        foreach (range(1, $pages) as $page) {
+            foreach ($this->db->query_type($type, $page, $size) as $doc) {
+                yield $doc;
+            }
+        }
     }
 
     public function data() {
@@ -136,6 +153,7 @@ class store {
     }
 
     public function get_path($id, $name = null): ?string {
+        if (!$id) return null;
         $p = $this->get_fpath($id, $name);
         if ($p === null) return null;
         return PATH_PREFIX . $p;

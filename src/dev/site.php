@@ -53,7 +53,7 @@ class site {
 
             // dbg('page...', $pagename, $pagenr, $requestpath, $project->pages);
             $obj_id = array_search($pagename, $project->pages);
-            $content = $builder->make_page($pagename, $pagenr, $requestpath, $context);
+            $content = $builder->make_page($pagename, (int) $pagenr, $requestpath, $context);
         }
         $debug = true;
         if ($debug) {
