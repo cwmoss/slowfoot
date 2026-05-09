@@ -4,6 +4,8 @@ namespace slowfoot;
 
 use DateTimeZone;
 use OutOfRangeException;
+use JsonSerializable;
+use Override;
 use slowfoot\store;
 use slowfoot\store\memory;
 use slowfoot\store\sqlite;
@@ -30,8 +32,7 @@ if (! function_exists(__NAMESPACE__ . '\greetings'))
     'title_template' => '',
 */
 
-class configuration {
-
+class configuration implements JsonSerializable {
     static public string $config_filename = "slowfoot-config.php";
 
     public string $base;
@@ -63,6 +64,16 @@ class configuration {
     ) {
         $this->tz = new DateTimeZone($timezone);
         date_default_timezone_set($timezone);
+    }
+
+    #[Override]
+    public function jsonSerialize(): mixed {
+        return [
+            "site_name" => $this->site_name,
+            "site_url" => $this->site_url,
+            "sources" => $this->sources,
+            "timezone" => $this->timezone
+        ];
     }
 
     static function load(

@@ -58,7 +58,7 @@ class site {
         $debug = true;
         if ($debug) {
             $inspector = include_to_buffer(__DIR__ . '/../../resources/debug.php');
-            $inspector_head = '<script defer src="/__sf/json-viewer.bundle.js"></script>';
+            // $inspector_head = '<script defer src="/__sf/json-viewer.bundle.js"></script>';
             // $inspector_css = '<link rel="stylesheet" href="/__sf/inspector-json.css">';
             //$content = str_replace('</head>', $inspector_head . '</head>', $content);
             $content = str_replace('</body>', $inspector . '</body>', $content);
