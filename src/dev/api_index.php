@@ -25,7 +25,7 @@ class api_index {
 
     public function id(R $r): P {
         $row = $this->project->ds->get($r->getQueryParams()["id"]);
-        $links = $this->project->ds->path_get_all($r->getQueryParams()["id"]);
+        $links = $this->project->ds->get_all_paths($r->getQueryParams()["id"]);
         return P::json(["doc" => $row, "links" => $links]);
     }
 
@@ -36,13 +36,13 @@ class api_index {
         $page = $r->getAttribute("page", 1);
 
         if ($type == '__paths') {
-            if ($this->project->ds->db->db)
-                $rows = $this->project->ds->db->db->safeQuery('SELECT * FROM paths LIMIT ? OFFSET ?', [20, 0]);
+            if ($this->project->ds->driver)
+                $rows = $this->project->ds->driver->safeQuery('SELECT * FROM paths LIMIT ? OFFSET ?', [20, 0]);
             else $rows = array_values(array_map(fn($p) => [
                 "id" => $p["_"],
                 "path" => $p["_"],
                 "name" => "_"
-            ], $this->project->ds->db->paths));
+            ], $this->project->ds->paths));
         } else {
             $rows = $this->project->ds->query_type($type);
         }
@@ -59,7 +59,7 @@ class api_index {
 
     public function fts(R $r): P {
         $q = $r->getQueryParams()["q"] ?? "";
-        $rows = $this->project->ds->db->query_fts($q);
+        $rows = $this->project->ds->query_fts($q);
         // dbg("fts res", $rows);
         return P::json($rows);
     }

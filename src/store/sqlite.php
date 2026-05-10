@@ -12,33 +12,14 @@ namespace slowfoot\store;
 
 use slowfoot\document;
 
+class sqlite extends store {
 
-
-class sqlite {
-    public array $data = [];
-
-    // key: _id, value: [path_name => path]
-    public array $paths = [];
-    // key: path, value: [_id, path_name]
-    public array $paths_rev = [];
-    public array $config = [];
     public bool $was_filled = false;
-    public sqlite_driver $db;
+    public sqlite_driver $driver;
 
     public static bool $json_array_mode = false;
 
-    // public static function make_easydb(string $dsn) {
-    // alternative for
-    // Factory::fromArray([
-    //     "sqlite:$name"
-    // ]);
-    // supporting new PDO\Sqlite object > php 8.4
-    //    $pdo = PDO::connect("sqlite:{$dsn}");
-    //    return new EasyDB($pdo, "sqlite");
-    // }
-
     public function __construct(array $config, bool $fresh_create = false) {
-        $this->config = $config;
         $adapter = explode(':', $config['adapter']);
         $name = $adapter[1] ?? 'slowfoot.db';
         if ($name == 'memory') {
@@ -54,11 +35,11 @@ class sqlite {
             $this->was_filled = \file_exists($name);
         }
         // dbg("+++ new sqlite", $name);
-        $this->db = new sqlite_driver($name); // self::make_easydb($name);
+        $this->driver = new sqlite_driver($name); // self::make_easydb($name);
         $this->create_schema();
     }
 
-    public function has_data_on_create() {
+    public function has_data_on_create(): bool {
         return $this->was_filled;
     }
 
@@ -90,21 +71,28 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         #print $ddl;
         foreach ($statements as $ddl_s) {
             if (trim($ddl_s)) {
-                $this->db->run_ddl($ddl_s);
+                $this->driver->run_ddl($ddl_s);
             }
         }
         return;
     }
 
-    public function update_fts(array|object $doc) {
-        $fts = flatten($doc);
-        $this->db->insert("docs_fts", ['_id' => $doc['_id'], '_type' => $doc['_type'], 'btext' => join("\n", $fts)]);
+    public function transaction_start() {
+        $this->driver->run_ddl("BEGIN");
+    }
+    public function transaction_end() {
+        $this->driver->run_ddl("COMMIT");
     }
 
-    public function query_fts(string $q) {
+    public function update_fts(array|object $doc) {
+        $fts = flatten($doc);
+        $this->driver->insert("docs_fts", ['_id' => $doc['_id'], '_type' => $doc['_type'], 'btext' => join("\n", $fts)]);
+    }
+
+    public function query_fts(string $q): array {
         $query = "SELECT _id, _type, snippet(docs_fts, 2, '<b>', '</b>', '[...]', 30) body 
         FROM docs_fts WHERE docs_fts = ? ";
-        $res = $this->db->safeQuery($query, [$q]);
+        $res = $this->driver->safeQuery($query, [$q]);
         dbg("[sqlite] fts", $query, $q);
         return $res;
         /*
@@ -115,7 +103,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
     }
 
     public function query_sql(string $q, array $params = []) {
-        $res = $this->db->safeQuery($q, $params);
+        $res = $this->driver->safeQuery($q, $params);
         dbg("[sqlite] query_sql", $q, $params);
         #var_dump($q);
         #var_dump($res);
@@ -130,13 +118,13 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
     */
     }
 
-    public function query_paginated(string $q, int $limit_per_page, array $params = []) {
+    public function query_paginated_fn(string $q, int $limit_per_page = 20, array $params = []): array {
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
         // $pdo = $this->db->getPdo();
         // $pdo->createFunction($name, $fn, 1);
-        $this->db->db->createFunction($name, $fn, 1);
+        $this->driver->db->createFunction($name, $fn, 1);
         $typeq = "";
         if ($query["type"]) $typeq = "_type=='{$query["type"]}' AND ";
         $q = 'SELECT body from docs WHERE ' . $typeq . $name . '(body)';
@@ -145,13 +133,13 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
             $q .= ' ORDER BY ' . $order;
         }
         $q_count = 'SELECT count(*) from docs WHERE ' . $typeq . $name . '(body)';
-        $total = $this->db->cell($q_count);
-        $db = $this->db;
+        $total = $this->driver->cell($q_count);
+        $db = $this->driver;
         $page_query = function ($page) use ($q, $limit_per_page) {
             $off = ($page - 1) * $limit_per_page;
             $q .= " LIMIT {$limit_per_page} OFFSET $off";
             // print "Q: $q\n";
-            $res = $this->db->run($q);
+            $res = $this->driver->run($q);
             $res = array_map(function ($r) {
                 return json_decode($r['body'], self::$json_array_mode);
             }, $res);
@@ -159,14 +147,14 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         };
         return [$total, $page_query];
     }
-    public function query_one(string $q, array $params = []) {
+    public function query_one(string $q, array $params = []): ?array {
         $q .= "limit(1)";
         dbg("++ query1 sqlite", $q);
         $res = $this->query($q, $params);
         dbg("++ query1 res", $res);
         return $res[0] ?? null;
     }
-    public function query(string $q, array $params) {
+    public function query(string $q, array $params = []): array {
         dbg("== LOLQL query", $q, $params);
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
@@ -177,7 +165,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         // $pdo = $this->db->getPdo();
         // var_dump($pdo);
         // $pdo->createFunction($name, $fn, 1);
-        $this->db->db->createFunction($name, $fn, 1);
+        $this->driver->db->createFunction($name, $fn, 1);
         $q = 'SELECT body from docs WHERE ' . $typeq . $name . '(body)';
         // var_dump($query);
         $order = $this->build_order($query['order_raw']);
@@ -191,7 +179,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
             }
         }
         dbg("[store sqlite] query", $q, $query['order_raw'], $query['limit'], $query['limit_raw']);
-        $res = $this->db->run($q);
+        $res = $this->driver->run($q);
         $res = array_map(function ($r) {
             return json_decode($r['body'], self::$json_array_mode);
         }, $res);
@@ -223,9 +211,9 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
     }
 
     // TODO: limits
-    public function query_type(string $type, $page = 1, $limit = 1000) {
+    public function query_type(string $type, $page = 1, $limit = 1000): array {
         $offset = ($page - 1) * $limit;
-        $res = $this->db->run("select body from docs WHERE _type=? LIMIT $limit OFFSET $offset", $type);
+        $res = $this->driver->run("select body from docs WHERE _type=? LIMIT $limit OFFSET $offset", $type);
         $res = array_map(function ($r) {
             return json_decode($r['body'], self::$json_array_mode);
         }, $res);
@@ -238,24 +226,24 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
 */
     }
 
-    public function exists(string $collection, string $id) {
-        return $this->db->cell('SELECT count(_id) from docs WHERE _id=?', $id) ? true : false;
+    public function exists(string $id): bool {
+        return $this->driver->cell('SELECT count(_id) from docs WHERE _id=?', $id) ? true : false;
     }
 
-    public function get(string $collection, string $id) {
+    public function get_doc(string $id): null|array|object {
         return $this->_select_one($id);
     }
 
-    public function add(string $collection, string $id, array|document $row) {
-        $this->db->insert('docs', [
+    public function add_doc(string $id, array|document $row): bool {
+        $this->driver->insert('docs', [
             'body' => \json_encode($row),
         ]);
         $this->update_fts($row);
         return true;
     }
 
-    public function update(string $collection, string $id, array|document $row) {
-        $this->db->update('docs', [
+    public function update_doc(string $id, array|document $row): bool {
+        $this->driver->update('docs', [
             'body' => \json_encode($row),
         ], [
             '_id' => $id
@@ -263,21 +251,21 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         return true;
     }
 
-    public function add_ref(string $src_id, string $src_prop, string $dest) {
+    public function add_reference(string $src_id, string $src_prop, string $dest): bool {
         //    $this->data[$src_id][$src_prop][] = ['_ref' => $dest];
 
-        $row = $this->get('docs', $src_id);
+        $row = $this->get_doc($src_id);
         dbg("add-ref", $src_id, $row);
         $row[$src_prop][] = ['_ref' => $dest];
-        $this->update('docs', $row['_id'], $row);
+        return $this->update_doc($row['_id'], $row);
     }
 
-    public function path_exists(string $path) {
-        return $this->db->cell('SELECT count(id) from paths WHERE path=?', $path) ? true : false;
+    public function path_exists(string $path): bool {
+        return $this->driver->cell('SELECT count(id) from paths WHERE path=?', $path) ? true : false;
     }
 
-    public function path_add(string $path, string $id, string $name) {
-        $this->db->insert('paths', [
+    public function path_add(string $path, string $id, string $name): bool {
+        $this->driver->insert('paths', [
             'path' => $path,
             'id' => $id,
             'name' => $name
@@ -285,9 +273,9 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         return true;
     }
 
-    public function path_update(string $old_path, string $id, string $name, string $new_path) {
+    public function path_update(string $old_path, string $id, string $name, string $new_path): bool {
         if (!$name) $name = "_";
-        $this->db->update('paths', [
+        $this->driver->update('paths', [
             'path' => $new_path,
         ], [
             'path' => $old_path,
@@ -298,48 +286,48 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         return true;
     }
 
-    public function path_get(string $id, string $name) {
-        $p = $this->db->cell('SELECT path from paths WHERE id=? AND name=?', $id, $name);
+    public function path_get(string $id, string $name): ?string {
+        $p = $this->driver->cell('SELECT path from paths WHERE id=? AND name=?', $id, $name);
         return $p;
     }
 
-    public function path_get_all(string $id) {
-        $p = $this->db->run('SELECT path from paths WHERE id=?', $id);
+    public function path_get_all(string $id): array {
+        $p = $this->driver->run('SELECT path from paths WHERE id=?', $id);
         return $p;
     }
 
     public function path_get_first(): ?array {
         // TODO: use some sort criteria?
-        $p = $this->db->row('SELECT id, name, path from paths LIMIT 1');
+        $p = $this->driver->row('SELECT id, name, path from paths LIMIT 1');
         if ($p) return [$p['id'] ?? null, $p['name'] ?? null, $p['path'] ?? null];
         return null;
     }
 
     public function path_get_by_path(string $path): ?array {
-        $p = $this->db->row('SELECT id,name,path from paths WHERE path=?', $path);
+        $p = $this->driver->row('SELECT id,name,path from paths WHERE path=?', $path);
         if ($p) {
             return array_values($p);
         }
         return $p ?: null;
     }
 
-    public function path_get_props(string $path) {
-        $p = $this->db->row('SELECT id,name from paths WHERE path=?', $path);
+    public function path_get_props(string $path): array {
+        $p = $this->driver->row('SELECT id,name from paths WHERE path=?', $path);
         return [$p['id'] ?? null, $p['name'] ?? null];
     }
 
     public function _select_one(string $id) {
-        return json_decode($this->db->cell('SELECT body from docs WHERE _id=?', $id), self::$json_array_mode);
+        return json_decode($this->driver->cell('SELECT body from docs WHERE _id=?', $id), self::$json_array_mode);
     }
 
-    public function info() {
-        $types = $this->db->run('SELECT _type, count(*) AS total FROM docs GROUP BY _type');
-        $routes = $this->db->run("SELECT '__paths' as _type, count(*) AS total FROM paths");
+    public function info(): array {
+        $types = $this->driver->run('SELECT _type, count(*) AS total FROM docs GROUP BY _type');
+        $routes = $this->driver->run("SELECT '__paths' as _type, count(*) AS total FROM paths");
         return array_merge($types, $routes);
     }
     public function info_line() {
-        $types = $this->db->cell('SELECT count(*) AS total FROM docs');
-        $routes = $this->db->cell("SELECT count(*) AS total FROM paths");
+        $types = $this->driver->cell('SELECT count(*) AS total FROM docs');
+        $routes = $this->driver->cell("SELECT count(*) AS total FROM paths");
         return [$types, $routes];
     }
 }

@@ -12,7 +12,7 @@ class loader {
 
     public function load(?terminal $terminal = null): store {
         $db = $this->config->get_store();
-        $db_store = get_class($db->db);
+        $db_store = get_class($db);
         $is_db = $db_store == sqlite::class;
         $onload = $this->config->hooks['on_load'] ?? null;
         # TODO fetch or not
@@ -22,7 +22,7 @@ class loader {
         }
 
         if ($is_db) {
-            $db->db->db->run_ddl("BEGIN");
+            $db->transaction_start();
         }
         $terminal?->shell_info("fetching data {$db_store}", true);
 
@@ -63,7 +63,7 @@ class loader {
             $terminal?->shell_info();
         }
         if ($is_db) {
-            $db->db->db->run_ddl("COMMIT");
+            $db->transaction_end();
         }
         return $db;
     }

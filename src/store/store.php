@@ -2,41 +2,53 @@
 
 namespace slowfoot\store;
 
+use Generator;
+
 /*
     start: 238 mem: 140 sqlite: 346
+            236 145 341
 */
 
-class store {
+abstract class store {
 
-    // key: _id, value: [path_name => path]
-    public $paths = [];
-    // key: path, value: [_id, path_name]
-    public $paths_rev = [];
-
-    public $info = ['loaded' => [], 'rejected' => [], 'conflicts' => 0];
+    public array $stats = [];
+    public array $info = ['loaded' => [], 'rejected' => [], 'conflicts' => 0];
     /*
     templates config
   */
-    public $config = [];
-    public $conflicts = [];
+    public array $path_config = [];
+    public array $conflicts = [];
 
-    public sqlite|memory $db;
+    abstract public function has_data_on_create(): bool;
+    abstract public function info(): array;
 
-    public function __construct($db, $config) {
-        $this->db = $db;
-        $this->config = $config;
-    }
+    abstract public function transaction_start();
+    abstract public function transaction_end();
 
-    public function has_data_on_create() {
-        return $this->db->has_data_on_create();
-    }
+    abstract public function get_doc(string $id): null|array|object;
+    abstract public function exists(string $id): bool;
+    abstract public function add_doc(string $id, array $row): bool;
+    abstract public function update_doc(string $id, array $row): bool;
+    abstract public function add_reference(string $src_id, string $src_prop, string $dest): bool;
 
-    public function query_sql($q, $params) {
-        return $this->db->query_sql($q, $params);
-    }
+    abstract public function query_sql(string $q, array $params = []);
+    abstract public function query_fts(string $q): array;
+    abstract public function query_paginated_fn(string $q, int $limit = 20, array $params = []): array;
+    abstract public function query(string $q, array $params = []): array;
+    abstract public function query_one(string $q, array $params = []): ?array;
+    abstract public function query_type(string $type, $page = 1, $limit = 1000): array;
 
-    public function query_paginated($q, $limit, $params = []) {
-        [$total, $page_query] = $this->db->query_paginated($q, $limit, $params);
+    abstract public function path_exists(string $path): bool;
+    abstract public function path_add(string $path, string $id, string $name): bool;
+    abstract public function path_get(string $id, string $name): ?string;
+    abstract public function path_get_all(string $id): array;
+    abstract public function path_get_by_path(string $path): ?array;
+    abstract public function path_get_first(): ?array;
+    abstract public function path_get_props(string $path): array;
+    abstract public function path_update(string $old_path, string $id, string $name, string $new_path): bool;
+
+    public function query_paginated(string $q, int $limit = 20, array $params = []) {
+        [$total, $page_query] = $this->query_paginated_fn($q, $limit, $params);
         $totalpages = ceil($total / $limit);
         $info = [
             'total' => $total,
@@ -47,19 +59,7 @@ class store {
         return [$info, $page_query];
     }
 
-    public function query($q, $params = []) {
-        return $this->db->query($q, $params);
-    }
-
-    public function query_one($q, $params = []) {
-        return $this->db->query_one($q, $params);
-    }
-
-    public function query_type(string $type) {
-        return array_values($this->db->query_type($type));
-    }
-
-    public function query_type_batched(string $type, int $size = 1000) {
+    public function query_type_chunked(string $type, int $size = 1000): Generator {
         $info = $this->info();
         $total = 0;
         foreach ($info as $i) {
@@ -70,17 +70,13 @@ class store {
         }
         $pages = ceil($total / $size);
         foreach (range(1, $pages) as $page) {
-            foreach ($this->db->query_type($type, $page, $size) as $doc) {
+            foreach ($this->query_type($type, $page, $size) as $doc) {
                 yield $doc;
             }
         }
     }
 
-    public function data() {
-        return $this->db->data();
-    }
-
-    public function id_maybe_object_or_array(int|string|array|object $id, $propname = '_id') {
+    public function id_maybe_object_or_array(int|string|array|object $id, $propname = '_id'): string {
         if (is_object($id)) {
             $id = $id->$propname;
         } elseif (is_array($id)) {
@@ -89,90 +85,88 @@ class store {
         return (string) $id;
     }
 
-    public function get($id) {
+    public function get(int|string|array|object $id) {
         $id = $this->id_maybe_object_or_array($id);
-        return $this->db->get('docs', $id);
+        return $this->get_doc($id);
     }
 
-    public function ref($id) {
-        if (!$id) return;
+    public function ref(int|string|array|object $id): null|array|object {
+        if (!$id) return [];
         $id = $this->id_maybe_object_or_array($id, '_ref');
-        return $this->db->get('docs', $id);
+        return $this->get_doc($id);
     }
 
-    public function add($id, $row) {
-        if ($this->db->exists("docs", $id)) {
+    public function add(string $id, array|object $row): bool {
+        if ($this->exists($id)) {
             return false;
         }
         dbg("+++ store add ", $id, $row);
         $row['_id'] = $id;
-        $this->db->add("docs", $id, $row);
+        $this->add_doc($id, $row);
         $this->info['loaded'][$row['_type']] ??= 0;
         $this->info['loaded'][$row['_type']]++;
         $this->add_path($row);
         return true;
     }
 
-    public function add_row($row) {
+    public function add_row(array $row): bool {
         return $this->add($row['_id'], $row);
     }
 
-    public function update($id, $row) {
-        if (!$this->db->exists("docs", $id)) {
+    public function update(string $id, array $row): bool {
+        if (!$this->exists($id)) {
             return false;
         }
         $row['_id'] = $id;
-        return $this->db->update("docs", $id, $row);
+        return $this->update_doc($id, $row);
     }
 
-    public function update_row($row) {
+    public function update_row(array $row): bool {
         return $this->update($row['_id'], $row);
     }
 
-    public function add_ref($src_id, $src_prop, $dest) {
+    public function add_ref(int|string|array|object $src_id, string $src_prop, int|string|array|object $dest): bool {
         $src_id = $this->id_maybe_object_or_array($src_id);
         $dest = $this->id_maybe_object_or_array($dest);
-        $this->db->add_ref($src_id, $src_prop, $dest);
+        return $this->add_reference($src_id, $src_prop, $dest);
     }
 
-    public function add_path($row) {
+    public function add_path(array|object $row) {
         //print ' type: ' . $row['_type'];
         // only, if we have a template for the type
-        if (!isset($this->config[$row['_type']])) {
+        if (!isset($this->path_config[$row['_type']])) {
             return;
         }
-        foreach ($this->config[$row['_type']] as $name => $conf) {
+        foreach ($this->path_config[$row['_type']] as $name => $conf) {
             //print_r($conf);
             if (isset($row['_no_path']) && $row['_no_path']) continue;
 
             $path = $conf['path']($row);
             if ($path === null) continue;
 
-            if ($this->db->path_exists($path)) {
+            if ($this->path_exists($path)) {
                 $this->conflict($path, $name, $row);
             } else {
-                $this->db->path_add($path, $row['_id'], $name);
+                $this->path_add($path, $row['_id'], $name);
             }
         }
     }
 
-    public function get_path($id, $name = null): ?string {
+    // TODO: be more strict
+    public function get_path(int|string|array|object|null $id, ?string $name = null): ?string {
         if (!$id) return null;
         $p = $this->get_fpath($id, $name);
         if ($p === null) return null;
         return PATH_PREFIX . $p;
     }
 
-    public function path_get_all(int|string|array|object $id): array {
-        $id = $this->id_maybe_object_or_array($id);
-        return $this->db->path_get_all($id);
-    }
-    public function get_fpath(int|string|array|object $id, $name = null): ?string {
+    public function get_fpath(int|string|array|object|null $id, ?string $name = null): ?string {
+        if (!$id) return null;
         $id = $this->id_maybe_object_or_array($id);
         if (!$name) {
             $name = '_';
         }
-        $path = $this->db->path_get($id, $name);
+        $path = $this->path_get($id, $name);
         if ($path === null) return null;
         if ($path == "/index") {
             $path = "/";
@@ -180,28 +174,33 @@ class store {
         return $path;
     }
 
+    public function get_all_paths(int|string|array|object $id): array {
+        $id = $this->id_maybe_object_or_array($id);
+        return $this->path_get_all($id);
+    }
+
     public function find_or_select_startpage(): ?array {
-        $found = $this->db->path_get_by_path("/index");
+        $found = $this->path_get_by_path("/index");
         if ($found) return $found;
         $tests = ["/readme", "/start", "/home"];
         foreach ($tests as $test) {
-            $found = $this->db->path_get_by_path($test);
+            $found = $this->path_get_by_path($test);
             if ($found) break;
         }
-        if (!$found) $found = $this->db->path_get_first();
+        if (!$found) $found = $this->path_get_first();
         if ($found) {
-            $this->db->path_update($found[2], $found[0], $found[1], "/index");
+            $this->path_update($found[2], $found[0], $found[1], "/index");
             return $found;
         }
         return null;
     }
 
-    public function get_by_path($path) {
+    public function get_by_path(string $path): array {
         // $path = trim($path, "/");
-        return $this->db->path_get_props($path);
+        return $this->path_get_props($path);
     }
 
-    public function rejected($type) {
+    public function rejected(string $type) {
         if (!isset($this->info['rejected'][$type])) {
             $this->info['rejected'][$type] = 1;
         } else {
@@ -209,11 +208,7 @@ class store {
         }
     }
 
-    public function info() {
-        return $this->db->info();
-    }
-
-    private function conflict($path, $name, $row) {
+    private function conflict(string $path, string $name, array $row) {
         [$firstid, $firstname] = $this->get_by_path($path);
         $first = $this->get($firstid);
 

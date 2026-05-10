@@ -135,7 +135,8 @@ class configuration implements JsonSerializable {
         } else {
             $db = new memory();
         }
-        return new store($db, $this->templates);
+        $db->path_config = $this->templates;
+        return $db;
     }
     public function set_template_engine(template_contract $tpl) {
         $this->template_engine = $tpl;

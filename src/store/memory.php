@@ -7,7 +7,7 @@ use slowfoot\databucket;
 use function lolql\parse;
 use function lolql\query as lquery;
 
-class memory {
+class memory extends store {
     public $docs = [];
 
     // key: _id, value: [path_name => path]
@@ -15,18 +15,24 @@ class memory {
     // key: path, value: [_id, path_name]
     public $paths_rev = [];
 
-    public function __construct() {
-    }
-
-    public function has_data_on_create() {
+    public function has_data_on_create(): bool {
         return false;
     }
 
-    public function query_sql($q, $params = []) {
+    public function transaction_start() {
+    }
+    public function transaction_end() {
+    }
+
+    public function query_sql(string $q, array $params = []) {
         return [];
     }
 
-    public function query_paginated($q, $limit_per_page, $params = []) {
+    public function query_fts(string $q): array {
+        return [];
+    }
+
+    public function query_paginated_fn(string $q, int $limit_per_page = 20, array $params = []): array {
         $all = lquery($this->docs, $q, $params);
         $total = count($all);
         $page_query = function ($page) use ($all, $limit_per_page) {
@@ -38,20 +44,20 @@ class memory {
         return [$total, $page_query];
     }
 
-    public function query_one($q, $params = []) {
+    public function query_one(string $q, array $params = []): ?array {
         $q .= "limit(1)";
         $res = $this->query($q, $params);
         return $res[0] ?? null;
     }
-    public function query($q, $params = []) {
+    public function query($q, $params = []): array {
         $res = lquery($this->docs, $q, $params);
         $res = array_map(fn($it) => databucket::array_to_object($it), $res);
         return $res;
         // return [$res, count($res)];
     }
 
-    public function query_type($type) {
-        // $filter = ['_type' => $type];
+    public function query_type(string $type, $page = 1, $limit = 1000): array {
+        // TODO: page/limit
         $res = array_filter($this->docs, function ($row) use ($type) {
             return $row["_type"] == $type;
         });
@@ -59,38 +65,40 @@ class memory {
         return $res;
     }
 
-    public function exists($collection, $id) {
-        return isset($this->$collection[$id]);
+    public function exists(string $id): bool {
+        return isset($this->docs[$id]);
     }
 
-    public function get($collection, $id) {
-        return $this->exists($collection, $id) ? databucket::array_to_object($this->$collection[$id]) : null;
+    public function get_doc(string $id): null|array|object {
+        return $this->exists($id) ? databucket::array_to_object($this->docs[$id]) : null;
     }
 
-    public function add($collection, $id, $row) {
-        $this->$collection[$id] = $row;
+    public function add_doc(string $id, array $row): bool {
+        $this->docs[$id] = $row;
         return true;
     }
 
-    public function update($collection, $id, $row) {
-        $this->$collection[$id] = $row;
+    public function update_doc(string $id, array $row): bool {
+        $this->docs[$id] = $row;
         return true;
     }
 
-    public function add_ref($src_id, $src_prop, $dest) {
+    public function add_reference(string $src_id, string $src_prop, string $dest): bool {
         $this->docs[$src_id][$src_prop][] = ['_ref' => $dest];
+        return true;
     }
 
-    public function path_exists($path) {
+    public function path_exists(string $path): bool {
         return isset($this->paths_rev[$path]);
     }
 
-    public function path_add($path, $id, $name) {
+    public function path_add(string $path, string $id, string $name): bool {
         $this->paths[$id][$name] = $path;
         $this->paths_rev[$path] = [$id, $name];
+        return true;
     }
 
-    public function path_get($id, $name): ?string {
+    public function path_get(string $id, string $name): ?string {
         return $this->paths[$id][$name] ?? null;
     }
 
@@ -98,11 +106,12 @@ class memory {
         return $this->paths[$id] ?? [];
     }
 
-    public function path_update($old_path, $id, $name, $new_path) {
+    public function path_update(string $old_path, string $id, string $name, string $new_path): bool {
         if (!$name) $name = "_";
         $this->paths[$id][$name] = $new_path;
         $this->paths_rev[$new_path] = [$id, $name];
         // unset($this->paths_rev[$old_path]);
+        return true;
     }
 
     public function path_get_first(): ?array {
@@ -111,18 +120,18 @@ class memory {
         return $this->path_get_by_path($first);
     }
 
-    public function path_get_by_path($path): ?array {
+    public function path_get_by_path(string $path): ?array {
         $p = $this->paths_rev[$path] ?? null;
         if (!$p) return $p;
         $p[] = $path;
         return $p;
     }
 
-    public function path_get_props($path) {
+    public function path_get_props(string $path): array {
         return $this->paths_rev[$path] ?? [null, null];
     }
 
-    public function info() {
+    public function info(): array {
         $info = [];
         foreach ($this->docs as $doc) {
             if (!\key_exists($doc['_type'], $info)) {
