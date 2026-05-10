@@ -159,6 +159,10 @@ class store {
         return PATH_PREFIX . $p;
     }
 
+    public function path_get_all(int|string|array|object $id): array {
+        $id = $this->id_maybe_object_or_array($id);
+        return $this->db->path_get_all($id);
+    }
     public function get_fpath(int|string|array|object $id, $name = null): ?string {
         $id = $this->id_maybe_object_or_array($id);
         if (!$name) {

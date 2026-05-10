@@ -60,42 +60,50 @@ nav a{
 // pfeil:  ➚
 
 class DebugPanel extends HTMLElement {
-  constructor() {
-    super();
-    this.data = JSON.parse(this.innerText);
-    console.log("my data", this.data);
-    this.attachShadow({ mode: "open" }).appendChild(
-      tmpl.content.cloneNode(true)
-    );
-    this.fetchbtn = this.shadowRoot.querySelector("#refetch");
+    constructor() {
+        super();
+        try {
+            this.data = JSON.parse(this.innerText);
+        } catch (e) {
+            console.error("could not parse json data:", e);
+            this.data = [];
+        }
+        // console.log("my data", this.data);
+        this.attachShadow({ mode: "open" }).appendChild(
+            tmpl.content.cloneNode(true),
+        );
+        this.fetchbtn = this.shadowRoot.querySelector("#refetch");
 
-    document.body.addEventListener("keydown", (e) => {
-      // console.log(e, e.target.matches("input"));
-      if (e.key == "d" && !e.target.matches("input,textarea,select,option")) {
-        // if (e.ctrlKey && e.key == "d") {
-        console.log("pressed 'd'!");
-        e.preventDefault();
-        this.toggleAttribute("hidden");
-      }
-    });
-  }
-  connectedCallback() {
-    console.log("connected");
-    this.shadowRoot
-      .querySelector("#close")
-      .addEventListener("click", () => this.toggleAttribute("hidden"));
-    this.shadowRoot.querySelector("json-viewer").data = this.data;
-    this.fetchbtn.addEventListener("click", () => this.refetch());
-  }
+        document.body.addEventListener("keydown", (e) => {
+            // console.log(e, e.target.matches("input"));
+            if (
+                e.key == "d" &&
+                !e.target.matches("input,textarea,select,option")
+            ) {
+                // if (e.ctrlKey && e.key == "d") {
+                // console.log("pressed 'd'!");
+                e.preventDefault();
+                this.toggleAttribute("hidden");
+            }
+        });
+    }
+    connectedCallback() {
+        console.log("connected");
+        this.shadowRoot
+            .querySelector("#close")
+            .addEventListener("click", () => this.toggleAttribute("hidden"));
+        this.shadowRoot.querySelector("json-viewer").data = this.data;
+        this.fetchbtn.addEventListener("click", () => this.refetch());
+    }
 
-  async refetch() {
-    console.log("refetch", this.fetchbtn);
-    this.fetchbtn.disabled = true;
-    await fetch("/__api/fetch", { method: "POST" }).finally(() => {
-      this.fetchbtn.disabled = false;
-      window.location.reload();
-    });
-  }
+    async refetch() {
+        console.log("refetch", this.fetchbtn);
+        this.fetchbtn.disabled = true;
+        await fetch("/__api/fetch", { method: "POST" }).finally(() => {
+            this.fetchbtn.disabled = false;
+            window.location.reload();
+        });
+    }
 }
 
 customElements.define("debug-panel", DebugPanel);

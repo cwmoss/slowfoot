@@ -102,7 +102,6 @@ resolve urls for pages, remove path_page function
 
 - fts (for dev)
 - navigator: add links, add pagination
-- dev debug, catch jsondecode error
 - phuety: control assets location
 - refactor store
 - refactor query lang

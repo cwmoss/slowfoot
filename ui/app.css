@@ -1,8 +1,9 @@
 :root {
-  --fbrot: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --fmono: "SFMono-Regular", Consolas, Liberation Mono, Menlo, Courier,
-    monospace;
+  --fbrot:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --fmono:
+    "SFMono-Regular", Consolas, Liberation Mono, Menlo, Courier, monospace;
   --cgelb: rgb(246, 211, 85);
   --wcontainer: 90rem;
   --pdcontainer: 6rem;
@@ -69,4 +70,7 @@ button:hover:not(:disabled) {
 button:disabled {
   color: #999;
   border-color: #999;
+}
+section.links {
+  margin-bottom: 1rem;
 }

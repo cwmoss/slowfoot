@@ -25,7 +25,8 @@ class api_index {
 
     public function id(R $r): P {
         $row = $this->project->ds->get($r->getQueryParams()["id"]);
-        return P::json($row);
+        $links = $this->project->ds->path_get_all($r->getQueryParams()["id"]);
+        return P::json(["doc" => $row, "links" => $links]);
     }
 
     public function type(R $r): P {

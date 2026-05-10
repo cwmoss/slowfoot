@@ -94,6 +94,10 @@ class memory {
         return $this->paths[$id][$name] ?? null;
     }
 
+    public function path_get_all(string $id): array {
+        return $this->paths[$id] ?? [];
+    }
+
     public function path_update($old_path, $id, $name, $new_path) {
         if (!$name) $name = "_";
         $this->paths[$id][$name] = $new_path;

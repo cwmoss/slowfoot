@@ -277,6 +277,11 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         return $p;
     }
 
+    public function path_get_all(string $id) {
+        $p = $this->db->run('SELECT path from paths WHERE id=?', $id);
+        return $p;
+    }
+
     public function path_get_first(): ?array {
         // TODO: use some sort criteria?
         $p = $this->db->row('SELECT id, name, path from paths LIMIT 1');
