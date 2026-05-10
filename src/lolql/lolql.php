@@ -50,6 +50,7 @@ function parse($string, $params = []) {
     //print_r($parts[$qk]);
 
     //print_r($q);
+    $type = null;
     if (!($qk == 'q' || $qk == '*' || $qk == '😂' || $qk == '❤️')) {
         array_unshift(
             $q,
@@ -60,11 +61,13 @@ function parse($string, $params = []) {
                 'x' => '&&'
             ]
         );
+        $type = $qk;
     }
     $order = build_order_fun($parts['order'][0] ?? "");
     $limit = parse_limit($parts['limit'][0] ?? "");
     return [
         'q' => $q,
+        'type' => $type,
         'order' => $order[0] ?? "",
         'order_raw' => $order[1] ?? "",
         'limit' => $limit,

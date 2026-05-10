@@ -59,6 +59,7 @@ class pagebuilder {
     public function make_page_bulk(string $pagename, context $context): Generator {
         $context = $context->with('template_type', 'page');
         $pp = $this->engine->preprocess($pagename, $context->src);
+        // print "page $pagename\n";
         if ($page_query = ($pp['page-query'] ?? null)) {
             //var_dump($paginate);
             dbg('[page] query', $page_query);

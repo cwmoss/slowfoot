@@ -470,3 +470,21 @@ function recurse_directory(string $basedir): Generator {
         yield $file;
     }
 }
+
+function flatten($obj) {
+    $ignore = ['_id', '_type', '_ref', '_rev', '_preview', '_key'];
+    $flat = [];
+
+    foreach ($obj as $k => $v) {
+        if (in_array($k, $ignore)) {
+            continue;
+        }
+        if (is_array($v)) {
+            array_push($flat, ...flatten($v));
+        }
+        if (is_string($v)) {
+            $flat[] = $v;
+        }
+    }
+    return $flat;
+}

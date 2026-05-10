@@ -83,6 +83,8 @@ CREATE TABLE IF NOT EXISTS paths (
     );
 CREATE INDEX IF NOT EXISTS paths_path on paths(path);
 CREATE INDEX IF NOT EXISTS paths_id on paths(id);
+CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
+
         ";
         $statements = explode(';', $ddl);
         #print $ddl;
@@ -92,6 +94,24 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
             }
         }
         return;
+    }
+
+    public function update_fts(array $doc) {
+        $fts = flatten($doc);
+        $this->db->insert("docs_fts", ['_id' => $doc['_id'], '_type' => $doc['_type'], 'btext' => join("\n", $fts)]);
+    }
+
+    public function query_fts(string $q) {
+        $query = "SELECT _id, _type, snippet(docs_fts, 2, '<b>', '</b>', '[...]', 30) body 
+        FROM docs_fts WHERE docs_fts = ? ";
+        $res = $this->db->safeQuery($query, [$q]);
+        dbg("[sqlite] fts", $query, $q);
+        return $res;
+        /*
+    return [[], 0];
+    $res = lquery($this->docs, $q);
+    return [$res, count($res)];
+    */
     }
 
     public function query_sql(string $q, array $params = []) {
@@ -117,17 +137,20 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         // $pdo = $this->db->getPdo();
         // $pdo->createFunction($name, $fn, 1);
         $this->db->db->createFunction($name, $fn, 1);
-        $q = 'SELECT body from docs WHERE ' . $name . '(body)';
+        $typeq = "";
+        if ($query["type"]) $typeq = "_type=='{$query["type"]}' AND ";
+        $q = 'SELECT body from docs WHERE ' . $typeq . $name . '(body)';
         $order = $this->build_order($query['order_raw']);
         if ($order) {
             $q .= ' ORDER BY ' . $order;
         }
-        $q_count = 'SELECT count(*) from docs WHERE ' . $name . '(body)';
+        $q_count = 'SELECT count(*) from docs WHERE ' . $typeq . $name . '(body)';
         $total = $this->db->cell($q_count);
         $db = $this->db;
         $page_query = function ($page) use ($q, $limit_per_page) {
             $off = ($page - 1) * $limit_per_page;
             $q .= " LIMIT {$limit_per_page} OFFSET $off";
+            // print "Q: $q\n";
             $res = $this->db->run($q);
             $res = array_map(function ($r) {
                 return json_decode($r['body'], self::$json_array_mode);
@@ -148,12 +171,14 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
+        $typeq = "";
+        if ($query["type"]) $typeq = "_type=='{$query["type"]}' AND ";
         #$name = 'lolq';
         // $pdo = $this->db->getPdo();
         // var_dump($pdo);
         // $pdo->createFunction($name, $fn, 1);
         $this->db->db->createFunction($name, $fn, 1);
-        $q = 'SELECT body from docs WHERE ' . $name . '(body)';
+        $q = 'SELECT body from docs WHERE ' . $typeq . $name . '(body)';
         // var_dump($query);
         $order = $this->build_order($query['order_raw']);
         if ($order) {
@@ -225,6 +250,7 @@ CREATE INDEX IF NOT EXISTS paths_id on paths(id);
         $this->db->insert('docs', [
             'body' => \json_encode($row),
         ]);
+        $this->update_fts($row);
         return true;
     }
 
