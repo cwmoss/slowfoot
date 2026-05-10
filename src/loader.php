@@ -2,6 +2,8 @@
 
 namespace slowfoot;
 
+use slowfoot\store\sqlite;
+
 class loader {
 
     public function __construct(public configuration $config) {
@@ -10,6 +12,7 @@ class loader {
     public function load(?terminal $terminal = null): store {
         $db = $this->config->get_store();
         $db_store = get_class($db->db);
+        $is_db = $db_store == sqlite::class;
         $onload = $this->config->hooks['on_load'] ?? null;
         # TODO fetch or not
         if ($db->has_data_on_create()) {
@@ -17,6 +20,9 @@ class loader {
             return $db;
         }
 
+        if ($is_db) {
+            $db->db->db->run_ddl("BEGIN");
+        }
         $terminal?->shell_info("fetching data {$db_store}", true);
 
         foreach ($this->config->sources as $name => $loader) {
@@ -54,6 +60,9 @@ class loader {
                 $db->add($row['_id'], $row);
             }
             $terminal?->shell_info();
+        }
+        if ($is_db) {
+            $db->db->db->run_ddl("COMMIT");
         }
         return $db;
     }

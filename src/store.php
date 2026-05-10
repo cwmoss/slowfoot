@@ -2,6 +2,9 @@
 
 namespace slowfoot;
 
+use slowfoot\store\memory;
+use slowfoot\store\sqlite;
+
 class store {
 
     // key: _id, value: [path_name => path]
@@ -16,7 +19,7 @@ class store {
     public $config = [];
     public $conflicts = [];
 
-    public $db;
+    public sqlite|memory $db;
 
     public function __construct($db, $config) {
         $this->db = $db;
