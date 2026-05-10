@@ -6,7 +6,7 @@ use DateTimeZone;
 use OutOfRangeException;
 use JsonSerializable;
 use Override;
-use slowfoot\store;
+use slowfoot\store\store;
 use slowfoot\store\memory;
 use slowfoot\store\sqlite;
 use slowfoot\loader;

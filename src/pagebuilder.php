@@ -4,6 +4,7 @@ namespace slowfoot;
 
 use Generator;
 use slowfoot\util\html;
+use slowfoot\store\store;
 
 class pagebuilder {
 

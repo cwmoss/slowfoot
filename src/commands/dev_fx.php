@@ -5,7 +5,6 @@ namespace slowfoot\commands;
 use cwmoss\final_cli\cli;
 use slowfoot\terminal;
 use slowfoot\util\console;
-use slowfoot\store;
 use slowfoot\app;
 use FrameworkX\App as xapp;
 use FrameworkX\Container;

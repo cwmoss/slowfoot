@@ -1,9 +1,10 @@
 <?php
 
-namespace slowfoot;
+namespace slowfoot\store;
 
-use slowfoot\store\memory;
-use slowfoot\store\sqlite;
+/*
+    start: 238 mem: 140 sqlite: 346
+*/
 
 class store {
 

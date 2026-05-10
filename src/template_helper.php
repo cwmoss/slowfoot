@@ -4,7 +4,7 @@ use function lolql\query as lquery;
 use slowfoot\hook;
 use slowfoot\configuration;
 use slowfoot\image\processor;
-use slowfoot\store;
+use slowfoot\store\store;
 
 function add_template_helper($name, $fun) {
 }

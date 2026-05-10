@@ -2,6 +2,7 @@
 
 namespace slowfoot;
 
+use slowfoot\store\store;
 use slowfoot\store\sqlite;
 
 class loader {

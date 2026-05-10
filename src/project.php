@@ -2,6 +2,8 @@
 
 namespace slowfoot;
 
+use slowfoot\store\store;
+
 require_once 'template_helper.php';
 
 class project {
