@@ -96,7 +96,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         return;
     }
 
-    public function update_fts(array $doc) {
+    public function update_fts(array|object $doc) {
         $fts = flatten($doc);
         $this->db->insert("docs_fts", ['_id' => $doc['_id'], '_type' => $doc['_type'], 'btext' => join("\n", $fts)]);
     }
