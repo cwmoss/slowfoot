@@ -47,6 +47,16 @@ class favicon {
         $this->svg->documentElement->appendChild($obj);
     }
 
+    public function triangle(int $size = 100) {
+        $width = (int) $size * (128 / 100.0);
+        $offset = (int) (($this->base - $width) / 2.0);
+        $path = "M64 0 l64 128 l-128 0 l64 -128";
+        $obj = $this->svg->createElement("path");
+        $obj->setAttribute("d", $path);
+        $obj->setAttribute("style", "fill: $this->color");
+        $this->svg->documentElement->appendChild($obj);
+    }
+
     public function xml() {
         return $this->svg->saveXML($this->svg->documentElement, LIBXML_NOEMPTYTAG);
     }

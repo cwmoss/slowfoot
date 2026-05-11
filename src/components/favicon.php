@@ -28,7 +28,12 @@ class favicon extends render_component {
     ): string {
         $show = isset($props->show);
         if (!$show && $this->file_name) return $this->link();
-        $variant = isset($props->square) ? "square" : (isset($props->circle) ? "circle" : "square");
+        $shape = match (true) {
+            isset($props->square) => "square",
+            isset($props->circle) => "circle",
+            isset($props->triangle) => "triangle",
+            default => "circle",
+        };
         $color = $props->color ?? "transparent";
         $bgcolor = $props->background ?? "transparent";
         $text = trim($slots["default"] ?? "");
@@ -38,8 +43,11 @@ class favicon extends render_component {
         $size = $props->size ?? 100;
 
         $f = new fav($color, $bgcolor);
-        if ($variant == "square") $f->square($size);
-        else $f->circle($size);
+        match ($shape) {
+            "square" => $f->square($size),
+            "triangle" => $f->triangle($size),
+            default => $f->circle($size)
+        };
         if ($show) return $f->xml();
         $xml = $f->xml();
         $this->file_name = sprintf("favicon-%s.svg", hash("xxh3", $xml));
