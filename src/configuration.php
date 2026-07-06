@@ -163,7 +163,7 @@ class configuration implements JsonSerializable {
         }
     }
 
-    public function get_plugin(object $class) {
+    public function get_plugin(string $class) {
         foreach ($this->plugins as $plugin) {
             if ($class == get_class($plugin)) return $plugin;
         }
