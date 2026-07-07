@@ -17,6 +17,10 @@ class Api {
         return await this.get("lolql", { query: query });
     }
 
+    async fts(query) {
+        return await this.get("fts", { q: query });
+    }
+
     get(path, data) {
         document.dispatchEvent(new CustomEvent("fetch-start"));
         let meta = null;

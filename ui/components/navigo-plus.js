@@ -10,13 +10,20 @@ intercept all links
 */
 function setup_linkhandler(router) {
     document.addEventListener("click", (e) => {
-        console.log("$$$ click handler: target", e);
+        console.log("$$$ click handler: target", e, e.composedPath());
 
         // let target = e.originalTarget.closest("a") ?? null;
         let target = e.target.closest("a");
         if (target && !target.getAttribute("target")) {
             e.preventDefault(); // tell the browser not to respond to the link click
             router.navigate(target.getAttribute("href"));
+        }
+
+        // click from shadow dom?
+        let path = e.composedPath();
+        if (path[0] && path[0].getAttribute("href")) {
+            e.preventDefault(); // tell the browser not to respond to the link click
+            router.navigate(path[0].getAttribute("href"));
         }
     });
 }
