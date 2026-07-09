@@ -18,8 +18,11 @@ function setup_linkhandler(router) {
             e.preventDefault(); // tell the browser not to respond to the link click
             router.navigate(target.getAttribute("href"));
         }
-
-        // click from shadow dom?
+        // link to dev server
+        if (target && target.getAttribute("target")) {
+            return;
+        }
+        // link from shadow dom?
         let path = e.composedPath();
         if (path[0] && path[0].getAttribute("href")) {
             e.preventDefault(); // tell the browser not to respond to the link click
