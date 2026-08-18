@@ -153,7 +153,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         $lol = new lolql($q);
         $q = $lol->make_sql($params);
         $this->driver->db->createFunction($q->fun_name, $q->fun, 1);
-        $total = $this->driver->cell($q->count_sql);
+        $total = $this->driver->cell($q->count_sql());
 
         $page_query = function ($page) use ($q, $limit_per_page) {
             $off = ($page - 1) * $limit_per_page;
