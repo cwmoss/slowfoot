@@ -14,9 +14,6 @@ use slowfoot\template;
 use slowfoot\image;
 use slowfoot_plugin\phuety\phuety_adapter;
 
-use function lolql\parse;
-use function lolql\query as lquery;
-
 /*
 
 https://github.com/paquettg/php-html-parser

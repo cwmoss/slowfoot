@@ -2,10 +2,10 @@
 
 namespace slowfoot\store;
 
+use cwmoss\lolql\lolql;
 use slowfoot\databucket;
 
-use function lolql\parse;
-use function lolql\query as lquery;
+// use function lolql\query as lquery;
 
 class memory extends store {
     public $docs = [];
@@ -33,7 +33,7 @@ class memory extends store {
     }
 
     public function query_paginated_fn(string $q, int $limit_per_page = 20, array $params = []): array {
-        $all = lquery($this->docs, $q, $params);
+        $all = new lolql($q)->run($this->docs, $params);
         $total = count($all);
         $page_query = function ($page) use ($all, $limit_per_page) {
             $offset = ($page - 1) * $limit_per_page;
@@ -44,15 +44,20 @@ class memory extends store {
         return [$total, $page_query];
     }
 
+    private function result_map(array $res): array {
+        return array_map(fn($it) => databucket::array_to_object($it), $res);
+    }
+
     public function query_one(string $q, array $params = []): ?array {
-        $q .= "limit(1)";
-        $res = $this->query($q, $params);
+        $res = new lolql($q)->limit_one()->run($this->docs, $params);
+        $res = $this->result_map($res);
         return $res[0] ?? null;
     }
-    public function query($q, $params = []): array {
-        $res = lquery($this->docs, $q, $params);
-        $res = array_map(fn($it) => databucket::array_to_object($it), $res);
-        return $res;
+
+    public function query(string $q, $params = []): array {
+        $res = new lolql($q)->run($this->docs, $params);
+        // $res = lquery($this->docs, $q, $params);
+        return $this->result_map($res);
         // return [$res, count($res)];
     }
 
@@ -61,8 +66,7 @@ class memory extends store {
         $res = array_filter($this->docs, function ($row) use ($type) {
             return $row["_type"] == $type;
         });
-        $res = array_map(fn($it) => databucket::array_to_object($it), $res);
-        return $res;
+        return $this->result_map($res);
     }
 
     public function exists(string $id): bool {

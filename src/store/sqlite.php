@@ -10,6 +10,7 @@ INSERT INTO docs_fts(_id, btext)
 
 namespace slowfoot\store;
 
+use cwmoss\lolql\lolql;
 use slowfoot\document;
 
 class sqlite extends store {
@@ -118,7 +119,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
     */
     }
 
-    public function query_paginated_fn(string $q, int $limit_per_page = 20, array $params = []): array {
+    public function query_paginated_fn_legacy(string $q, int $limit_per_page = 20, array $params = []): array {
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));
@@ -147,15 +148,55 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         };
         return [$total, $page_query];
     }
+
+    public function query_paginated_fn(string $q, int $limit_per_page = 20, array $params = []): array {
+        $lol = new lolql($q);
+        $q = $lol->make_sql($params);
+        $this->driver->db->createFunction($q->fun_name, $q->fun, 1);
+        $total = $this->driver->cell($q->count_sql);
+
+        $page_query = function ($page) use ($q, $limit_per_page) {
+            $off = ($page - 1) * $limit_per_page;
+            $q = $q->with_limit($limit_per_page, $off);
+            // print "Q: $q\n";
+            $res = $this->driver->run($q->sql);
+            $res = array_map(function ($r) {
+                return json_decode($r['body'], self::$json_array_mode);
+            }, $res);
+            return $res;
+        };
+
+        return [$total, $page_query];
+    }
+
     public function query_one(string $q, array $params = []): ?array {
-        $q .= "limit(1)";
         dbg("++ query1 sqlite", $q);
-        $res = $this->query($q, $params);
+        $res = $this->query($q, $params, 1);
         dbg("++ query1 res", $res);
         return $res[0] ?? null;
     }
-    public function query(string $q, array $params = []): array {
-        dbg("== LOLQL query", $q, $params);
+
+    public function query(string $q, array $params = [], int $limit = 0): array {
+        dbg("== LOLQL query", $q, $params, $limit);
+        $lol = new lolql($q);
+        if ($limit) $lol->limit_one();
+
+        $q = $lol->make_sql($params);
+
+        $this->driver->db->createFunction($q->fun_name, $q->fun, 1);
+
+        $res = $this->driver->run($q->sql);
+        $res = array_map(function ($r) {
+            return json_decode($r['body'], self::$json_array_mode);
+        }, $res);
+
+        return $res;
+    }
+
+    public function query_old_lql(string $q, array $params = [], int $limit = 0): array {
+        dbg("== LOLQL query", $q, $params, $limit);
+        // $lol = new lolql($q);
+        // if($limit) $lol->limit_one();
         $query = \lolql\parse($q, $params);
         $fn = \lolql\eval_cond_as_sql_function($query['q']);
         $name = 'lolql_' . bin2hex(\random_bytes(8));

@@ -2,8 +2,6 @@
 
 namespace slowfoot;
 
-use function lolql\parse;
-
 use function dot_get;
 use slowfoot\configuration;
 use slowfoot\hook;
