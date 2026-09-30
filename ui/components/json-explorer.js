@@ -1,3 +1,5 @@
+import api from "../api.js";
+
 let tmpl = document.createElement("template");
 // https://stackoverflow.com/questions/56992820/any-way-to-keep-a-custom-elemnts-template-markup-and-style-outside-of-a-javascr
 tmpl.innerHTML = /* html */ `
@@ -84,135 +86,139 @@ details strong{
 `;
 
 export default class JsonExplorer extends HTMLElement {
-  _data = {};
-  reflinks = false;
+    _data = {};
+    reflinks = false;
 
-  constructor() {
-    super()
-      .attachShadow({ mode: "open" })
-      .appendChild(tmpl.content.cloneNode(true));
-    /*
-    console.log(
-      "$$$ explorer text",
-      this.textContent,
-      this.innerText,
-      this.innerHTML,
-      txt
-    );*/
-    // if (txt) this._data = JSON.parse(this.innerText);
-    // console.log("my data", this.data);
+    constructor() {
+        super()
+            .attachShadow({ mode: "open" })
+            .appendChild(tmpl.content.cloneNode(true));
+        /*
+        console.log(
+          "$$$ explorer text",
+          this.textContent,
+          this.innerText,
+          this.innerHTML,
+          txt
+        );*/
+        // if (txt) this._data = JSON.parse(this.innerText);
+        // console.log("my data", this.data);
 
-    this.main = this.shadowRoot.querySelector("main");
-    // if (txt) this.render();
-  }
-
-  connectedCallback() {
-    setTimeout(() => {
-      console.log("connected late", this.innerText, this.textContent);
-      if (this.textContent.trim()) {
-        this.data = JSON.parse(this.textContent);
-      }
-    });
-  }
-
-  set data(d) {
-    // this.reflinks = this.getAttribute("reflinks");
-    this._data = d;
-    console.log("$$$ set data", this.reflinks, d);
-    this.render();
-  }
-
-  get data() {
-    return this._data;
-  }
-
-  path(t) {
-    return t;
-  }
-
-  html_encode(input) {
-    const textArea = document.createElement("textarea");
-    textArea.innerText = input;
-    return textArea.innerHTML.split("<br>").join("\n");
-  }
-  render_value(node, key, val) {
-    if (this.reflinks && key == "_ref") {
-      val = `<a href="/__ui/id/${encodeURIComponent(val)}">${val}</a>`;
-    } else {
-      if (val === null) val = "null";
-      val = this.html_encode(val);
+        this.main = this.shadowRoot.querySelector("main");
+        // if (txt) this.render();
     }
-    node.insertAdjacentHTML(
-      "beforeend",
-      `<li><strong class="k">${key}:</strong> ${val}</li>`
-    );
-  }
-  render_array(node, key, value) {
-    let li = document.createElement("li");
-    let tag = document.createElement("details");
-    tag.classList.add("a");
-    tag.insertAdjacentHTML(
-      "beforeend",
-      `<summary><strong>${key}:</strong> [${value.length} items]</summary>`
-    );
-    let list = document.createElement("ul");
-    value.forEach((val, index) => {
-      if (Array.isArray(val)) {
-        this.render_array(list, index, val);
-      } else {
-        if (val == null) this.render_value(list, index, val);
-        else if (typeof val === "object") {
-          this.render_object(list, index, val);
-        } else {
-          this.render_value(list, index, val);
-        }
-      }
-    });
-    tag.appendChild(list);
-    li.appendChild(tag);
-    node.appendChild(li);
-  }
 
-  render_object(node, key, o, open = false, is_root = false) {
-    let li = document.createElement("li");
-    let tag = document.createElement("details");
-    tag.classList.add("o");
-    if (open) tag.setAttribute("open", "");
-    tag.insertAdjacentHTML(
-      "beforeend",
-      `<summary><strong>${key}:</strong> {${Object.keys(o).length
-      } keys}</summary>`
-    );
-    let list = document.createElement("ul");
-    Object.keys(o).forEach((key) => {
-      let val = o[key];
-      if (Array.isArray(val)) {
-        this.render_array(list, key, val);
-      } else {
-        if (val == null) this.render_value(list, key, val);
-        else if (typeof val === "object") {
-          this.render_object(list, key, val);
-        } else {
-          this.render_value(list, key, val);
-        }
-      }
-    });
-    tag.appendChild(list);
-
-    if (!is_root) {
-      li.appendChild(tag);
-      node.appendChild(li);
-    } else {
-      node.appendChild(tag);
+    connectedCallback() {
+        setTimeout(() => {
+            console.log("connected late", this.innerText, this.textContent);
+            if (this.textContent.trim()) {
+                this.data = JSON.parse(this.textContent);
+            }
+        });
     }
-  }
 
-  // TODO: root is array
-  render() {
-    console.log("rendering", this._data);
-    this.main.innerHTML = "";
-    this.render_object(this.main, "root", this._data, true, true);
-  }
+    set data(d) {
+        // this.reflinks = this.getAttribute("reflinks");
+        this._data = d;
+        console.log("$$$ set data", this.reflinks, d);
+        this.render();
+    }
+
+    get data() {
+        return this._data;
+    }
+
+    path(t) {
+        return t;
+    }
+
+    html_encode(input) {
+        const textArea = document.createElement("textarea");
+        textArea.innerText = input;
+        return textArea.innerHTML.split("<br>").join("\n");
+    }
+    render_value(node, key, val) {
+        if (this.reflinks && key == "_ref") {
+            if (api.ref_is_image(val)) {
+                val = `<preview-tooltip img-src="${api.image_preview(val)}"><a href="/id/${encodeURIComponent(val)}">${val}</a></preview-tooltip>`;
+            } else {
+                val = `<a href="/id/${encodeURIComponent(val)}">${val}</a>`;
+            }
+        } else {
+            if (val === null) val = "null";
+            val = this.html_encode(val);
+        }
+        node.insertAdjacentHTML(
+            "beforeend",
+            `<li><strong class="k">${key}:</strong> ${val}</li>`
+        );
+    }
+    render_array(node, key, value) {
+        let li = document.createElement("li");
+        let tag = document.createElement("details");
+        tag.classList.add("a");
+        tag.insertAdjacentHTML(
+            "beforeend",
+            `<summary><strong>${key}:</strong> [${value.length} items]</summary>`
+        );
+        let list = document.createElement("ul");
+        value.forEach((val, index) => {
+            if (Array.isArray(val)) {
+                this.render_array(list, index, val);
+            } else {
+                if (val == null) this.render_value(list, index, val);
+                else if (typeof val === "object") {
+                    this.render_object(list, index, val);
+                } else {
+                    this.render_value(list, index, val);
+                }
+            }
+        });
+        tag.appendChild(list);
+        li.appendChild(tag);
+        node.appendChild(li);
+    }
+
+    render_object(node, key, o, open = false, is_root = false) {
+        let li = document.createElement("li");
+        let tag = document.createElement("details");
+        tag.classList.add("o");
+        if (open) tag.setAttribute("open", "");
+        tag.insertAdjacentHTML(
+            "beforeend",
+            `<summary><strong>${key}:</strong> {${Object.keys(o).length
+            } keys}</summary>`
+        );
+        let list = document.createElement("ul");
+        Object.keys(o).forEach((key) => {
+            let val = o[key];
+            if (Array.isArray(val)) {
+                this.render_array(list, key, val);
+            } else {
+                if (val == null) this.render_value(list, key, val);
+                else if (typeof val === "object") {
+                    this.render_object(list, key, val);
+                } else {
+                    this.render_value(list, key, val);
+                }
+            }
+        });
+        tag.appendChild(list);
+
+        if (!is_root) {
+            li.appendChild(tag);
+            node.appendChild(li);
+        } else {
+            node.appendChild(tag);
+        }
+    }
+
+    // TODO: root is array
+    render() {
+        console.log("rendering", this._data);
+        this.main.innerHTML = "";
+        this.render_object(this.main, "root", this._data, true, true);
+    }
 }
 
 customElements.define("json-explorer", JsonExplorer);

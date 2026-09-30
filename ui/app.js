@@ -7,6 +7,7 @@ import TypesNav from "./components/types-nav.js";
 import TypesIndex from "./components/types-index.js";
 import DocumentView from "./components/document-view.js";
 import LolqlPlayground from "./components/lolql-playground.js";
+import PreviewTooltip from "./components/preview-tooltip.js";
 
 /*
 <script type="module" src="/__ui/components/fetch-state.js"></script>
@@ -26,30 +27,30 @@ let refetch_btn = document.querySelector("#refetch");
 */
 const router = NavigoPlus("/__ui");
 router
-  .on("/type/:type", ({ data }) => {
-    main.innerHTML = `<types-index type="${data.type}"></types-index>`;
-  })
-  .on("/id/:id", ({ data }) => {
-    main.innerHTML = `<document-view docid="${data.id}"></document-view>`;
-  })
-  .on("/playground", () => {
-    main.innerHTML = `<h1>lolql playground</h1>
+    .on("/type/:type", ({ data }) => {
+        main.innerHTML = `<types-index type="${data.type}"></types-index>`;
+    })
+    .on("/id/:id", ({ data }) => {
+        main.innerHTML = `<document-view docid="${data.id}"></document-view>`;
+    })
+    .on("/playground", () => {
+        main.innerHTML = `<h1>lolql playground</h1>
     <lolql-playground></lolql-playground>`;
-  })
-  .on("/about", () => {
-    main.innerHTML = `<h1>slowfoot navigator</h1>
+    })
+    .on("/about", () => {
+        main.innerHTML = `<h1>slowfoot navigator</h1>
     <p>navigate through your data</p>`;
-  })
-  .on("/", () => {
-    main.innerHTML = ``;
-  });
+    })
+    .on("/", () => {
+        main.innerHTML = ``;
+    });
 
 /*
   refetch action
 */
 refetch_btn.addEventListener("click", () => {
-  refetch_btn.disabled = true;
-  api.refetch().finally(() => (refetch_btn.disabled = false));
+    refetch_btn.disabled = true;
+    api.refetch().finally(() => (refetch_btn.disabled = false));
 });
 
 /*

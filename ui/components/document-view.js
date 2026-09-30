@@ -37,10 +37,10 @@ export default class DocumentView extends LitElement {
             <h1>${this.doc._id}</h1>
             <section class="links">
                 ${this.links.map((it) => {
-                    return html`<a .href=${it.path} target="_dev"
+            return html`<a .href=${it.path} target="_dev"
                         >${it.path}</a
                     >`;
-                })}
+        })}
             </section>
             <json-explorer .reflinks=${true} .data=${this.doc}></json-explorer>
         `;

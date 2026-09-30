@@ -21,6 +21,17 @@ class Api {
         return await this.get("fts", { q: query });
     }
 
+    ref_is_image(ref) {
+        return ref.startsWith("image-");
+    }
+
+    image_preview(ref) {
+        let parts = ref.split("-");
+        let preview = `https://cdn.sanity.io/images/j6g85xli/production/${parts[1]}-${parts[2]}.${parts[3]}?w=200`;
+        // console.log("IMAGE +++ ", parts, preview);
+        return preview;
+    }
+
     get(path, data) {
         document.dispatchEvent(new CustomEvent("fetch-start"));
         let meta = null;
