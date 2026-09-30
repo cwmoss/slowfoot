@@ -30,7 +30,7 @@ class terminal extends Final_cliTerminal {
         }
     }
 
-    public function console_table($header, $rows) {
+    public function console_table(array $header, array $rows) {
         $table = new ConsoleTable();
         foreach ($header as $head) {
             $table->addHeader($head);

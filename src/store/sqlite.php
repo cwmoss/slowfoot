@@ -10,6 +10,7 @@ INSERT INTO docs_fts(_id, btext)
 
 namespace slowfoot\store;
 
+use cwmoss\lolql\lolql;
 use slowfoot\document;
 
 class sqlite extends store {
@@ -119,76 +120,55 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
     }
 
     public function query_paginated_fn(string $q, int $limit_per_page = 20, array $params = []): array {
-        $query = \lolql\parse($q, $params);
-        $fn = \lolql\eval_cond_as_sql_function($query['q']);
-        $name = 'lolql_' . bin2hex(\random_bytes(8));
-        // $pdo = $this->db->getPdo();
-        // $pdo->createFunction($name, $fn, 1);
-        $this->driver->db->createFunction($name, $fn, 1);
-        $typeq = "";
-        if ($query["type"]) $typeq = "_type=='{$query["type"]}' AND ";
-        $q = 'SELECT body from docs WHERE ' . $typeq . $name . '(body)';
-        $order = $this->build_order($query['order_raw']);
-        if ($order) {
-            $q .= ' ORDER BY ' . $order;
-        }
-        $q_count = 'SELECT count(*) from docs WHERE ' . $typeq . $name . '(body)';
-        $total = $this->driver->cell($q_count);
-        $db = $this->driver;
-        $page_query = function ($page) use ($q, $limit_per_page) {
+        $lol = new lolql($q);
+        $q = $lol->make_sql($params);
+        // $this->driver->db->createFunction($q->fun_name, $q->fun, 1);
+        $total = $this->driver->cell($q->count_sql());
+
+        $page_query = function ($page) use ($q, $limit_per_page, $lol, $params) {
             $off = ($page - 1) * $limit_per_page;
-            $q .= " LIMIT {$limit_per_page} OFFSET $off";
+            $q = $q->with_limit($limit_per_page, $off);
             // print "Q: $q\n";
-            $res = $this->driver->run($q);
+            $res = $this->driver->run($q->sql, $params);
             $res = array_map(function ($r) {
                 return json_decode($r['body'], self::$json_array_mode);
             }, $res);
+            if ($lol->query->projection) {
+                // TODO: doesn't work, since data is an object
+                $res = array_map(fn($data) => $lol->query->projection->evaluate($data, $params), $res);
+            }
             return $res;
         };
+
         return [$total, $page_query];
     }
+
     public function query_one(string $q, array $params = []): ?array {
-        $q .= "limit(1)";
         dbg("++ query1 sqlite", $q);
-        $res = $this->query($q, $params);
+        $res = $this->query($q, $params, 1);
         dbg("++ query1 res", $res);
         return $res[0] ?? null;
     }
-    public function query(string $q, array $params = []): array {
-        dbg("== LOLQL query", $q, $params);
-        $query = \lolql\parse($q, $params);
-        $fn = \lolql\eval_cond_as_sql_function($query['q']);
-        $name = 'lolql_' . bin2hex(\random_bytes(8));
-        $typeq = "";
-        if ($query["type"]) $typeq = "_type=='{$query["type"]}' AND ";
-        #$name = 'lolq';
-        // $pdo = $this->db->getPdo();
-        // var_dump($pdo);
-        // $pdo->createFunction($name, $fn, 1);
-        $this->driver->db->createFunction($name, $fn, 1);
-        $q = 'SELECT body from docs WHERE ' . $typeq . $name . '(body)';
-        // var_dump($query);
-        $order = $this->build_order($query['order_raw']);
-        if ($order) {
-            $q .= ' ORDER BY ' . $order;
-        }
-        if ($query['limit']['limit']) {
-            $q .= " LIMIT {$query['limit']['limit']}";
-            if ($query['limit']['offset']) {
-                $q .= " OFFSET {$query['limit']['offset']}";
-            }
-        }
-        dbg("[store sqlite] query", $q, $query['order_raw'], $query['limit'], $query['limit_raw']);
-        $res = $this->driver->run($q);
+
+    public function query(string $q, array $params = [], int $limit = 0): array {
+        dbg("== LOLQL query", $q, $params, $limit);
+        $lol = new lolql($q);
+        if ($limit) $lol->limit_one();
+
+        $q = $lol->make_sql($params);
+
+        // $this->driver->db->createFunction($q->fun_name, $q->fun, 1);
+
+        $res = $this->driver->run($q->sql);
         $res = array_map(function ($r) {
             return json_decode($r['body'], self::$json_array_mode);
         }, $res);
+
+        if ($lol->query->projection) {
+            $res = array_map(fn($data) => $lol->query->projection->evaluate($data, $params), $res);
+        }
+
         return $res;
-        /*
-    return [[], 0];
-    $res = lquery($this->docs, $q);
-    return [$res, count($res)];
-    */
     }
 
     // empty string or array
