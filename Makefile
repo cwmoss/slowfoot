@@ -1,8 +1,9 @@
 APP = slowfoot
 PHAR = slowfoot.phar
-MICROSFX = ~/dev/microsfx/intl
+# MICROSFX = ~/dev/microsfx/intl
+MICROSFX = ~/dev/microsfx/intl-8.5.11
 BUILD = build
-PHP_VERSION = 8.4
+ARCHIVE_PREFIX = php-micro-8.5
 
 all: make-docs test analyze
 
@@ -45,32 +46,29 @@ build-all: $(PHAR)
 	mkdir -p $(BUILD)
 	rm -rf $(BUILD)/micro.sfx $(BUILD)/$(APP)
 	cp $(PHAR) $(BUILD)/
-	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-linux-aarch64.tar.gz \
+	cd $(BUILD) && tar xfz $(MICROSFX)/$(ARCHIVE_PREFIX)-linux-aarch64.zip \
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-linux-aarch64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-linux-x86_64.tar.gz \
+	cd $(BUILD) && tar xfz $(MICROSFX)/$(ARCHIVE_PREFIX)-linux-x86_64.zip \
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-linux-x86_64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-macos-aarch64.tar.gz \
+	cd $(BUILD) && tar xfz $(MICROSFX)/$(ARCHIVE_PREFIX)-macos-aarch64.zip \
 		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
 		&& tar cfz $(APP)-macos-aarch64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-macos-x86_64.tar.gz \
-		&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
-		&& tar cfz $(APP)-macos-x86_64.tar.gz $(APP)
-	cd $(BUILD) && tar xfz $(MICROSFX)/php-$(PHP_VERSION)-micro-win.zip \
-		&& cat micro.sfx $(PHAR) > $(APP).exe && chmod 0755 $(APP).exe \
-		&& zip $(APP)-win-x86_64.zip $(APP).exe
+	#cd $(BUILD) && tar xfz $(MICROSFX)/$(ARCHIVE_PREFIX)-macos-x86_64.tar.gz \
+	#	&& cat micro.sfx $(PHAR) > $(APP) && chmod 0755 $(APP) \
+	#	&& tar cfz $(APP)-macos-x86_64.tar.gz $(APP)
+	#cd $(BUILD) && tar xfz $(MICROSFX)/$(ARCHIVE_PREFIX)-win.zip \
+	#	&& cat micro.sfx $(PHAR) > $(APP).exe && chmod 0755 $(APP).exe \
+	#	&& zip $(APP)-win-x86_64.zip $(APP).exe
 
 checksums:
 	echo '  // Generating checksums...'
+	# $(APP)-linux-aarch64.tar.gz $(APP)-macos-x86_64.tar.gz $(APP)-win-x86_64.zip
 	cd build && sha256sum \
-		$(APP)-linux-aarch64.tar.gz \
-		$(APP)-linux-x86_64.tar.gz \
-		$(APP)-macos-aarch64.tar.gz \
-		$(APP)-macos-x86_64.tar.gz \
-		$(APP)-win-x86_64.zip \
-		$(PHAR) \
-    > checksums.txt
+	$(APP)-linux-x86_64.tar.gz $(APP)-linux-aarch64.tar.gz \
+	$(APP)-macos-aarch64.tar.gz \
+	$(PHAR) > checksums.txt
 
-$(MICROSFX)/micro.sfx: $(MICROSFX)/php-$(PHP_VERSION)-micro-macos-aarch64.tar.gz
+$(MICROSFX)/micro.sfx: $(MICROSFX)/$(ARCHIVE_PREFIX)-macos-aarch64.zip
 	tar xfzm $< && mv micro.sfx $(MICROSFX)/

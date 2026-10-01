@@ -5,6 +5,7 @@ namespace slowfoot\commands;
 use cwmoss\final_cli\cli;
 use slowfoot\util\console;
 use slowfoot\app;
+use slowfoot\terminal;
 
 class info {
 
@@ -18,11 +19,17 @@ class info {
     public function __invoke(
         #[cli("-d", "Set the project base directory")]
         ?string $project_directory = null,
-        bool $webdeploy = false,
-        bool $force = false
+        bool $system = false
     ) {
-        $boot_only_config = false;
-        $boot_quiet = true;
+        $terminal = new terminal;
+        if ($system) {
+            $terminal->println("systen info");
+            $terminal->println("php version: " . phpversion());
+            $terminal->println("php moduls: " . join(",", get_loaded_extensions()));
+
+            // phpinfo(INFO_MODULES);
+            return;
+        }
 
         $this->app->setup()->load_data(true);
 

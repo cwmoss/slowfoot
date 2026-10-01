@@ -51,3 +51,66 @@ dev (besser: --prefer-source)
 
 composer create-project -s dev --repository '{"type": "vcs","url": "https://github.com/cwmoss/slowfoot"}' cwmoss/slowfoot slowf
 \*/
+
+
+
+microsfx 8.4
+
+# this is the moduls list to copy to workflow
+Core,date,libxml,json,pcre,sqlite3,zlib,bcmath,bz2,calendar,ctype,curl,dom,SPL,fileinfo,filter,ftp,gd,gmp,hash,iconv,intl,session,mbstring,pcntl,standard,openssl,PDO,mysqlnd,pdo_mysql,pdo_pgsql,pdo_sqlite,pgsql,Phar,posix,random,redis,Reflection,exif,SimpleXML,soap,sockets,tokenizer,xml,xmlreader,xmlwriter,zip
+
+rw@rw5k:~/dev/slowfoot$ ls -alh /usr/local/bin/slowfoot 
+Permissions Size User Date Modified Name
+.rwxr-xr-x@  75M rw    1 Okt 17:12  /usr/local/bin/slowfoot
+
+8.5 minimal + intl
+
+Core,date,pcre,hash,intl,json,lexbor,Zend OPcache,random,Reflection,uri,SPL,standard
+phpinfo()
+PHP Version => 8.5.11
+
+
+8.5 
+
+systen info
+php version: 8.5.11
+php moduls: Core,date,lexbor,uri,pcre,sqlite3,zlib,bcmath,bz2,calendar,ctype,curl,json,SPL,mbstring,session,fileinfo,filter,ftp,gd,gmp,hash,iconv,intl,standard,Zend OPcache,pcntl,libxml,exif,PDO,mysqlnd,pdo_mysql,pdo_pgsql,pdo_sqlite,pgsql,openssl,posix,random,redis,Reflection,dom,SimpleXML,soap,sockets,tokenizer,Phar,xml,xmlreader,xmlwriter,zip
+
+ls -alh /usr/local/bin/slowfoot
+-rwxr-xr-x@ 1 rw  staff    76M  1 Okt 17:43 /usr/local/bin/slowfoot
+
+PHP Version => 8.4.20
+
+System => Darwin rw5k.local 24.6.0 Darwin Kernel Version 24.6.0: Tue Jul 21 20:50:11 PDT 2026; root:xnu-11417.140.69.711.44~1/RELEASE_ARM64_T6041 arm64
+Build Date => Apr 28 2026 11:38:37
+Build System => Darwin sat12-dp154-187e1af6-9409-4dbe-9893-6c2e8c4cddd0-BA2643197ADA.local 24.6.0 Darwin Kernel Version 24.6.0: Mon Jan 19 22:02:01 PST 2026; root:xnu-11417.140.69.708.3~1/RELEASE_ARM64_VMAPPLE arm64
+Build Provider => static-php-cli 2.8.6
+Compiler => clang 17.0.0
+Configure Command =>  './configure'  '--prefix=' '--with-valgrind=no' '--enable-shared=no' '--enable-static=yes' '--disable-all' '--disable-phpdbg' '--disable-cli' '--disable-fpm' '--disable-embed' '--enable-micro' '--disable-cgi' '--with-config-file-path=/usr/local/etc/php' '--with-config-file-scan-dir=/usr/local/etc/php/conf.d' '--enable-bcmath' '--with-bz2=/Users/runner/work/static-php-cli/static-php-cli/buildroot' '--enable-calendar' '--enable-ctype' '--with-curl' '--enable-dom' '--enable-exif' '--enable-fileinfo' '--enable-filter' '--enable-ftp' '--with-zlib' '--enable-gd' '--with-gmp=/Users/runner/work/static-php-cli/static-php-cli/buildroot' '--with-iconv=/Users/runner/work/static-php-cli/static-php-cli/buildroot' '--enable-intl' '--enable-xml' '--enable-mbstring' '--enable-mbregex' '--enable-mysqlnd' '--with-openssl=/Users/runner/work/static-php-cli/static-php-cli/buildroot' '--with-openssl-argon2' 'OPENSSL_LIBS=-lz' '--enable-pcntl' '--enable-pdo' '--with-pdo-mysql' '--with-sqlite3=/Users/runner/work/static-php-cli/static-php-cli/buildroot' '--with-pdo-sqlite' '--with-pgsql' 'PGSQL_CFLAGS=-I/Users/runner/work/static-php-cli/static-php-cli/buildroot/include' 'PGSQL_LIBS=-L/Users/runner/work/static-php-cli/static-php-cli/buildroot/lib -lpq -lpgcommon -lpgport -licuio -licui18n -licuuc -licudata -lpthread -ledit -lncurses -lssl -lcrypto -lxml2 -lm -lz -liconv -lcharset -lresolv -lc++' '--with-pdo-pgsql=/Users/runner/work/static-php-cli/static-php-cli/buildroot' '--enable-phar' '--enable-posix' '--enable-session' '--enable-redis' '--enable-redis-session' '--disable-redis-igbinary' '--disable-redis-msgpack' '--enable-simplexml' '--enable-soap' '--enable-sockets' '--enable-tokenizer' '--enable-xmlwriter' '--enable-xmlreader' '--with-libxml=/Users/runner/work/static-php-cli/static-php-cli/buildroot' '--with-zip=/Users/runner/work/static-php-cli/static-php-cli/buildroot' 'PKG_CONFIG=/Users/runner/work/static-php-cli/static-php-cli/pkgroot/aarch64-darwin/bin/pkg-config' 'PKG_CONFIG_PATH=/Users/runner/work/static-php-cli/static-php-cli/buildroot/lib/pkgconfig' 'PHP_BUILD_PROVIDER=static-php-cli 2.8.6' 'PHP_BUILD_COMPILER=clang 17.0.0'
+Server API => micro PHP sfx
+Virtual Directory Support => disabled
+Configuration File (php.ini) Path => /usr/local/etc/php
+Loaded Configuration File => (none)
+Scan this dir for additional .ini files => (none)
+Additional .ini files parsed => (none)
+PHP API => 20240924
+PHP Extension => 20240924
+Zend Extension => 420240924
+Zend Extension Build => API420240924,NTS
+PHP Extension Build => API20240924,NTS
+PHP Integer Size => 64 bits
+Debug Build => no
+Thread Safety => disabled
+Zend Signal Handling => enabled
+Zend Memory Manager => enabled
+Zend Multibyte Support => provided by mbstring
+Zend Max Execution Timers => disabled
+IPv6 Support => enabled
+DTrace Support => disabled
+
+Registered PHP Streams => compress.zlib, compress.bzip2, php, file, glob, data, http, ftp, https, ftps, phar, zip
+Registered Stream Socket Transports => tcp, udp, unix, udg, ssl, tls, tlsv1.0, tlsv1.1, tlsv1.2, tlsv1.3
+Registered Stream Filters => zlib.*, bzip2.*, convert.iconv.*, string.rot13, string.toupper, string.tolower, convert.*, consumed, dechunk
+
+This program makes use of the Zend Scripting Language Engine:
+Zend Engine v4.4.20, Copyright (c) Zend Technologies
