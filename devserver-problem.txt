@@ -1,0 +1,74 @@
+<?php
+// app.php
+require __DIR__ . '/vendor/autoload.php';
+
+// --- ROUTE A: THE WORKER SANDBOX ---
+// If the binary is called with the hidden internal flag '__worker',
+// it runs in total isolation for exactly one HTTP request.
+if (in_array('__worker', $argv)) {
+    // 1. Clear OPcache and stat caches so changes on disk are immediately read
+    clearstatcache();
+    if (function_exists('opcache_reset')) { opcache_reset(); }
+
+    // 2. Safely load the developer's live business classes and functions
+    // (e.g., from the user's current working directory)
+    if (file_exists(getcwd() . '/src/logic.php')) {
+        require_once getcwd() . '/src/logic.php';
+    }
+
+    // 3. Capture the requested payload passed from the main server via STDIN
+    $requestData = json_decode(file_get_contents('php://stdin'), true);
+    
+    // 4. Run your presentation logic using the fresh code classes
+    try {
+        // Example: Dynamic call to a user-defined presentation class
+        $html = PresentationEngine::render($requestData['path']);
+        echo json_encode(['status' => 200, 'body' => $html]);
+    } catch (\Throwable $e) {
+        echo json_encode(['status' => 500, 'body' => 'Error: ' . $e->getMessage()]);
+    }
+    exit(0); // Kill process instantly, clearing all declared classes from memory
+}
+
+
+// --- ROUTE B: THE MAIN CLI & DEV SERVER ---
+$command = $argv[1] ?? 'help';
+
+if ($command === 'serve') {
+    $port = $argv[2] ?? 8080;
+    $app = new FrameworkX\App();
+
+    $app->get('{path:.*}', function (Psr\Http\Message\ServerRequestInterface $request) {
+        // Determine the location of the running binary dynamically
+        $binaryPath = $_SERVER['PHP_SELF']; 
+
+        // Spawn a completely fresh, isolated instance of this exact binary
+        // We pass the '__worker' flag to trigger the sandbox environment above
+        $process = new Symfony\Component\Process\Process([$binaryPath, '__worker']);
+        
+        // Pass request variables safely via STDIN to the isolated worker
+        $process->setInput(json_encode([
+            'path' => $request->getUri()->getPath()
+        ]));
+
+        $process->run(); // Executes synchronously for this specific web request
+
+        if (!$process->isSuccessful()) {
+            return React\Http\Message\Response::plaintext("Worker Crash: " . $process->getErrorOutput())->withStatus(500);
+        }
+
+        $response = json_decode($process->getOutput(), true);
+        return new React\Http\Message\Response(
+            $response['status'],
+            ['Content-Type' => 'text/html; charset=utf-8'],
+            $response['body']
+        );
+    });
+
+    echo "Dev server running at http://localhost:$port\n";
+    $app->run("0.0.0.0:$port");
+} else {
+    // Standard 'build' or 'scaffold' CLI logic goes here...
+    echo "Executing standard CLI tool behaviors...\n";
+}
+
