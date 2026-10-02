@@ -38,8 +38,8 @@ $argv ??= [];
 
 (new final_cli\app("slowfoot", "0.91", "🌈 <b>slowfoot</b>", 3))
     // ->add_command(wmdev::class)
-    ->add_command(dev_fx::class . "@cli_server", "dev")
-    ->add_command(dev_fx::class, "dev-fx")
+    ->add_command(dev_fx::class . "@cli_server", "dev-cli-server")
+    ->add_command(dev_fx::class, "dev")
     ->add_command(dev_fx::class . "@show", "show")
     // ->add_command(dev::class, "dev-legacy")
     ->add_command(build::class)

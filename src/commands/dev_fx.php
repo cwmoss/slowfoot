@@ -30,7 +30,7 @@ class dev_fx {
     }
 
     /**
-     * start the php-cli webserver as dev server.
+     * start the php-cli webserver as dev http server.
      * 
      * with the dev server you can easily watch
      * your changes as you are working on templates
@@ -84,7 +84,7 @@ class dev_fx {
     }
     // dev [-S <server:port>] [-P <port>] [-f] [-d <project directory>]
     /**
-     * start the dev server.
+     * start the dev http server.
      * 
      * with the dev server you can easily watch
      * your changes as you are working on templates

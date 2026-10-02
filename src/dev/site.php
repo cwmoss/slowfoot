@@ -22,8 +22,16 @@ class site {
         if (preg_match("!\.\w{1,5}$!", $requestpath)) {
             return ($this->assets)($r);
         }
-        // $content = self::generate_content($this->project, $requestpath);
-        $content = $this->generate_content_in_child_process($requestpath);
+        // when running in worker/deamon mode we'll create the page
+        // via a subprocess
+        // atm this is only with micro sapi not frankenphp, cli-server, ...
+        $sapi = php_sapi_name();
+        dbg("site page preview sapi", $sapi);
+        if ($sapi == "micro") {
+            $content = $this->generate_content_in_child_process($requestpath);
+        } else {
+            $content = self::generate_content($this->project, $requestpath);
+        }
         return $this->no_cache($content);
     }
 
