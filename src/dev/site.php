@@ -24,14 +24,13 @@ class site {
         }
         // when running in worker/deamon mode we'll create the page
         // via a subprocess
-        // atm this is only with micro sapi not frankenphp, cli-server, ...
+        // atm this is only with micro and cli sapi not frankenphp, cli-server, ...
         $sapi = php_sapi_name();
         dbg("site page preview sapi", $sapi);
-        if ($sapi == "micro") {
-            $content = $this->generate_content_in_child_process($requestpath);
-        } else {
-            $content = self::generate_content($this->project, $requestpath);
-        }
+        $content = match ($sapi) {
+            "cli", "micro" => $this->generate_content_in_child_process($requestpath),
+            default => self::generate_content($this->project, $requestpath)
+        };
         return $this->no_cache($content);
     }
 
