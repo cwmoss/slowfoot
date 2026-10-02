@@ -3,13 +3,14 @@
 namespace slowfoot\commands;
 
 use cwmoss\final_cli\cli;
+
 use slowfoot\terminal;
 use slowfoot\util\console;
 use slowfoot\app;
 use FrameworkX\App as xapp;
 use FrameworkX\Container;
-// use FrameworkX\Runner\HttpServerRunner;
-use slowfoot\dev\HttpServerRunner;
+use FrameworkX\Runner\HttpServerRunner;
+// use slowfoot\dev\HttpServerRunner;
 
 use slowfoot\dev\api_index;
 use slowfoot\dev\error;
@@ -146,6 +147,19 @@ class dev_fx {
         // print "$cmd \n";
         // exec("$cmd > /dev/null &");
         // $this->execInBackground($this->app->original_args);
+    }
+
+    /**
+     * show a generated page
+     * 
+     * this is used by the dev server for developing templates
+     */
+    public function show(string $__request_path) {
+        // Capture the requested payload passed from the main server via STDIN
+        // $requestData = json_decode(file_get_contents('php://stdin'), true);
+        $this->app->project->load(true);
+        // print_r($this->app->project);
+        print site::generate_content($this->app->project, $__request_path);
     }
 
     static public function add_routes(xapp $app, project $project): xapp {

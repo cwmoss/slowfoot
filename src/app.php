@@ -11,6 +11,7 @@ class app {
     public string $write_path = "";
     public project $project;
     public array $original_args = [];
+    public string $bin;
 
     public function __construct(
         public string $project_dir,
