@@ -7,6 +7,7 @@ use React\Http\Message\Response as P;
 use slowfoot\pagebuilder;
 use slowfoot\project;
 use slowfoot\context;
+use Symfony\Component\Process\Process;
 
 class site {
 
@@ -21,10 +22,39 @@ class site {
         if (preg_match("!\.\w{1,5}$!", $requestpath)) {
             return ($this->assets)($r);
         }
-        $project = $this->project;
-        // dbg('[dev] page/template', $requestpath);
-        // server::send_nocache();
-        // $requestpath = '/' . $requestpath;
+        // $content = self::generate_content($this->project, $requestpath);
+        $content = $this->generate_content_in_child_process($requestpath);
+        return $this->no_cache($content);
+    }
+
+    public function generate_content_in_child_process(string $requestpath): string {
+        // Determine the location of the running binary dynamically
+        // TODO: would not work in phar
+        $binaryPath = $_SERVER["_"];
+        $params = [$binaryPath, "show", "-d={$this->project->base}"];
+        $pfx = $this->project->path_prefix();
+        if ($pfx) $params[] = "-p={$pfx}";
+        $params[] = $requestpath;
+        // Spawn a completely fresh, isolated instance of this exact binary
+        // We pass the '__worker' flag to trigger the sandbox environment above
+        $process = new Process($params);
+
+        // Pass request variables safely via STDIN to the isolated worker
+        //$process->setInput(json_encode([
+        //    'path' => $request->getUri()->getPath()
+        //]));
+
+        $process->run(); // Executes synchronously for this specific web request
+
+        if (!$process->isSuccessful()) {
+            // return React\Http\Message\Response::plaintext("Worker Crash: " . $process->getErrorOutput())->withStatus(500);
+        }
+
+        // $response = json_decode($process->getOutput(), true);
+        return $process->getOutput();
+    }
+
+    public static function generate_content(project $project, string $requestpath): string {
         // startseite?
         if ($requestpath == '/' || $requestpath == '') {
             $requestpath = '/index';
@@ -63,10 +93,10 @@ class site {
             //$content = str_replace('</head>', $inspector_head . '</head>', $content);
             $content = str_replace('</body>', $inspector . '</body>', $content);
         }
-        return $this->no_cache($content);
+        return $content;
     }
 
-    public function no_cache($content): P {
+    public function no_cache(string $content): P {
         return new P(headers: [
             'Content-Type' => 'text/html',
             'Cache-Control' => 'post-check=0, pre-check=0',
