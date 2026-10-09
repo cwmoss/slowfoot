@@ -59,6 +59,8 @@ microsfx 8.4
 # this is the moduls list to copy to workflow
 Core,date,libxml,json,pcre,sqlite3,zlib,bcmath,bz2,calendar,ctype,curl,dom,SPL,fileinfo,filter,ftp,gd,gmp,hash,iconv,intl,session,mbstring,pcntl,standard,openssl,PDO,mysqlnd,pdo_mysql,pdo_pgsql,pdo_sqlite,pgsql,Phar,posix,random,redis,Reflection,exif,SimpleXML,soap,sockets,tokenizer,xml,xmlreader,xmlwriter,zip
 
+extra: freetype,libjpeg,libavif,libwebp
+
 rw@rw5k:~/dev/slowfoot$ ls -alh /usr/local/bin/slowfoot 
 Permissions Size User Date Modified Name
 .rwxr-xr-x@  75M rw    1 Okt 17:12  /usr/local/bin/slowfoot

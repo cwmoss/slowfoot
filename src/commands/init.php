@@ -3,6 +3,7 @@
 namespace slowfoot\commands;
 
 use slowfoot\app;
+use slowfoot\terminal;
 use cwmoss\final_cli\cli;
 
 class init {

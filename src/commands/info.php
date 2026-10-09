@@ -28,6 +28,11 @@ class info {
             $terminal->println("php moduls: " . join(",", get_loaded_extensions()));
 
             // phpinfo(INFO_MODULES);
+            if ($this->app->verbose) {
+                phpinfo();
+
+                var_dump(gd_info());
+            }
             return;
         }
 
