@@ -165,7 +165,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS docs_fts USING fts5( _id, _type, btext)
         }, $res);
 
         if ($lol->query->projection) {
-            $res = array_map(fn($data) => $lol->query->projection->evaluate($data, $params), $res);
+            $res = array_map(fn($data) => $lol->query->projection->evaluate((array)$data, $params), $res);
         }
 
         return $res;
