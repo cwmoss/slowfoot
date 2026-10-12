@@ -1,0 +1,229 @@
+[
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_build",
+            "description": "Baut die statische Website des Slowfoot-Projekts. Kann vorhandene dist-Ausgaben entfernen und neu erzeugen. Aufruf: slowfoot build.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Projektverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    },
+                    "fetch": {
+                        "type": "boolean",
+                        "description": "Inhalte vor dem Build neu laden, entspricht -f. Standard: false."
+                    },
+                    "prefix": {
+                        "type": "string",
+                        "description": "URL-Prefix für den Build, entspricht -p oder --prefix."
+                    },
+                    "html": {
+                        "type": "boolean",
+                        "description": "Konsolenausgabe als HTML formatieren, entspricht --html. Standard: false."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_dev",
+            "description": "Startet den Slowfoot-Entwicklungsserver. Der Prozess läuft bis zum Abbruch weiter. Aufruf: slowfoot dev.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Projektverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    },
+                    "server": {
+                        "type": "string",
+                        "description": "Bind-Adresse mit Port, entspricht -S oder --server. Standard: 0.0.0.0:1199."
+                    },
+                    "port": {
+                        "type": "integer",
+                        "description": "Port, entspricht -p oder --port. Standard: 1199."
+                    },
+                    "fetch": {
+                        "type": "boolean",
+                        "description": "Inhalte neu laden, entspricht -f. Standard: false."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_dev_cli_server",
+            "description": "Startet den PHP-CLI-Webserver für Slowfoot. Der Prozess läuft bis zum Abbruch weiter. Aufruf: slowfoot dev-cli-server.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Projektverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    },
+                    "server": {
+                        "type": "string",
+                        "description": "Bind-Adresse mit Port, entspricht -S oder --server. Standard: 0.0.0.0:1199."
+                    },
+                    "port": {
+                        "type": "integer",
+                        "description": "Port, entspricht -p oder --port. Standard: 1199."
+                    },
+                    "fetch": {
+                        "type": "boolean",
+                        "description": "Inhalte neu laden, entspricht -f. Standard: false."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_show",
+            "description": "Rendert eine generierte Seite anhand ihres Request-Pfads. Aufruf: slowfoot show <request-path>.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "request_path": {
+                        "type": "string",
+                        "description": "Pfad der anzuzeigenden Seite, zum Beispiel / oder /articles/example."
+                    },
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Projektverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    }
+                },
+                "required": [
+                    "request_path"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_init",
+            "description": "Initialisiert ein Slowfoot-Projekt oder kopiert die Webdeploy-Dateien. Kann Dateien im Projektverzeichnis anlegen. Aufruf: slowfoot init.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Zielverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    },
+                    "webdeploy": {
+                        "type": "boolean",
+                        "description": "Kopiert Webdeploy-Dateien anstelle der normalen Projektvorlage, entspricht --webdeploy. Standard: false."
+                    },
+                    "force": {
+                        "type": "boolean",
+                        "description": "Erlaubt die Initialisierung in einem nicht-leeren Verzeichnis, entspricht --force. Standard: false."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_preview",
+            "description": "Startet einen lokalen Webserver zur Vorschau des gebauten dist-Verzeichnisses. Der Prozess läuft bis zum Abbruch weiter. Aufruf: slowfoot preview.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Projektverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    },
+                    "server": {
+                        "type": "string",
+                        "description": "Bind-Adresse mit Port, entspricht -S oder --server. Standard: localhost:11999."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_query",
+            "description": "Führt eine LOLQL-Abfrage auf dem Slowfoot-Datensatz aus und gibt Treffer als JSON-Array aus. Syntax: Die Abfrage beginnt mit *() oder *(Filter), alternativ mit einem Typ wie chapter(Filter). Filter unterstützen ==, !=, <, <=, >, >=, in, matches, isnull, notnull, !, && und ||. Danach können order(Feld [asc|desc]), limit(Anzahl [Offset]) und zuletzt eine Projektion in {Feld, \"Alias\":Pfad} folgen. Beispiel: *(_type == \"chapter\") order(_id) limit(10) {_id, title}. Übergib die komplette Abfrage als einen String. Nicht dokumentierte oder in der LOLQL-README als nicht funktionierend markierte Syntax nicht verwenden. Weitere Hinweise: docs/lolql-quick-reference.md. Aufruf: slowfoot query <lolql-query>.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Vollstaendiger LOLQL-Ausdruck, zum Beispiel *(_type == \"chapter\") {_id, title}. Jede Abfrage braucht eine Auswahlfunktion mit Klammern: *(), *(Filter) oder Typ(Filter). Strings in doppelte Anfuehrungszeichen setzen; bei der Shell den ganzen Ausdruck quoten, zum Beispiel '*(_type == \"chapter\"){_id}'. Fuer Filter, Sortierung, Limit und Projektion siehe docs/lolql-quick-reference.md."
+                    },
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Projektverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    }
+                },
+                "required": [
+                    "query"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_info",
+            "description": "Zeigt Informationen über das Slowfoot-Projekt an. Mit system=true werden stattdessen PHP-Systeminformationen ausgegeben. Aufruf: slowfoot info.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Projektverzeichnis, entspricht -d. Standard: aktuelles Verzeichnis."
+                    },
+                    "system": {
+                        "type": "boolean",
+                        "description": "Gibt PHP-Systeminformationen statt Projektinformationen aus, entspricht --system. Standard: false."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "slowfoot_starship",
+            "description": "Gibt eine kurze Statuszeile für Starship aus. Derzeit verwendet die Implementierung das aktuelle Arbeitsverzeichnis. Aufruf: slowfoot starship.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_dir": {
+                        "type": "string",
+                        "description": "Die CLI-Hilfe bietet -d an, der aktuelle Command berücksichtigt dieses Verzeichnis derzeit jedoch nicht."
+                    },
+                    "webdeploy": {
+                        "type": "boolean",
+                        "description": "CLI-Option --webdeploy; hat in der aktuellen Implementierung keine sichtbare Wirkung."
+                    },
+                    "force": {
+                        "type": "boolean",
+                        "description": "CLI-Option --force; hat in der aktuellen Implementierung keine sichtbare Wirkung."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    }
+]

@@ -21,8 +21,11 @@ error_reporting(E_ALL ^ E_DEPRECATED);
  * Your friendly Static Site Generator
  * 
  * 
+ * Add -h to get detailed help for a command
+ * 
  * Global options:
  * -d=<project directory>
+ * -h               shows help for a command
  * 
  * Usage examples:
  * slowfoot dev   [-d=<project directory>] [-S=<server:port>] [-P=<port>] [-f]
