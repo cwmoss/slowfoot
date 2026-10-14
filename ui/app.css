@@ -5,6 +5,7 @@
   --fmono:
     "SFMono-Regular", Consolas, Liberation Mono, Menlo, Courier, monospace;
   --cgelb: rgb(246, 211, 85);
+  --color-accent: rgb(246, 211, 85);
   --wcontainer: 90rem;
   --pdcontainer: 6rem;
 }
