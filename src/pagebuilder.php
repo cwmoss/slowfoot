@@ -122,7 +122,7 @@ class pagebuilder {
         if ($page_query = ($pp['page-query'] ?? null)) {
             //var_dump($paginate);
             dbg('[page] query', $page_query);
-            if ($page_query['paginate']) {
+            if ($page_query['paginate'] ?? null) {
                 [$info, $pagequery] = $this->ds->query_paginated(
                     $page_query['__content'],
                     $page_query['paginate'],
@@ -136,7 +136,7 @@ class pagebuilder {
             } else {
                 $pagination = [];
                 $qres = $this->ds->query($page_query['__content']);  // query_page($ds, $pagination_query, $pagenr);
-                if ($page_query["first"]) {
+                if ($page_query["first"] ?? null) {
                     // dbg("++ yes first match");
                     $qres = $qres[0] ?? [];
                 }
