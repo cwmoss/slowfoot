@@ -92,6 +92,10 @@ option B
 
 use a path function in config that returns null for a document. effective, but a litte bit more involved.
 
+if a path template like: "/projects/:_id/:slug" resolves to any empty segment, than the whole 
+generated path becomes null and no page will be created. in this example: documents without the field slug 
+will not be produced
+
 option C
 
 template return empty string. easy for designer but maybe not the most efficient
