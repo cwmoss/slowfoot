@@ -42,7 +42,10 @@ class feed {
             $xml .= '<item>';
             foreach (["title", "link", "description", "author", "category", "comments", "guid", "pubDate"] as $field) {
                 if (isset($item[$field])) {
-                    $xml .= $this->element($field, (string) $item[$field]);
+                    $value = $field === "pubDate" ? $this->format_pub_date($item[$field]) : (string) $item[$field];
+                    if ($value !== null) {
+                        $xml .= $this->element($field, $value);
+                    }
                 }
             }
             $xml .= '</item>';
@@ -53,5 +56,14 @@ class feed {
 
     private function element(string $name, string $value): string {
         return sprintf('<%1$s>%2$s</%1$s>', $name, htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8'));
+    }
+
+    private function format_pub_date(mixed $value): ?string {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format(DATE_RSS);
+        }
+
+        $timestamp = is_numeric($value) ? (int) $value : strtotime((string) $value);
+        return $timestamp === false ? null : gmdate(DATE_RSS, $timestamp);
     }
 }

@@ -8,12 +8,14 @@
 
 use slowfoot\feed;
 
-$feed = new feed("slowfoot documentation", "https://cwmoss.github.io/");
-$feed->items(function ($it) use ($helper) {
+$site_url = rtrim($props->globals->config->site_url, "/");
+$site_prefix = rtrim($props->globals->config->path_prefix, "/");
+$feed = new feed("slowfoot documentation", $site_url . $site_prefix . "/");
+$feed->items(function ($it) use ($helper, $site_url) {
     return [
         "title" => $it->title,
         "pubDate" => $it->_file->modified,
-        "link" => $helper->path($it)
+        "link" => $site_url . "/" . ltrim((string) $helper->path($it), "/")
     ];
 });
 
