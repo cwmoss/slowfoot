@@ -8,13 +8,15 @@
 
 use slowfoot\feed;
 
-$feed = new feed("slowfoot documentation");
-$feed->items(function ($it) {
+$feed = new feed("slowfoot documentation", "https://cwmoss.github.io/");
+$feed->items(function ($it) use ($helper) {
     return [
         "title" => $it->title,
+        "pubDate" => $it->_file->modified,
+        "link" => $helper->path($it)
     ];
 });
 
 print $feed->generate($props->page);
 
-// print_r($props->page);
+// var_dump($props->page);

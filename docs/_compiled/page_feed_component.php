@@ -48,15 +48,18 @@ class page_feed_component extends component {
 
     public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): ?array{
         // dbg("++ props for component", $this->name, $props);
-$feed = new feed("slowfoot documentation");
-$feed->items(function ($it) {
+$feed = new feed("slowfoot documentation", "https://cwmoss.github.io/");
+$feed->items(function ($it) use ($helper) {
     return [
         "title" => $it->title,
+        "pubDate" => $it->_file->modified,
+        "link" => $helper->path($it)
     ];
 });
 
 print $feed->generate($props->page);
-print_r($props->page);
+
+// var_dump($props->page);
 
         return get_defined_vars();
     }
