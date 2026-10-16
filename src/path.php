@@ -14,7 +14,7 @@ class path {
 
     public ?Closure $reject = null;
 
-    public function __construct(public string $pattern, public string $language="en") {
+    public function __construct(public string $pattern, public string $language = "en") {
     }
 
     public function reject_if(Closure $fn): self {
@@ -37,11 +37,16 @@ class path {
             if ($reject && $reject($item)) return null;
             $path = $pattern;
             // $item[$r[1]]
-            $replacements = array_map(fn($r) => [
-                    $r[0], 
-                    URLify::slug(self::resolve_dot_value($r[1], $item), language: $language)
-                ], 
-                $replacements);
+            $replacements = array_map(
+                fn($r) => [
+                    $r[0],
+                    URLify::slug(self::resolve_dot_value($r[1], $item) ?: "", language: $language)
+                ],
+                $replacements
+            );
+            // reject if at least one resolved and slugified replacement is empty ("")
+            if (array_find($replacements, fn($it) => $it[1] === "")) return null;
+
             $path = str_replace(
                 array_column($replacements, 0),
                 array_column($replacements, 1),
