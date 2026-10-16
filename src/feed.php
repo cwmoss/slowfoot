@@ -21,6 +21,12 @@ class feed {
 
     public function generate(array $items = []): string {
         $mapped_items = array_map($this->mapping, $items);
+        $mapped_items = array_map(static function ($item): array {
+            if ($item instanceof feed_item) {
+                return $item->to_array();
+            }
+            return is_array($item) ? $item : [];
+        }, $mapped_items);
         $link = $this->link;
         if ($link === "" && isset($mapped_items[0]["link"])) {
             $link = (string) $mapped_items[0]["link"];
@@ -36,13 +42,14 @@ class feed {
         $xml .= $this->element("description", $description);
 
         foreach ($mapped_items as $item) {
-            if (!is_array($item)) {
-                continue;
-            }
             $xml .= '<item>';
             foreach (["title", "link", "description", "author", "category", "comments", "guid", "pubDate"] as $field) {
                 if (isset($item[$field])) {
-                    $value = $field === "pubDate" ? $this->format_pub_date($item[$field]) : (string) $item[$field];
+                    $value = match ($field) {
+                        "pubDate" => $this->format_pub_date($item[$field]),
+                        "link" => $this->absolute_item_link((string) $item[$field]),
+                        default => (string) $item[$field],
+                    };
                     if ($value !== null) {
                         $xml .= $this->element($field, $value);
                     }
@@ -65,5 +72,24 @@ class feed {
 
         $timestamp = is_numeric($value) ? (int) $value : strtotime((string) $value);
         return $timestamp === false ? null : gmdate(DATE_RSS, $timestamp);
+    }
+
+    private function absolute_item_link(string $link): string {
+        $item_url = parse_url($link);
+        if (isset($item_url["scheme"], $item_url["host"])) {
+            return $link;
+        }
+
+        $channel_url = parse_url($this->link);
+        if (!isset($channel_url["scheme"], $channel_url["host"])) {
+            return $link;
+        }
+
+        $origin = $channel_url["scheme"] . "://" . $channel_url["host"];
+        if (isset($channel_url["port"])) {
+            $origin .= ":" . $channel_url["port"];
+        }
+
+        return $origin . "/" . ltrim($link, "/");
     }
 }

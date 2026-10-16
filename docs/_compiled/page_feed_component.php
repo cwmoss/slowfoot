@@ -13,6 +13,7 @@ use function phuety\dbg;
 
 
 use slowfoot\feed;
+use slowfoot\feed_item;
 
 
 /**
@@ -48,15 +49,16 @@ class page_feed_component extends component {
 
     public function run_code(data_container $props, array $slots, data_container $helper, phuety_context $phuety, asset $assetholder): ?array{
         // dbg("++ props for component", $this->name, $props);
+
 $site_url = rtrim($props->globals->config->site_url, "/");
 $site_prefix = rtrim($props->globals->config->path_prefix, "/");
 $feed = new feed("slowfoot documentation", $site_url . $site_prefix . "/");
-$feed->items(function ($it) use ($helper, $site_url) {
-    return [
-        "title" => $it->title,
-        "pubDate" => $it->_file->modified,
-        "link" => $site_url . "/" . ltrim((string) $helper->path($it), "/")
-    ];
+$feed->items(function ($it) use ($helper) {
+    return new feed_item(
+        title: $it->title,
+        link: $helper->path($it),
+        pubDate: $it->_file->modified
+    );
 });
 
 print $feed->generate($props->page);
