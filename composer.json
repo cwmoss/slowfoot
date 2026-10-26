@@ -39,6 +39,7 @@
     "league/flysystem-memory": "^3",
     "phplucidframe/console-table": "^1.2",
     "benjaminhoegh/parsedown-extended": "^1.2",
+    "benjaminhoegh/ParsedownToc": "^1.6",
     "cwmoss/wrun": "dev-main",
     "cwmoss/phuety": "dev-main",
     "cwmoss/final-cli": "dev-main",

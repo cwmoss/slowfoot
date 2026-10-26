@@ -5,6 +5,8 @@ namespace slowfoot_plugin\markdown;
 use slowfoot\hook;
 use slowfoot\configuration;
 
+// https://github.com/BenjaminHoegh/ParsedownToc
+
 class markdown_plugin {
 
     public shortcode $shortcode;
