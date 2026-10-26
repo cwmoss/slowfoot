@@ -4,6 +4,8 @@ namespace slowfoot_plugin\markdown;
 
 use Parsedown;
 use ParsedownToc;
+use ParsedownExtra;
+
 // use ParsedownExtended;
 use BenjaminHoegh\ParsedownExtended\ParsedownExtended;
 use slowfoot\image;
@@ -15,7 +17,7 @@ https://github.com/Nessworthy/parsedown-extension-manager
 
 */
 
-class markdown_sfp extends ParsedownExtended { // ParsedownExtended
+class markdown_sfp extends ParsedownExtra { // ParsedownExtended
     public $context;
     public $current_obj;
 

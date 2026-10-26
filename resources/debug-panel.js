@@ -85,6 +85,14 @@ class DebugPanel extends HTMLElement {
                 e.preventDefault();
                 this.toggleAttribute("hidden");
             }
+            if (
+                e.key == "r" &&
+                !e.target.matches("input,textarea,select,option")
+            ) {
+                // if (e.ctrlKey && e.key == "d") {
+                // console.log("pressed 'd'!");
+                this.refetch()
+            }
         });
     }
     connectedCallback() {

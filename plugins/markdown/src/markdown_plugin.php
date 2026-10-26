@@ -38,14 +38,15 @@ class markdown_plugin {
 
     public function markdown_parser($config, $ds) {
         $parser = new markdown_sfp();
+        $parser->setMarkupEscaped(false);
         # return $parser;
-        $parser->config()->set('toc', true);
+        ##    $parser->config()->set('toc', true);
         // $parser->setSetting('toc', true);
-        $parser->config()->set('smartypants', false);
+        ##    $parser->config()->set('smartypants', false);
         # this extension eats chars
-        $parser->config()->set("typographer", false);
-        $parser->config()->set("abbreviations", true);
-        $parser->config()->set("comments", true);
+        ##    $parser->config()->set("typographer", false);
+        ##    $parser->config()->set("abbreviations", true);
+        ##    $parser->config()->set("comments", true);
 
         /* $Parser->setSetting('smarty', [
             'substitutions' => [
