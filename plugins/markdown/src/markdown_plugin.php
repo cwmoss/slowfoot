@@ -19,7 +19,7 @@ class markdown_plugin {
         });
 
         hook::add('bind_late_template_helper', function ($helper, $base, $data) {
-            dbg("++++++++ late MD", $helper, $base, $data);
+            dbg("++++++++ late MD",  $data["page"]->_id, $helper, $base);
             $md = $helper['markdown'];
             return ['markdown' => $this->markdown_helper_with_obj($md, $data)];
         });
@@ -94,11 +94,11 @@ class markdown_plugin {
         ];
     }
 
-    public function markdown_helper_with_obj($parser, $data = null) {
-        // dbg("+++ markdown helper object", $data, func_get_args());
-        return function ($text) use ($parser, $data) {
-            // dbg("+++ call MD w object");
-            return $parser($text, $data);
+    public function markdown_helper_with_obj($parser_fn, $data = null) {
+        dbg("+++ markdown helper markdown_helper_with_obj", $data, func_get_args());
+        return function ($text, $d = null) use ($parser_fn, $data) {
+            dbg("+++ call MD w object");
+            return $parser_fn($text, $d ?: $data);
         };
     }
 }

@@ -36,6 +36,7 @@ class path {
         return static function ($item) use ($pattern, $replacements, $reject, $language): ?string {
             if ($reject && $reject($item)) return null;
             $path = $pattern;
+            URLify::add_chars(['/' => '-keepslash-']);
             // $item[$r[1]]
             $replacements = array_map(
                 fn($r) => [
@@ -52,6 +53,7 @@ class path {
                 array_column($replacements, 1),
                 $path
             );
+            $path = str_replace("-keepslash-", '/', $path);
             return $path;
         };
     }

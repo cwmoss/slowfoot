@@ -17,7 +17,7 @@ https://github.com/Nessworthy/parsedown-extension-manager
 
 */
 
-class markdown_sfp extends ParsedownExtra { // ParsedownExtended
+class markdown_sfp extends ParsedownToc { // ParsedownExtended
     public $context;
     public $current_obj;
 
