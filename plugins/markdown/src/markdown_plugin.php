@@ -68,11 +68,11 @@ class markdown_plugin {
     }
 
     public function markdown_helper($config = null, $ds = null) {
-        // dbg("+++ markdown helper vanilla");
+        // dbg("+++ markdown helper vanilla XXXX");
         $parser = $this->markdown_parser($config, $ds);
-
+        // dbg("parser", $parser);
         return [
-            "markdown_parser" => $parser,
+            "markdown_parser" => fn() => $parser,
             "markdown" => function ($text, $obj = null) use ($parser) {
                 if (!$text) return "";
                 dbg("vanilla helper", $obj, $parser->current_obj);

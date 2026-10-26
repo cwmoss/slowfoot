@@ -86,6 +86,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
     }
 
     protected function resolve_image_path($imgpath) {
+        dbg("current§§§§", $this->current_obj);
         return join("/", [
             $this->current_obj["page"]->_file->prefix,
             $imgpath
