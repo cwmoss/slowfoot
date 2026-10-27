@@ -42,7 +42,7 @@ $argv ??= [];
 # phpinfo();
 # exit;
 
-(new final_cli\app("slowfoot", "0.93", "🌈 <b>slowfoot</b>", 3))
+(new final_cli\app("slowfoot", "0.94", "🌈 <b>slowfoot</b>", 3))
     // ->add_command(wmdev::class)
     ->add_command(build::class)
     ->add_command(dev_fx::class, "dev")
