@@ -123,6 +123,7 @@ class build {
 
         $terminal->shell_info("writing pages", true);
 
+        dbg("make pages", $project->config->get_template_engine()->engine->map);
         foreach ($project->pages as $pagename) {
             $terminal->shell_info("  => $pagename");
             $pagepath = $pagename;

@@ -53,10 +53,17 @@ class project {
     }
 
     public function load_pages() {
-        $pages = glob($this->src . '/pages/*.php');
-        $this->pages = array_map(function ($p) {
-            // pagename is everything before the first dot (can have multiple suffixes)
-            return '/' . explode(".", basename($p))[0];
+        $engine = $this->config->get_template_engine();
+        $ext = $engine->file_extension;
+        $pages = glob($this->src . '/pages/*' . $ext);
+        $this->pages = array_map(function ($p) use ($ext) {
+            // pagename is everything before the template extension
+            $name = basename($p);
+            $name = str_replace($ext, "", $name);
+            return '/' . $name;
         }, $pages);
+
+        $engine->add_page_templates($this->pages);
+        dbg("+++ loaded pages", $ext, $engine, $this->pages);
     }
 }

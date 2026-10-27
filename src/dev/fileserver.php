@@ -78,9 +78,12 @@ class fileserver {
         if (!$valid) return $this->errorHandler->requestNotFound();
 
 
+        // TODO: favicon.ico handling
+        if ($local == "favicon.ico") return $this->errorHandler->requestNotFound();
 
         \clearstatcache();
         if (\is_dir($path) || !\is_file($path)) {
+            dbg("+++ SPA path yes is dir", $local, $path);
             $path = $this->root . '/index.html';
         }
 
@@ -104,6 +107,7 @@ class fileserver {
             }
         }
 
+        dbg("+++ SPA final path", $local, $path);
         return new Response(
             Response::STATUS_OK,
             $headers,

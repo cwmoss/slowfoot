@@ -9,7 +9,7 @@ use slowfoot\context;
 use slowfoot\hook;
 use slowfoot\components;
 
-class phuety_adapter implements template_contract {
+class phuety_adapter extends template_contract {
 
     public phuety $engine;
 
@@ -45,6 +45,21 @@ class phuety_adapter implements template_contract {
             prefix: $prefix
         );
         $this->engine->set_custom_tag("page-query");
+        // dbg("+++ SET EXT", $this->engine);
+        $this->file_extension = $this->engine->sfc_extension;
+    }
+
+
+    public function add_page_templates(array $templates) {
+        // templates with . need extra map entry
+        foreach ($templates as $pname) {
+            $info = pathinfo($pname);
+            if ($info["extension"] ?? null) {
+                $this->engine->map->add("page." . $info["basename"], "pages/" . $info["basename"]);
+            }
+        }
+        // var_dump($this->engine->map);
+        // die();
     }
 
     public function preprocess($_template, $_base) {
