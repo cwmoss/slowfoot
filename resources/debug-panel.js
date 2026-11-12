@@ -68,6 +68,7 @@ class DebugPanel extends HTMLElement {
             console.error("could not parse json data:", e);
             this.data = [];
         }
+        this.isFetching = false;
         // console.log("my data", this.data);
         this.attachShadow({ mode: "open" }).appendChild(
             tmpl.content.cloneNode(true),
@@ -105,12 +106,47 @@ class DebugPanel extends HTMLElement {
     }
 
     async refetch() {
+        if (this.isFetching) return;
+
+        this.isFetching = true;
         console.log("refetch", this.fetchbtn);
         this.fetchbtn.disabled = true;
+        this.showLoadingOverlay();
         await fetch("/__api/fetch", { method: "POST" }).finally(() => {
             this.fetchbtn.disabled = false;
             window.location.reload();
         });
+    }
+
+    showLoadingOverlay() {
+        const overlay = document.createElement("div");
+        Object.assign(overlay.style, {
+            position: "fixed",
+            inset: "0",
+            zIndex: "9999",
+            display: "grid",
+            placeItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+        });
+        overlay.setAttribute("role", "status");
+        overlay.setAttribute("aria-label", "Seite wird aktualisiert");
+
+        const spinner = document.createElement("div");
+        Object.assign(spinner.style, {
+            width: "36px",
+            height: "36px",
+            border: "4px solid rgba(255, 255, 255, 0.55)",
+            borderTopColor: "#fff",
+            borderRadius: "50%",
+        });
+        spinner.setAttribute("aria-hidden", "true");
+        spinner.animate(
+            [{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }],
+            { duration: 800, iterations: Infinity },
+        );
+
+        overlay.appendChild(spinner);
+        document.body.appendChild(overlay);
     }
 }
 
