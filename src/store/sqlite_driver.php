@@ -3,7 +3,8 @@
 namespace slowfoot\store;
 
 use Closure;
-use phuety\exception;
+# use phuety\exception;
+use LogicException;
 use SQLite3;
 use SQLite3Result;
 
@@ -67,12 +68,12 @@ class sqlite_driver {
         $result = $this->execute_query($query, $params);
         if (!$result) return [];
         // php >= 8.5
-        if(method_exists($result, "fetchAll"))
-            return $result->fetchAll(SQLITE3_ASSOC)?:[];
-        
+        if (method_exists($result, "fetchAll"))
+            return $result->fetchAll(SQLITE3_ASSOC) ?: [];
+
         $res = [];
-        while($row = $result->fetchArray(SQLITE3_ASSOC)){
-            $res[]=$row;
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            $res[] = $row;
         }
         return $res;
     }
@@ -80,7 +81,7 @@ class sqlite_driver {
     public function execute_query(string $query, array $params): SQLite3Result|false {
         $stmt = $this->db->prepare($query);
         if ($stmt === false) {
-            throw new exception("wrong SQL $query");
+            throw new LogicException("wrong SQL $query params:", var_export($params, true));
         }
         foreach ($params as $idx => $p) {
             // TODO: type?
