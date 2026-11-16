@@ -154,17 +154,26 @@ function prefix_endpoint($ep) {
 }
 
 function write($content, $path, $pagenr, $base) {
+    $known_file_extensions = [
+        "xml"
+    ];
     if (!$content) {
         return;
     }
-    if ($pagenr && $pagenr != 1) {
-        $path .= '/' . $pagenr;
+    $ext = pathinfo($path, PATHINFO_EXTENSION);
+    // don' write index.html but directly to a filename
+    if ($ext && in_array($ext, $known_file_extensions)) {
+        // nothing to change here
+    } else {
+        // everything else is html
+        if ($pagenr && $pagenr != 1) {
+            $path .= '/' . $pagenr;
+        }
+        if ($path != '/404') {
+            $path .= '/index';
+        }
+        $path .= '.html';
     }
-    if ($path != '/404') {
-        $path .= '/index';
-    }
-    $path .= '.html';
-
     $file = $base . '/' . $path;
     $dir = dirname($file);
     if (!is_dir($dir)) {

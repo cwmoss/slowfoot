@@ -8,7 +8,7 @@ use slowfoot\hook;
 use slowfoot\util\html;
 
 
-class template implements template_contract {
+class template extends template_contract {
 
     public function __construct(public configuration $config) {
     }

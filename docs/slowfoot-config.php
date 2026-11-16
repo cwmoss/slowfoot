@@ -7,6 +7,7 @@ use slowfoot_plugin\phuety\phuety_adapter;
 
 return new configuration(
     site_name: 'slowfoot Documentation',
+    site_url: 'https://cwmoss.github.io',
     site_description: 'Docs for slowfoot',
     // path_prefix: "/slowfoot",
     // store: "memory",

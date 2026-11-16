@@ -5,6 +5,8 @@ namespace slowfoot_plugin\markdown;
 use slowfoot\hook;
 use slowfoot\configuration;
 
+// https://github.com/BenjaminHoegh/ParsedownToc
+
 class markdown_plugin {
 
     public shortcode $shortcode;
@@ -17,7 +19,7 @@ class markdown_plugin {
         });
 
         hook::add('bind_late_template_helper', function ($helper, $base, $data) {
-            dbg("++++++++ late MD", $helper, $base, $data);
+            dbg("++++++++ late MD",  $data["page"]->_id, $helper, $base);
             $md = $helper['markdown'];
             return ['markdown' => $this->markdown_helper_with_obj($md, $data)];
         });
@@ -38,14 +40,15 @@ class markdown_plugin {
 
     public function markdown_parser($config, $ds) {
         $parser = new markdown_sfp();
+        $parser->setMarkupEscaped(false);
         # return $parser;
-        $parser->config()->set('toc', true);
+        ##    $parser->config()->set('toc', true);
         // $parser->setSetting('toc', true);
-        $parser->config()->set('smartypants', false);
+        ##    $parser->config()->set('smartypants', false);
         # this extension eats chars
-        $parser->config()->set("typographer", false);
-        $parser->config()->set("abbreviations", true);
-        $parser->config()->set("comments", true);
+        ##    $parser->config()->set("typographer", false);
+        ##    $parser->config()->set("abbreviations", true);
+        ##    $parser->config()->set("comments", true);
 
         /* $Parser->setSetting('smarty', [
             'substitutions' => [
@@ -68,11 +71,11 @@ class markdown_plugin {
     }
 
     public function markdown_helper($config = null, $ds = null) {
-        // dbg("+++ markdown helper vanilla");
+        // dbg("+++ markdown helper vanilla XXXX");
         $parser = $this->markdown_parser($config, $ds);
-
+        // dbg("parser", $parser);
         return [
-            "markdown_parser" => $parser,
+            "markdown_parser" => fn() => $parser,
             "markdown" => function ($text, $obj = null) use ($parser) {
                 if (!$text) return "";
                 dbg("vanilla helper", $obj, $parser->current_obj);
@@ -91,11 +94,11 @@ class markdown_plugin {
         ];
     }
 
-    public function markdown_helper_with_obj($parser, $data = null) {
-        // dbg("+++ markdown helper object", $data, func_get_args());
-        return function ($text) use ($parser, $data) {
-            // dbg("+++ call MD w object");
-            return $parser($text, $data);
+    public function markdown_helper_with_obj($parser_fn, $data = null) {
+        dbg("+++ markdown helper markdown_helper_with_obj", $data, func_get_args());
+        return function ($text, $d = null) use ($parser_fn, $data) {
+            dbg("+++ call MD w object");
+            return $parser_fn($text, $d ?: $data);
         };
     }
 }

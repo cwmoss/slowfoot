@@ -20,7 +20,10 @@ class site {
         // asset files should be handled via assets_server
         // TODO: make rules more tight (file_exists or allowed list of basepaths)
         if (preg_match("!\.\w{1,5}$!", $requestpath)) {
-            return ($this->assets)($r);
+            dbg(" => prob asset?", $this->project->pages);
+            if (!in_array($requestpath, $this->project->pages)) {
+                return ($this->assets)($r);
+            }
         }
         // when running in worker/deamon mode we'll create the page
         // via a subprocess
@@ -31,7 +34,7 @@ class site {
             "cli", "micro" => $this->generate_content_in_child_process($requestpath),
             default => self::generate_content($this->project, $requestpath)
         };
-        return $this->no_cache($content);
+        return $this->no_cache($content, $requestpath);
     }
 
     public function generate_content_in_child_process(string $requestpath): string {
@@ -103,9 +106,21 @@ class site {
         return $content;
     }
 
-    public function no_cache(string $content): P {
+    public function get_content_type(string $requestpath): string {
+        $known_file_extensions = [
+            "xml" => "application/xml"
+        ];
+        $ext = pathinfo($requestpath, PATHINFO_EXTENSION);
+        if ($ext && isset($known_file_extensions[$ext])) {
+            return $known_file_extensions[$ext];
+        }
+        return "text/html";
+    }
+
+    public function no_cache(string $content, string $requestpath): P {
+
         return new P(headers: [
-            'Content-Type' => 'text/html',
+            'Content-Type' => $this->get_content_type($requestpath),
             'Cache-Control' => 'post-check=0, pre-check=0',
             'Pragma' => 'no-cache'
         ], body: $content);

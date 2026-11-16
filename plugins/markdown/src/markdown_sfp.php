@@ -4,6 +4,8 @@ namespace slowfoot_plugin\markdown;
 
 use Parsedown;
 use ParsedownToc;
+use ParsedownExtra;
+
 // use ParsedownExtended;
 use BenjaminHoegh\ParsedownExtended\ParsedownExtended;
 use slowfoot\image;
@@ -15,7 +17,7 @@ https://github.com/Nessworthy/parsedown-extension-manager
 
 */
 
-class markdown_sfp extends ParsedownExtended { // ParsedownExtended
+class markdown_sfp extends ParsedownToc { // ParsedownExtended
     public $context;
     public $current_obj;
 
@@ -86,6 +88,7 @@ class markdown_sfp extends ParsedownExtended { // ParsedownExtended
     }
 
     protected function resolve_image_path($imgpath) {
+        dbg("current§§§§", $this->current_obj);
         return join("/", [
             $this->current_obj["page"]->_file->prefix,
             $imgpath
