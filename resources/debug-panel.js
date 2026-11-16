@@ -88,10 +88,12 @@ class DebugPanel extends HTMLElement {
             }
             if (
                 e.key == "r" &&
+                !e.ctrlKey &&
+                !e.shiftKey &&
+                !e.altKey &&
+                !e.metaKey &&
                 !e.target.matches("input,textarea,select,option")
             ) {
-                // if (e.ctrlKey && e.key == "d") {
-                // console.log("pressed 'd'!");
                 this.refetch()
             }
         });
