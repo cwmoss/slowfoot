@@ -40,17 +40,22 @@ class pagebuilder {
         // $template = $templates[$obj['_type']][$name]['template'];
         // $template = $this->template_name($this->config->templates, $obj->_type, $name);
         $template = $template_conf["template"];
+        $path = $this->ds->get_path($obj_id, $name);
         dbg('template', $template, $obj);
         $content = $this->engine->run(
             $template,
             [
                 'page' => $obj,
-                'path' => $this->ds->get_path($obj_id, $name),
+                'path' => $path,
                 'template_config' => $template_conf, //TODO
                 'path_name' => $name
             ],
             $this->helper,
-            $context->with('template_type', 'template')
+            $context->with([
+                'template_type' => 'template',
+                'path' => $path,
+                'path_name' => $name
+            ])
         );
         // debug_js("page", $obj);
         // debug_js("meta", html::collect_data('meta', true));
@@ -60,6 +65,7 @@ class pagebuilder {
     public function make_page_bulk(string $pagename, context $context): Generator {
         $context = $context->with('template_type', 'page');
         $pp = $this->engine->preprocess($pagename, $context->src);
+        $path = $pagename;
         // print "page $pagename\n";
         if ($page_query = ($pp['page-query'] ?? null)) {
             //var_dump($paginate);
@@ -78,7 +84,11 @@ class pagebuilder {
                         $pagename,
                         ['page' => $qres, 'pagination' => $pagination],
                         $this->helper,
-                        $context
+                        $context->with([
+                            'template_type' => 'page',
+                            'path' => $path,
+                            //'path_name' => $name
+                        ])
                     );
                     $content = $this->engine->remove_tags($content, ['page-query']);
                     yield ["content" => $content, "pagenr" => $pagenr];
@@ -95,7 +105,11 @@ class pagebuilder {
                     $pagename,
                     ['page' => $qres, 'pagination' => $pagination],
                     $this->helper,
-                    $context
+                    $context->with([
+                        'template_type' => 'page',
+                        'path' => $path,
+                        //'path_name' => $name
+                    ])
                 );
                 $content = $this->engine->remove_tags($content, ['page-query']);
                 yield ["content" => $content, "pagenr" => null];
@@ -105,7 +119,11 @@ class pagebuilder {
                 $pagename,
                 [],
                 $this->helper,
-                $context
+                $context->with([
+                    'template_type' => 'page',
+                    'path' => $path,
+                    //'path_name' => $name
+                ])
             );
             yield ["content" => $content, "pagenr" => null];
         }
@@ -148,7 +166,11 @@ class pagebuilder {
                 $pagename,
                 ['page' => $qres, 'pagination' => $pagination],
                 $this->helper,
-                $context->with('template_type', 'page')
+                $context->with([
+                    'template_type' => 'page',
+                    'path' => $requestpath,
+                    //'path_name' => $name
+                ])
             );
             $content = $this->engine->remove_tags($content, ['page-query']);
 
@@ -159,7 +181,11 @@ class pagebuilder {
                 $requestpath,
                 [],
                 $this->helper,
-                $context->with('template_type', 'page')
+                $context->with([
+                    'template_type' => 'page',
+                    'path' => $requestpath,
+                    //'path_name' => $name
+                ])
             );
 
             // debug_js("page", []);
