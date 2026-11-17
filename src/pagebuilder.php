@@ -40,7 +40,8 @@ class pagebuilder {
         // $template = $templates[$obj['_type']][$name]['template'];
         // $template = $this->template_name($this->config->templates, $obj->_type, $name);
         $template = $template_conf["template"];
-        $path = $this->ds->get_path($obj_id, $name);
+        // index case?
+        $path = (string) $this->ds->get_path($obj_id, $name);
         dbg('template', $template, $obj);
         $content = $this->engine->run(
             $template,
